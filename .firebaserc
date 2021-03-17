@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "nifty-bot-marketplace": {
+      "hosting": {
+        "nifty-bots-frontend": [
+          "nifty-bot-marketplace"
+        ]
+      }
+    }
+  }
+}
