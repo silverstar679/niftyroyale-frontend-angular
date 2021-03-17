@@ -1,0 +1,29 @@
+<article class="overflow-hidden rounded-lg shadow-lg">
+  <a href="#">
+    <img
+      alt="Placeholder"
+      class="block h-auto w-full"
+      src="https://lh3.googleusercontent.com/iBCjHEQpVtF2bQkl1eTMpcvyH4SJ5OpGqFrsUoleQXaOZmwHYlXg-8vA6ErzK5joxyttL8pcbsRaEFvjqQ5Jdm2-Ke7i412hSJPv9Q=s260"
+    />
+  </a>
+
+  <header class="flex items-center justify-between leading-tight p-2 md:p-4">
+    <h1 class="text-lg">
+      <a class="no-underline hover:underline text-black" href="#">
+        {{ name }}
+      </a>
+    </h1>
+    <p class="text-grey-darker text-sm">{{ price }} {{ currency }}</p>
+  </header>
+
+  <footer class="flex items-center justify-between leading-none p-2 md:p-4">
+    <div class="flex items-center text-black">
+      <p class="ml-2 text-sm">
+        Minted by <span class="text-gray-600 font-bold">Nifty Bots</span>
+      </p>
+    </div>
+    <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
+      Buy
+    </button>
+  </footer>
+</article>
