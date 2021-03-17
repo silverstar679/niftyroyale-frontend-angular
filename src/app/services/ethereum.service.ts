@@ -9,10 +9,6 @@ export class EthereumService {
     return this.ethereum?.isMetaMask;
   }
 
-  get isConnected(): boolean {
-    return this.ethereum?.isConnected();
-  }
-
   getAccounts(): Promise<string[]> {
     return this.ethereum?.request({ method: 'eth_accounts' });
   }

@@ -33,8 +33,12 @@ export class AppComponent implements OnInit {
     }
   }
 
+  get isAccountConnected(): boolean {
+    return Boolean(this.accounts && this.accounts[0]);
+  }
+
   get metamaskBtnText(): string {
-    if (this.accounts && this.accounts[0]) {
+    if (this.isAccountConnected) {
       const length = this.accounts[0].length;
       const firstChar = this.accounts[0].slice(0, 6);
       const lastChar = this.accounts[0].slice(length - 4, length);
@@ -47,10 +51,10 @@ export class AppComponent implements OnInit {
   }
 
   async onMetamaskConnection(): Promise<void> {
+    if (this.isAccountConnected) {
+      return;
+    }
     if (this.ethereumService.isMetamaskInstalled) {
-      if (this.ethereumService.isConnected) {
-        return;
-      }
       await this.onClickConnect();
     } else {
       this.onClickInstall();
