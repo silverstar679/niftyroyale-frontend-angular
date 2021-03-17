@@ -1,7 +1,6 @@
 import MetaMaskOnboarding from '@metamask/onboarding';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BotModel, CurrencyEnum } from './models/bot.model';
-import { ETHEREUM } from './services/ethereum.token';
 import { EthereumService } from './services/ethereum.service';
 
 const currentUrl = new URL(window.location.href);
@@ -17,14 +16,12 @@ export class AppComponent implements OnInit {
   title = 'nifty-bots-frontend';
   niftyBots: BotModel[] = [];
   accounts: string[] = [];
-  metamaskBtnText = '';
   metamaskBtnDisabled = false;
 
   constructor(private ethereumService: EthereumService) {}
 
   async ngOnInit(): Promise<void> {
     this.accounts = await this.ethereumService.getAccounts();
-    this.metamaskBtnText = this.getMetamaskBtnText();
 
     // GENERATE FAKE BOTS
     for (let i = 1; i <= 20; i++) {
@@ -36,8 +33,8 @@ export class AppComponent implements OnInit {
     }
   }
 
-  getMetamaskBtnText(): string {
-    if (this.accounts[0]) {
+  get metamaskBtnText(): string {
+    if (this.accounts && this.accounts[0]) {
       const length = this.accounts[0].length;
       const firstChar = this.accounts[0].slice(0, 6);
       const lastChar = this.accounts[0].slice(length - 4, length);
@@ -45,7 +42,7 @@ export class AppComponent implements OnInit {
     } else {
       return this.ethereumService.isMetamaskInstalled
         ? 'Connect Wallet'
-        : 'Click here to install MetaMask!';
+        : 'Install MetaMask';
     }
   }
 
@@ -58,7 +55,6 @@ export class AppComponent implements OnInit {
     } else {
       this.onClickInstall();
     }
-    this.metamaskBtnDisabled = false;
   }
 
   async onClickConnect(): Promise<void> {
@@ -66,7 +62,7 @@ export class AppComponent implements OnInit {
       this.metamaskBtnDisabled = true;
       await this.ethereumService.handleConnection();
       this.accounts = await this.ethereumService.getAccounts();
-      this.metamaskBtnText = this.getMetamaskBtnText();
+      this.metamaskBtnDisabled = false;
     } catch (error) {
       console.error(error);
     }
@@ -74,8 +70,6 @@ export class AppComponent implements OnInit {
 
   onClickInstall(): void {
     const onBoarding = new MetaMaskOnboarding({ forwarderOrigin });
-    this.metamaskBtnText = 'On boarding in progress...';
-    this.metamaskBtnDisabled = true;
     onBoarding.startOnboarding();
   }
 }

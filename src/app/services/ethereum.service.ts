@@ -10,11 +10,11 @@ export class EthereumService {
   }
 
   get isConnected(): boolean {
-    return this.ethereum.isConnected();
+    return this.ethereum?.isConnected();
   }
 
   getAccounts(): Promise<string[]> {
-    return this.ethereum.request({ method: 'eth_accounts' });
+    return this.ethereum?.request({ method: 'eth_accounts' });
   }
 
   handleConnection(): Promise<void> {
