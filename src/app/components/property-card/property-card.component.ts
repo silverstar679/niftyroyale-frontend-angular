@@ -9,4 +9,14 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 export class PropertyCardComponent {
   @Input() type = '';
   @Input() value = '';
+
+  capitalizeFirstLetter(str: string): string {
+    if (!str.length) {
+      return str;
+    }
+    if (str.length === 1) {
+      return str.charAt(0).toUpperCase();
+    }
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
 }
