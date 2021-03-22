@@ -1,5 +1,7 @@
 import MetaMaskOnboarding from '@metamask/onboarding';
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { EthereumService } from './services/ethereum.service';
 
 const currentUrl = new URL(window.location.href);
@@ -12,38 +14,37 @@ const forwarderOrigin =
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  title = 'nifty-bots-frontend';
-  accounts: string[] = [];
   metamaskBtnDisabled = false;
-  show = false;
+  showMenu = false;
+  isAccountConnected$: Observable<boolean>;
+  metamaskBtnText$: Observable<string>;
 
-  constructor(private ethereumService: EthereumService) {}
+  constructor(private ethereumService: EthereumService) {
+    this.isAccountConnected$ = this.ethereumService.accounts$.pipe(
+      map((accounts) => Boolean(accounts[0]))
+    );
+    this.metamaskBtnText$ = this.ethereumService.accounts$.pipe(
+      map((accounts) => {
+        const currAccount = accounts[0];
+        if (currAccount) {
+          const length = currAccount.length;
+          const firstChar = currAccount.slice(0, 6);
+          const lastChar = currAccount.slice(length - 4, length);
+          return `${firstChar}...${lastChar}`;
+        } else {
+          return this.ethereumService.isMetamaskInstalled
+            ? 'Connect Wallet'
+            : 'Install MetaMask';
+        }
+      })
+    );
+  }
 
   async ngOnInit(): Promise<void> {
-    this.accounts = await this.ethereumService.getAccounts();
-  }
-
-  get isAccountConnected(): boolean {
-    return Boolean(this.accounts && this.accounts[0]);
-  }
-
-  get metamaskBtnText(): string {
-    if (this.isAccountConnected) {
-      const length = this.accounts[0].length;
-      const firstChar = this.accounts[0].slice(0, 6);
-      const lastChar = this.accounts[0].slice(length - 4, length);
-      return `${firstChar}...${lastChar}`;
-    } else {
-      return this.ethereumService.isMetamaskInstalled
-        ? 'Connect Wallet'
-        : 'Install MetaMask';
-    }
+    await this.ethereumService.getAccounts();
   }
 
   async onMetamaskConnection(): Promise<void> {
-    if (this.isAccountConnected) {
-      return;
-    }
     if (this.ethereumService.isMetamaskInstalled) {
       await this.onClickConnect();
     } else {
@@ -55,7 +56,7 @@ export class AppComponent implements OnInit {
     try {
       this.metamaskBtnDisabled = true;
       await this.ethereumService.handleConnection();
-      this.accounts = await this.ethereumService.getAccounts();
+      await this.ethereumService.getAccounts();
       this.metamaskBtnDisabled = false;
     } catch (error) {
       console.error(error);

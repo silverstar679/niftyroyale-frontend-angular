@@ -10,7 +10,7 @@
   </div>
   <div class="block md:hidden">
     <button
-      (click)="show = !show"
+      (click)="showMenu = !showMenu"
       class="flex items-center px-3 py-2 border rounded text-black border-black"
     >
       <svg
@@ -24,8 +24,8 @@
     </button>
   </div>
   <div
-    (click)="show = false"
-    [ngClass]="{ block: show, hidden: !show }"
+    (click)="showMenu = false"
+    [ngClass]="{ block: showMenu, hidden: !showMenu }"
     class="w-full block flex-grow md:flex md:justify-end md:w-auto"
   >
     <div class="text-center">
@@ -44,9 +44,9 @@
       <button
         class="block inline-block text-base px-4 py-2 leading-none rounded text-white bg-red-500 hover:bg-red-600 mt-4 md:mt-0"
         (click)="onMetamaskConnection()"
-        [disabled]="metamaskBtnDisabled"
+        [disabled]="metamaskBtnDisabled || (isAccountConnected$ | async)"
       >
-        {{ metamaskBtnText }}
+        {{ metamaskBtnText$ | async }}
       </button>
     </div>
   </div>
