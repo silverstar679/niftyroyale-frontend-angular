@@ -1,6 +1,5 @@
 import MetaMaskOnboarding from '@metamask/onboarding';
 import { Component, OnInit } from '@angular/core';
-import { BotModel, CurrencyEnum } from './models/bot.model';
 import { EthereumService } from './services/ethereum.service';
 
 const currentUrl = new URL(window.location.href);
@@ -14,7 +13,6 @@ const forwarderOrigin =
 })
 export class AppComponent implements OnInit {
   title = 'nifty-bots-frontend';
-  niftyBots: BotModel[] = [];
   accounts: string[] = [];
   metamaskBtnDisabled = false;
 
@@ -22,15 +20,6 @@ export class AppComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.accounts = await this.ethereumService.getAccounts();
-
-    // GENERATE FAKE BOTS
-    for (let i = 1; i <= 20; i++) {
-      this.niftyBots.push({
-        name: `Robot ${i}`,
-        price: 0.1,
-        currency: CurrencyEnum.ETH,
-      });
-    }
   }
 
   get isAccountConnected(): boolean {

@@ -1,0 +1,20 @@
+.property-card {
+  border-radius: 6px;
+  border: 1px solid rgb(21, 178, 229);
+  padding: 10px;
+  text-align: center;
+  .type {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  .value {
+    color: rgb(53, 56, 64);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

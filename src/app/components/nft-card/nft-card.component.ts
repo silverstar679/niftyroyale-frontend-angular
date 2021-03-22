@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { CurrencyEnum } from '../models/bot.model';
 
 @Component({
   selector: 'app-nft-card',
@@ -8,7 +7,5 @@ import { CurrencyEnum } from '../models/bot.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NftCardComponent {
-  @Input() name = '';
-  @Input() price = 0;
-  @Input() currency: CurrencyEnum = CurrencyEnum.ETH;
+  @Input() asset: any;
 }

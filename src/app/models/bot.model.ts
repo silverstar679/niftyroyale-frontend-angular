@@ -4,6 +4,8 @@ export enum CurrencyEnum {
 
 export interface BotModel {
   name: string;
+  image: string;
+  collection: string;
   price: number;
   currency: CurrencyEnum;
 }
