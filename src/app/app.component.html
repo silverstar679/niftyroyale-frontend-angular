@@ -1,58 +1,112 @@
-<header
-  class="fixed w-full bg-white border-b md:flex md:items-center md:justify-between p-4 pb-0 shadow-lg md:pb-4 z-10"
+<!--<header-->
+<!--  class="fixed w-full bg-white border-b md:flex md:items-center md:justify-between p-4 pb-0 shadow-lg md:pb-4 z-10"-->
+<!--&gt;-->
+<!--  <div class="flex items-center justify-between mb-4 md:mb-0">-->
+<!--    <h1 class="leading-none text-2xl text-grey-darkest">-->
+<!--      <a class="no-underline text-grey-darkest hover:text-black" href="#">-->
+<!--        Nifty Bots-->
+<!--      </a>-->
+<!--    </h1>-->
+
+<!--    <a class="text-black hover:text-orange md:hidden" href="#">-->
+<!--      <i class="fa fa-2x fa-bars"></i>-->
+<!--    </a>-->
+<!--  </div>-->
+
+<!--  <form class="mb-4 w-full md:mb-0 md:w-1/4">-->
+<!--    <label class="hidden" for="search">Search</label>-->
+<!--    <input-->
+<!--      class="bg-grey-lightest border-2 focus:border-orange p-2 rounded-lg shadow-inner w-full"-->
+<!--      id="search"-->
+<!--      placeholder="Search..."-->
+<!--      type="text"-->
+<!--    />-->
+<!--  </form>-->
+
+<!--  <nav>-->
+<!--    <ul class="list-reset md:flex md:items-center">-->
+<!--      <li class="md:ml-4">-->
+<!--        <a-->
+<!--          class="block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0"-->
+<!--          href="#"-->
+<!--        >-->
+<!--          Drops-->
+<!--        </a>-->
+<!--      </li>-->
+<!--      <li class="md:ml-4">-->
+<!--        <a-->
+<!--          class="border-t block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0"-->
+<!--          href="#"-->
+<!--        >-->
+<!--          Trading-->
+<!--        </a>-->
+<!--      </li>-->
+<!--      <li class="md:ml-4">-->
+<!--        <button-->
+<!--          class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"-->
+<!--          (click)="onMetamaskConnection()"-->
+<!--          [disabled]="metamaskBtnDisabled"-->
+<!--        >-->
+<!--          {{ metamaskBtnText }}-->
+<!--        </button>-->
+<!--      </li>-->
+<!--    </ul>-->
+<!--  </nav>-->
+<!--</header>-->
+
+<nav
+  class="fixed w-full flex items-center justify-between flex-wrap shadow-lg bg-white p-6 z-10"
 >
-  <div class="flex items-center justify-between mb-4 md:mb-0">
+  <div class="flex items-center flex-shrink-0 text-black mr-6">
     <h1 class="leading-none text-2xl text-grey-darkest">
-      <a class="no-underline text-grey-darkest hover:text-black" href="#">
+      <a class="no-underline text-grey-darkest hover:text-black" routerLink="/">
         Nifty Bots
       </a>
     </h1>
-
-    <a class="text-black hover:text-orange md:hidden" href="#">
-      <i class="fa fa-2x fa-bars"></i>
-    </a>
   </div>
-
-  <form class="mb-4 w-full md:mb-0 md:w-1/4">
-    <label class="hidden" for="search">Search</label>
-    <input
-      class="bg-grey-lightest border-2 focus:border-orange p-2 rounded-lg shadow-inner w-full"
-      id="search"
-      placeholder="Search..."
-      type="text"
-    />
-  </form>
-
-  <nav>
-    <ul class="list-reset md:flex md:items-center">
-      <li class="md:ml-4">
-        <a
-          class="block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0"
-          href="#"
-        >
-          Drops
-        </a>
-      </li>
-      <li class="md:ml-4">
-        <a
-          class="border-t block no-underline hover:underline py-2 text-grey-darkest hover:text-black md:border-none md:p-0"
-          href="#"
-        >
-          Trading
-        </a>
-      </li>
-      <li class="md:ml-4">
-        <button
-          class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
-          (click)="onMetamaskConnection()"
-          [disabled]="metamaskBtnDisabled"
-        >
-          {{ metamaskBtnText }}
-        </button>
-      </li>
-    </ul>
-  </nav>
-</header>
+  <div class="block md:hidden">
+    <button
+      (click)="show = !show"
+      class="flex items-center px-3 py-2 border rounded text-black border-black"
+    >
+      <svg
+        class="fill-current h-3 w-3"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <title>Menu</title>
+        <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
+      </svg>
+    </button>
+  </div>
+  <div
+    (click)="show = false"
+    [ngClass]="{ block: show, hidden: !show }"
+    class="w-full block flex-grow md:flex md:justify-end md:w-auto"
+  >
+    <div class="text-center">
+      <a
+        href="#"
+        class="block md:inline-block text-base px-4 py-2 leading-none rounded text-black mt-4 md:mt-0"
+      >
+        Drops
+      </a>
+      <a
+        href="#"
+        class="block md:inline-block text-base px-4 py-2 leading-none rounded text-black mt-4 md:mt-0"
+      >
+        Trading
+      </a>
+      <button
+        class="block inline-block text-base px-4 py-2 leading-none rounded text-white bg-red-500 hover:bg-red-600 mt-4 md:mt-0"
+        (click)="onMetamaskConnection()"
+        [disabled]="metamaskBtnDisabled"
+      >
+        {{ metamaskBtnText }}
+      </button>
+    </div>
+  </div>
+</nav>
 
 <div class="container mx-auto py-28">
   <router-outlet></router-outlet>

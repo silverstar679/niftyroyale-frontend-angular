@@ -15,6 +15,7 @@ export class AppComponent implements OnInit {
   title = 'nifty-bots-frontend';
   accounts: string[] = [];
   metamaskBtnDisabled = false;
+  show = false;
 
   constructor(private ethereumService: EthereumService) {}
 
