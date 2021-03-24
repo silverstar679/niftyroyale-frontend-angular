@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { OpenSeaService } from '../services/open-sea.service';
 
 @Component({
@@ -12,6 +13,10 @@ export class NftListComponent {
   assets$: Observable<any[]>;
 
   constructor(private openSeaService: OpenSeaService) {
-    this.assets$ = this.openSeaService.getAssets();
+    this.assets$ = this.openSeaService.getAssets().pipe(
+      map((assets) => {
+        return assets.map((asset) => ({ ...asset, sold: Math.random() > 0.5 }));
+      })
+    );
   }
 }
