@@ -1,57 +1,58 @@
-<nav
-  class="fixed w-full flex items-center justify-between flex-wrap shadow-lg bg-white p-6 z-10"
->
-  <div class="flex items-center flex-shrink-0 text-black mr-6">
-    <h1 class="leading-none text-2xl text-grey-darkest">
-      <a class="no-underline text-grey-darkest hover:text-black" routerLink="/">
-        Nifty Royale
-      </a>
-    </h1>
-  </div>
-  <div class="block md:hidden">
-    <button
-      (click)="showMenu = !showMenu"
-      class="flex items-center px-3 py-2 border rounded text-black border-black"
-    >
-      <svg
-        class="fill-current h-3 w-3"
-        viewBox="0 0 20 20"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <title>Menu</title>
-        <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-      </svg>
-    </button>
-  </div>
+<div *ngIf="assets$ | async as assets" class="container mx-auto my-5">
   <div
-    (click)="showMenu = false"
-    [ngClass]="{ block: showMenu, hidden: !showMenu }"
-    class="w-full block flex-grow md:flex md:justify-end md:w-auto"
+    class="flex flex-row flex-wrap items-center justify-start text-2xl nifty-text-gold mb-5"
   >
-    <div class="text-center">
-      <a
-        href="#"
-        class="block md:inline-block text-base px-4 py-2 leading-none rounded text-black mt-4 md:mt-0"
-      >
-        Drops
-      </a>
-      <a
-        href="#"
-        class="block md:inline-block text-base px-4 py-2 leading-none rounded text-black mt-4 md:mt-0"
-      >
-        Trading
-      </a>
-      <button
-        class="block inline-block text-base px-4 py-2 leading-none rounded text-white bg-red-500 hover:bg-red-600 mt-4 md:mt-0"
-        (click)="onMetamaskConnection()"
-        [disabled]="metamaskBtnDisabled || (isAccountConnected$ | async)"
-      >
-        {{ metamaskBtnText$ | async }}
-      </button>
+    <div class="w-28">
+      <img src="assets/logo.png" alt="logo-img" />
+    </div>
+    <div class="bg-black">Nifty Royale Status</div>
+  </div>
+  <div class="flex flex-col justify-center items-center mb-10">
+    <div class="bg-black text-5xl nifty-text-alt-gold mb-5">
+      {{ remaining }}/{{ total }} NFTs Remaining
+    </div>
+    <div class="bg-black text-4xl nifty-text-red font-semibold">
+      Next Elimination {{ countdownTimer }}
     </div>
   </div>
-</nav>
+  <div
+    class="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 place-items-center"
+  >
+    <article
+      *ngFor="let asset of assets; let i = index"
+      class="bg-black p-20"
+      [ngClass]="{
+        'img-border-crown': asset.placement === 1,
+        'img-border': asset.placement !== 1
+      }"
+    >
+      <div class="relative">
+        <img
+          *ngIf="asset.eliminated"
+          class="absolute z-10"
+          src="assets/eliminated.png"
+          alt="cross-img"
+        />
 
-<div class="container mx-auto pt-28 pb-4">
-  <router-outlet></router-outlet>
+        <img
+          class="block h-auto w-full"
+          [src]="asset.image_url"
+          alt="nft-img"
+        />
+      </div>
+
+      <header class="flex flex-col text-white text-sm">
+        <p>Serial# 0000{{ i + 1 }}</p>
+        <p>Owner: {{ formatAddress(asset.owner.address) }}</p>
+        <p>
+          Placement:
+          {{ asset.placement ? asset.placement + "/" + total : "N/A" }}
+        </p>
+      </header>
+
+      <footer class="flex flex-col text-white text-sm">
+        <p>Name: {{ asset.name }}</p>
+      </footer>
+    </article>
+  </div>
 </div>
