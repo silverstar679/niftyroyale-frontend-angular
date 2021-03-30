@@ -16,10 +16,10 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'nifty-bots-frontend'`, () => {
+  it(`should have as title 'nifty-royale-frontent'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('nifty-bots-frontend');
+    expect(app.title).toEqual('nifty-royale-frontent');
   });
 
   it('should render title', () => {
@@ -27,7 +27,7 @@ describe('AppComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
     expect(compiled.querySelector('.content span').textContent).toContain(
-      'nifty-bots-frontend app is running!'
+      'nifty-royale-frontent app is running!'
     );
   });
 });

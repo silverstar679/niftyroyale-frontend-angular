@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "nifty-bots-frontend": {
+    "nifty-royale-frontent": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -21,7 +21,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "extraWebpackConfig": "webpack.config.js",
-            "outputPath": "dist/nifty-bots-frontend",
+            "outputPath": "dist/nifty-royale-frontent",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -70,18 +70,18 @@
           "builder": "ngx-build-plus:dev-server",
           "options": {
             "extraWebpackConfig": "webpack.config.js",
-            "browserTarget": "nifty-bots-frontend:build"
+            "browserTarget": "nifty-royale-frontent:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "nifty-bots-frontend:build:production"
+              "browserTarget": "nifty-royale-frontent:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "nifty-bots-frontend:build"
+            "browserTarget": "nifty-royale-frontent:build"
           }
         },
         "test": {
@@ -119,11 +119,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "nifty-bots-frontend:serve"
+            "devServerTarget": "nifty-royale-frontent:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "nifty-bots-frontend:serve:production"
+              "devServerTarget": "nifty-royale-frontent:serve:production"
             }
           }
         },
@@ -134,5 +134,5 @@
       }
     }
   },
-  "defaultProject": "nifty-bots-frontend"
+  "defaultProject": "nifty-royale-frontent"
 }

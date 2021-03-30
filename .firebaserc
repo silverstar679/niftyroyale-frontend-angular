@@ -2,7 +2,7 @@
   "targets": {
     "nifty-bot-marketplace": {
       "hosting": {
-        "nifty-bots-frontend": [
+        "nifty-royale-frontent": [
           "nifty-bot-marketplace"
         ]
       }

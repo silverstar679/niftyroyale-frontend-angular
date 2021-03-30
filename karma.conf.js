@@ -25,7 +25,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/nifty-bots-frontend'),
+      dir: require('path').join(__dirname, './coverage/nifty-royale-frontent'),
       subdir: '.',
       reporters: [
         { type: 'html' },

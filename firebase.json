@@ -1,8 +1,8 @@
 {
   "hosting": [
     {
-      "target": "nifty-bots-frontend",
-      "public": "dist/nifty-bots-frontend",
+      "target": "nifty-royale-frontent",
+      "public": "dist/nifty-royale-frontent",
       "ignore": [
         "**/.*"
       ],
