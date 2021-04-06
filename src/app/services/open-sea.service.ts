@@ -7,7 +7,7 @@ import { CurrencyEnum } from '../models/bot.model';
 @Injectable()
 export class OpenSeaService {
   private baseUrl = 'https://rinkeby-api.opensea.io/api/v1';
-  private contractAddress = '0x18dB7a9D61bC4364DFD139c3BeE46143d2F40aC5';
+  private contractAddress = '0x82CA85A881169DaE80377c3D205d16A1f8C86A48';
 
   constructor(private http: HttpClient) {}
 
