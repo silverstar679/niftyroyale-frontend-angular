@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OpenSeaService } from './services/open-sea.service';
+import { OpenSeaAsset } from './models/open-sea-asset.model';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,7 @@ import { OpenSeaService } from './services/open-sea.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  assets$: Observable<any[]>;
+  assets$: Observable<OpenSeaAsset[]>;
   total = 0;
   remaining = 0;
   countdownTimer = '';
@@ -36,6 +37,7 @@ export class AppComponent {
       }),
       map((assets: any[]) => {
         const winnerIndex = Math.floor(Math.random() * assets.length);
+        assets[winnerIndex].eliminated = false;
         assets[winnerIndex].placement = 1;
         return assets;
       })

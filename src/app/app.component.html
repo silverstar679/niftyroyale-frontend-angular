@@ -1,58 +1,65 @@
 <div *ngIf="assets$ | async as assets" class="container mx-auto my-5">
   <div
-    class="flex flex-row flex-wrap items-center justify-start text-2xl nifty-text-gold mb-5"
+    class="flex flex-row flex-wrap items-center justify-start text-2xl sm:text-4xl nifty-text-gold mb-5"
   >
-    <div class="w-28">
-      <img src="assets/logo.png" alt="logo-img" />
+    <div class="mr-5">
+      <img class="w-16" src="../assets/logo.png" alt="logo-img" />
     </div>
     <div class="bg-black">Nifty Royale Status</div>
   </div>
   <div class="flex flex-col justify-center items-center mb-10">
-    <div class="bg-black text-5xl nifty-text-alt-gold mb-5">
+    <div class="bg-black text-3xl sm:text-5xl nifty-text-alt-gold p-4">
       {{ remaining }}/{{ total }} NFTs Remaining
     </div>
-    <div class="bg-black text-4xl nifty-text-red font-semibold">
-      Next Elimination {{ countdownTimer }}
+    <div class="flex flex-col sm:flex-row justify-center items-center bg-black text-2xl sm:text-4xl nifty-text-red font-semibold p-4">
+      <div class="flex-grow mr-2">
+        <img class="w-72" src="../assets/next-elimination.png" alt="next-elimination" />
+      </div>
+      <div class="flex-shrink">
+        {{ countdownTimer }}
+      </div>
     </div>
   </div>
-  <div
-    class="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 place-items-center"
-  >
-    <article
-      *ngFor="let asset of assets; let i = index"
-      class="bg-black p-24"
-      [ngClass]="{
-        'img-border-crown': asset.placement === 1,
-        'img-border': asset.placement !== 1
-      }"
-    >
-      <div class="relative">
-        <img
-          *ngIf="asset.eliminated"
-          class="absolute z-10"
-          src="assets/eliminated.png"
-          alt="cross-img"
-        />
+  <div class="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-12">
+    <div *ngFor="let asset of assets; let i = index">
+      <img
+        *ngIf="1 === asset.placement"
+        class="mx-auto h-16 w-24"
+        src="../assets/crown.png"
+        alt="crown-img"
+      />
+      <article
+        class="bg-black border-4 rounded-lg border-gold p-1"
+        [ngClass]="{ 'mt-16': 1 !== asset.placement }"
+      >
+        <div class="relative mb-3">
+          <img
+            *ngIf="asset.eliminated"
+            class="absolute h-full w-full z-10"
+            src="../assets/cross.png"
+            alt="cross-img"
+          />
 
-        <img
-          class="block h-auto w-full"
-          [src]="asset.image_url"
-          alt="nft-img"
-        />
-      </div>
+          <img
+            class="block rounded-sm h-auto w-full"
+            [src]="asset.image_url"
+            alt="nft-img"
+          />
+        </div>
 
-      <header class="flex flex-col text-white text-sm">
-        <p>Serial# 0000{{ i + 1 }}</p>
-        <p>Owner: {{ formatAddress(asset.owner.address) }}</p>
-        <p>
-          Placement:
-          {{ asset.placement ? asset.placement + "/" + total : "N/A" }}
-        </p>
-      </header>
+        <header class="flex flex-col text-white text-base">
+          <p>Serial# 0000{{ i + 1 }}</p>
+          <p>Owner: {{ formatAddress(asset.owner.address) }}</p>
+          <p>
+            Placement:
+            {{ asset.placement ? asset.placement + "/" + total : "N/A" }}
+          </p>
+        </header>
 
-      <footer class="flex flex-col text-white text-sm">
-        <p>Name: {{ asset.name }}</p>
-      </footer>
-    </article>
+        <footer class="flex flex-col text-white text-base">
+          <p>Name: {{ asset.name }}</p>
+        </footer>
+      </article>
+    </div>
   </div>
 </div>

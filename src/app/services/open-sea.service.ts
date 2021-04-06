@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CurrencyEnum } from '../models/bot.model';
 
 @Injectable()
 export class OpenSeaService {
@@ -13,17 +12,9 @@ export class OpenSeaService {
 
   getAssets(): Observable<any[]> {
     const url = `${this.baseUrl}/assets?asset_contract_address=${this.contractAddress}`;
-    return this.http.get<{ assets: any[] }>(url).pipe(
-      map(({ assets }) => {
-        return assets.map((asset: any) => {
-          return {
-            ...asset,
-            price: 0.1,
-            currency: CurrencyEnum.ETH,
-          };
-        });
-      })
-    );
+    return this.http
+      .get<{ assets: any[] }>(url)
+      .pipe(map(({ assets }) => assets));
   }
 
   getAssetById(tokenId: string): Observable<any> {
