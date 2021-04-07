@@ -3,17 +3,32 @@
     class="flex flex-row flex-wrap items-center justify-start text-2xl sm:text-4xl nifty-text-gold mb-5"
   >
     <div class="mr-5">
-      <img class="w-16" src="../assets/logo.png" alt="logo-img" />
+      <img class="w-20" src="../assets/logo.png" alt="logo-img" />
     </div>
-    <div class="bg-black">Nifty Royale Status</div>
+    <div>Nifty Royale Status</div>
+    <div class="flex flex-row flex-grow justify-center sm:justify-end">
+      <button
+        class="text-sm sm:text-xl text-white bg-black leading-none rounded nifty-border-red border-2 px-6 py-4"
+        (click)="onMetamaskConnection()"
+        [disabled]="metamaskBtnDisabled || (isAccountConnected$ | async)"
+      >
+        {{ metamaskBtnText$ | async }}
+      </button>
+    </div>
   </div>
   <div class="flex flex-col justify-center items-center mb-10">
-    <div class="bg-black text-3xl sm:text-5xl nifty-text-alt-gold p-4">
+    <div class="text-3xl sm:text-5xl nifty-text-gold p-4">
       {{ remaining }}/{{ total }} NFTs Remaining
     </div>
-    <div class="flex flex-col sm:flex-row justify-center items-center bg-black text-2xl sm:text-4xl nifty-text-red font-semibold p-4">
+    <div
+      class="flex flex-col sm:flex-row justify-center items-center text-2xl sm:text-4xl nifty-text-red font-semibold p-4"
+    >
       <div class="flex-grow mr-2">
-        <img class="w-72" src="../assets/next-elimination.png" alt="next-elimination" />
+        <img
+          class="w-72"
+          src="../assets/next-elimination.png"
+          alt="next-elimination"
+        />
       </div>
       <div class="flex-shrink">
         {{ countdownTimer }}
@@ -22,19 +37,23 @@
   </div>
   <div class="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-12">
     <div *ngFor="let asset of assets; let i = index">
-      <img
-        *ngIf="1 === asset.placement"
-        class="mx-auto h-16 w-24"
-        src="../assets/crown.png"
-        alt="crown-img"
-      />
+      <div *ngIf="1 === asset.placement">
+        <img
+          class="mx-auto h-16 w-24"
+          src="../assets/crown.png"
+          alt="crown-img"
+        />
+      </div>
       <article
-        class="bg-black border-4 rounded-lg border-gold p-1"
-        [ngClass]="{ 'mt-16': 1 !== asset.placement }"
+        class="bg-black border-4 rounded-lg nifty-border-gold p-1"
+        [ngClass]="{
+          'mt-16': 1 !== asset.placement,
+          'nifty-border-red': asset.isOwner
+        }"
       >
         <div class="relative mb-3">
           <img
-            *ngIf="asset.eliminated"
+            *ngIf="asset.isEliminated"
             class="absolute h-full w-full z-10"
             src="../assets/cross.png"
             alt="cross-img"
@@ -60,6 +79,12 @@
           <p>Name: {{ asset.name }}</p>
         </footer>
       </article>
+      <div
+        *ngIf="asset.isOwner"
+        class="text-lg nifty-text-gold text-center mt-1"
+      >
+        Owned
+      </div>
     </div>
   </div>
 </div>

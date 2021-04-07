@@ -4,7 +4,7 @@
 @import "tailwindcss/utilities";
 
 body {
-  background-image: url("~src/assets/body-background.png");
+  background-image: url("~src/assets/background.png");
   background-repeat: repeat;
   background-position: center;
 }
@@ -13,14 +13,14 @@ body {
   color: #f2ca53;
 }
 
-.nifty-text-alt-gold {
-  color: #f2ca53;
-}
-
 .nifty-text-red {
   color: #fd0002;
 }
 
-.border-gold {
+.nifty-border-gold {
   border-color: #f2ca53;
+}
+
+.nifty-border-red {
+  border-color: #fd0002;
 }

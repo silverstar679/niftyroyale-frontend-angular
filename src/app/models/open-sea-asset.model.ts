@@ -8,5 +8,6 @@ export interface OpenSeaAsset {
     address: string;
   };
   placement: number;
-  eliminated: boolean;
+  isEliminated: boolean;
+  isOwner: boolean;
 }
