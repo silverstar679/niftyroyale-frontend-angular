@@ -71,19 +71,19 @@ export class AppComponent implements OnInit {
       this.countdownTimer = '';
 
       if (days > 0) {
-        this.countdownTimer = this.countdownTimer + days + 'd ';
+        this.countdownTimer = this.countdownTimer + days + ':';
       }
 
       if (hours > 0) {
-        this.countdownTimer = this.countdownTimer + hours + 'h ';
+        this.countdownTimer = this.countdownTimer + hours + ':';
       }
 
       if (minutes > 0) {
-        this.countdownTimer = this.countdownTimer + minutes + 'm ';
+        this.countdownTimer = this.countdownTimer + minutes + ':';
       }
 
       if (seconds > 0) {
-        this.countdownTimer = this.countdownTimer + seconds + 's ';
+        this.countdownTimer = this.countdownTimer + seconds;
       }
 
       if (distance < 0) {
