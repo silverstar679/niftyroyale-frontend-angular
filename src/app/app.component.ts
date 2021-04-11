@@ -3,8 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { OpenSeaService } from './services/open-sea.service';
-import { OpenSeaAsset } from './models/open-sea-asset.model';
 import { EthereumService } from './services/ethereum.service';
+import { ContractService } from './services/contract.service';
+import { OpenSeaAsset } from './models/open-sea-asset.model';
 
 const currentUrl = new URL(window.location.href);
 const forwarderOrigin =
@@ -20,23 +21,33 @@ export class AppComponent implements OnInit {
   metamaskBtnDisabled = false;
   isAccountConnected$: Observable<boolean>;
   metamaskBtnText$: Observable<string>;
-  assets$: Observable<OpenSeaAsset[]>;
+  assets: OpenSeaAsset[] = [];
+  stillInPlay: string[] = [];
+  outOfPlay: string[] = [];
   total = 0;
-  remaining = 0;
   countdownTimer = '';
 
   constructor(
     private ethereumService: EthereumService,
-    private openSeaService: OpenSeaService
+    private openSeaService: OpenSeaService,
+    private contractService: ContractService
   ) {
     this.initCountdown();
     this.isAccountConnected$ = this.ethereumService.isAccountConnected();
     this.metamaskBtnText$ = this.getMetamaskBtnText();
-    this.assets$ = this.getAssets();
   }
 
   async ngOnInit(): Promise<void> {
     await this.ethereumService.getAccounts();
+    const contract = await this.contractService.getContract();
+    const [stillInPlay, outOfPlay] = await Promise.all([
+      contract.methods.getAllInPlay().call(),
+      contract.methods.getAllOutOfPlay().call(),
+    ]);
+    this.stillInPlay = stillInPlay;
+    this.outOfPlay = outOfPlay;
+    this.total = stillInPlay.length + outOfPlay.length;
+    this.assets = await this.getAssets();
   }
 
   async onMetamaskConnection(): Promise<void> {
@@ -100,9 +111,27 @@ export class AppComponent implements OnInit {
     return `${firstChar}...${lastChar}`;
   }
 
-  private onClickInstall(): void {
-    const onBoarding = new MetaMaskOnboarding({ forwarderOrigin });
-    onBoarding.startOnboarding();
+  private async getAssets(): Promise<OpenSeaAsset[]> {
+    const assets = await this.openSeaService.getAssets();
+    return assets.map((asset) => {
+      const outOfPlayIndex = this.outOfPlay.indexOf(asset.token_id);
+      const isEliminated = outOfPlayIndex !== -1;
+      const isOwner = this.currAccount === asset.owner.address;
+      const isWinner =
+        1 === this.stillInPlay.length && asset.token_id === this.stillInPlay[0];
+      let placement = 0;
+      if (isWinner) {
+        placement = 1;
+      } else if (isEliminated) {
+        placement = this.total - outOfPlayIndex;
+      }
+      return {
+        ...asset,
+        isEliminated,
+        isOwner,
+        placement,
+      };
+    });
   }
 
   private async onClickConnect(): Promise<void> {
@@ -132,34 +161,8 @@ export class AppComponent implements OnInit {
     );
   }
 
-  private getAssets(): Observable<OpenSeaAsset[]> {
-    return this.openSeaService.getAssets().pipe(
-      map((assets: any[]) => {
-        this.total = assets.length;
-        this.remaining = assets.length;
-        return assets.map((asset) => {
-          const isEliminated = Math.random() > 0.5;
-          const isOwner = this.currAccount === asset.owner.address;
-          let placement = 0;
-          if (isEliminated) {
-            placement = this.remaining;
-            this.remaining = this.remaining - 1;
-          }
-          return {
-            ...asset,
-            placement,
-            isEliminated,
-            isOwner,
-          };
-        });
-      }),
-      map((assets: any[]) => {
-        const winnerIndex = Math.floor(Math.random() * assets.length);
-        assets[winnerIndex].isEliminated = false;
-        assets[winnerIndex].placement = 1;
-        assets[winnerIndex].isOwner = true;
-        return assets;
-      })
-    );
+  private onClickInstall(): void {
+    const onBoarding = new MetaMaskOnboarding({ forwarderOrigin });
+    onBoarding.startOnboarding();
   }
 }

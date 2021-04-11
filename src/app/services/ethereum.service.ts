@@ -18,13 +18,13 @@ export class EthereumService {
     return this.ethereum?.isMetaMask;
   }
 
-  handleConnection(): Promise<void> {
-    return this.ethereum?.request({ method: 'eth_requestAccounts' });
-  }
-
   async getAccounts(): Promise<void> {
     const accounts = await this.ethereum?.request({ method: 'eth_accounts' });
     this.accountsSubject.next(accounts);
+  }
+
+  handleConnection(): Promise<void> {
+    return this.ethereum?.request({ method: 'eth_requestAccounts' });
   }
 
   isAccountConnected(): Observable<boolean> {

@@ -7,6 +7,7 @@ export interface OpenSeaAsset {
   owner: {
     address: string;
   };
+  token_id: string;
   placement: number;
   isEliminated: boolean;
   isOwner: boolean;
