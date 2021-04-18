@@ -1,0 +1,66 @@
+<div *ngIf="1 === asset.placement">
+  <img class="mx-auto h-16 w-24" src="assets/crown.webp" alt="crown" />
+</div>
+<article
+  class="bg-black border-4 rounded-lg nifty-border-gold p-2"
+  [ngClass]="{
+    'mt-16': 1 !== asset.placement,
+    'nifty-border-red': asset.isOwner
+  }"
+>
+  <div class="relative mb-3">
+    <img
+      *ngIf="asset.isEliminated"
+      class="absolute h-full w-full z-10"
+      src="assets/cross.webp"
+      alt="cross"
+    />
+    <img
+      class="block rounded-sm h-auto w-full"
+      [src]="asset.image_url"
+      alt="nft-image"
+    />
+  </div>
+
+  <header class="flex flex-col text-white text-base">
+    <p>Token ID: {{ asset.token_id }}</p>
+    <p>Owner: {{ formatAddress(asset.owner.address) }}</p>
+    <p>Placement: {{ placement }}</p>
+    <p
+      class="whitespace-nowrap overflow-hidden overflow-ellipsis"
+      [title]="asset.name"
+    >
+      Name: {{ asset.name }}
+    </p>
+  </header>
+
+  <footer
+    class="flex flex-row items-center justify-center text-white font-bold text-lg p-2"
+  >
+    <ng-container *ngIf="showButtons">
+      <ng-container *ngIf="asset.isForSale">
+        <div class="flex-shrink">{{ asset.price }} ETH</div>
+        <div class="flex flex-row-reverse flex-grow">
+          <button
+            (click)="onBuy.emit()"
+            type="button"
+            class="bg-green-500 text-gray-100 hover:bg-green-400 focus:outline-none rounded px-4 py-2"
+          >
+            Buy
+          </button>
+        </div>
+      </ng-container>
+      <button
+        *ngIf="!asset.isForSale"
+        type="button"
+        class="w-1/2 bg-red-500 text-gray-100 focus:outline-none rounded px-4 py-2 cursor-default"
+        [disabled]="true"
+      >
+        Sold
+      </button>
+    </ng-container>
+  </footer>
+</article>
+<div *ngIf="asset.isOwner" class="text-lg nifty-text-gold text-center mt-1">
+  Owned
+</div>
