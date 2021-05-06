@@ -9,16 +9,8 @@ import { OpenSeaService } from '../services/open-sea.service';
 export class BattleListComponent {
   battles = [
     {
-      address: '0x387b8F0a3c1d53d01750874431d26ccfB36A9442',
-      name: 'NFT Battle Royale - LAST',
-    },
-    {
-      address: '0x5cF380f0A5f8f5C096e5f3e0E180BA48521Ccb65',
-      name: 'NFT Battle Royale - OLD',
-    },
-    {
-      address: '0x9a6a3E23ee281a99F81b887Dd75386f0f3d5341c',
-      name: 'NFT Battle Royale - BURNT TOKEN',
+      address: '0x9dCC49BD1fe90941E03184beD4b0DB422d1251CA',
+      name: 'NFT Battle Royale',
     },
   ];
 
