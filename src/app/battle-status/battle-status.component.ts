@@ -32,9 +32,7 @@ export class BattleStatusComponent implements OnInit {
     private metamaskService: MetamaskService,
     private openSeaService: OpenSeaService,
     private route: ActivatedRoute
-  ) {
-    this.initCountdown();
-  }
+  ) {}
 
   get isAccountConnected(): boolean {
     return this.metamaskService.isAccountConnected;
@@ -58,7 +56,10 @@ export class BattleStatusComponent implements OnInit {
       battleState,
       inPlayPlayers,
       eliminatedPlayers,
+      nextEliminationTimestamp,
     } = await this.contractService.getBattleData();
+
+    this.initCountdown(nextEliminationTimestamp);
 
     this.ipfsMetadata = await this.openSeaService
       .getAssetMetadata(`${baseTokenURI}${tokenURI}`)
@@ -141,18 +142,13 @@ export class BattleStatusComponent implements OnInit {
     return assets;
   }
 
-  private initCountdown(): void {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const countDownDate = tomorrow.getTime();
-
+  private initCountdown(nextEliminationTimestamp: number): void {
     const x = setInterval(() => {
       // Get today's date and time
       const now = new Date().getTime();
 
       // Find the distance between now and the count down date
-      const distance = countDownDate - now;
+      const distance = nextEliminationTimestamp - now;
 
       // Time calculations for days, hours, minutes and seconds
       const days = Math.floor(distance / (1000 * 60 * 60 * 24));

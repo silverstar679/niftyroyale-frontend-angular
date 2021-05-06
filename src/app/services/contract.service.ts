@@ -42,6 +42,8 @@ export class ContractService {
       battleState,
       inPlayPlayers,
       eliminatedPlayers,
+      intervalEliminationTime,
+      timestamp,
     ] = await Promise.all([
       this.contract.methods.owner().call(),
       this.contract.methods.baseURI().call(),
@@ -52,7 +54,13 @@ export class ContractService {
       this.contract.methods.getBattleState().call(),
       this.contract.methods.getInPlay().call(),
       this.contract.methods.getOutOfPlay().call(),
+      this.contract.methods.intervalTime().call(),
+      this.contract.methods.timestamp().call(),
     ]);
+
+    const lastEliminationTimestamp = Number(timestamp) || new Date().getTime();
+    const nextEliminationTimestamp =
+      lastEliminationTimestamp + Number(intervalEliminationTime) * 60 * 1000;
 
     return {
       contractCreator,
@@ -64,6 +72,7 @@ export class ContractService {
       battleState,
       inPlayPlayers,
       eliminatedPlayers,
+      nextEliminationTimestamp,
     };
   }
 
