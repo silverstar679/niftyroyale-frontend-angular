@@ -5,7 +5,7 @@
     >
       <ng-container *ngIf="currBattleState === battleStates.STANDBY">
         <div class="flex-shrink mr-5">{{ maxMinted - totalMinted }}</div>
-        <div class="flex-grow nifty-text-gold">NFTs left in sale</div>
+        <div class="flex-grow">NFTs left in sale</div>
       </ng-container>
 
       <ng-container *ngIf="currBattleState === battleStates.RUNNING">
@@ -16,16 +16,12 @@
           <img class="w-64" src="assets/nft-remain.webp" alt="nft-remain" />
         </div>
       </ng-container>
-
-      <ng-container *ngIf="currBattleState === battleStates.ENDED">
-        <div class="flex-grow nifty-text-red">Battle has ended!</div>
-      </ng-container>
     </div>
     <div
       class="flex flex-col sm:flex-row justify-center items-center text-2xl sm:text-4xl nifty-text-red font-semibold"
     >
       <ng-container *ngIf="currBattleState === battleStates.STANDBY">
-        <div class="flex-grow mr-2 nifty-text-red">Battle will start soon!</div>
+        <div class="flex-grow mr-2">Battle will start soon!</div>
       </ng-container>
 
       <ng-container *ngIf="currBattleState === battleStates.RUNNING">
@@ -39,6 +35,10 @@
         <div class="flex-shrink">
           {{ countdownTimer }}
         </div>
+      </ng-container>
+
+      <ng-container *ngIf="currBattleState === battleStates.ENDED">
+        <div class="flex-grow mr-2">Battle has ended!</div>
       </ng-container>
     </div>
   </div>
