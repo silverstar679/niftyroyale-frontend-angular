@@ -59,8 +59,9 @@ export class ContractService {
     ]);
 
     const lastEliminationTimestamp = Number(timestamp) || new Date().getTime();
-    const nextEliminationTimestamp =
-      lastEliminationTimestamp + Number(intervalEliminationTime) * 60 * 1000;
+    const nextElimination =
+      lastEliminationTimestamp + Number(intervalEliminationTime) * 60;
+    const nextEliminationTimestamp = nextElimination * 1000;
 
     return {
       contractCreator,
