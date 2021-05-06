@@ -46,7 +46,7 @@
     <app-nft-card
       *ngFor="let asset of assets"
       [asset]="asset"
-      [showButtons]="isAccountConnected && !isBattleEnded"
+      [displayFooter]="isAccountConnected && !isBattleEnded"
       [totalPlayers]="totalPlayers"
       (onBuy)="buy()"
     ></app-nft-card>
