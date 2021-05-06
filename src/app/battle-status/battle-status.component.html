@@ -16,6 +16,10 @@
           <img class="w-64" src="assets/nft-remain.webp" alt="nft-remain" />
         </div>
       </ng-container>
+
+      <ng-container *ngIf="currBattleState === battleStates.ENDED">
+        <div class="flex-grow nifty-text-red">Battle has ended!</div>
+      </ng-container>
     </div>
     <div
       class="flex flex-col sm:flex-row justify-center items-center text-2xl sm:text-4xl nifty-text-red font-semibold"
@@ -42,7 +46,7 @@
     <app-nft-card
       *ngFor="let asset of assets"
       [asset]="asset"
-      [showButtons]="isAccountConnected"
+      [showButtons]="isAccountConnected && !isBattleEnded"
       [totalPlayers]="totalPlayers"
       (onBuy)="buy()"
     ></app-nft-card>

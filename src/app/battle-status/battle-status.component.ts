@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MessageService } from 'primeng/api';
 import { ContractService } from '../services/contract.service';
 import { MetamaskService } from '../services/metamask.service';
 import { OpenSeaService } from '../services/open-sea.service';
@@ -32,14 +31,17 @@ export class BattleStatusComponent implements OnInit {
     private contractService: ContractService,
     private metamaskService: MetamaskService,
     private openSeaService: OpenSeaService,
-    private messageService: MessageService,
     private route: ActivatedRoute
   ) {
     this.initCountdown();
   }
 
   get isAccountConnected(): boolean {
-    return Boolean(this.metamaskService.currentAccount);
+    return this.metamaskService.isAccountConnected;
+  }
+
+  get isBattleEnded(): boolean {
+    return this.currBattleState === BattleState.ENDED;
   }
 
   async ngOnInit(): Promise<void> {
@@ -71,31 +73,18 @@ export class BattleStatusComponent implements OnInit {
     this.inPlayPlayers = inPlayPlayers;
     this.totalPlayers = inPlayPlayers.length + eliminatedPlayers.length;
 
-    this.assets = [
-      ...this.getUnsoldAssets(contractAddress),
-      ...(await this.getMintedAssets(contractAddress)),
-    ];
+    const mintedAssets = await this.getMintedAssets(contractAddress);
+    this.assets = [...mintedAssets];
+
+    if (this.currBattleState === BattleState.STANDBY) {
+      this.assets = this.getUnsoldAssets(contractAddress).concat(this.assets);
+    }
   }
 
   async buy(): Promise<void> {
     const from = this.metamaskService.currentAccount;
     const value = Number(this.ethPrice) * 10 ** 18;
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Transaction in process...',
-    });
-    try {
-      await this.contractService.purchaseNFT(from, value);
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Transaction confirmed!',
-      });
-    } catch (e) {
-      this.messageService.add({
-        severity: 'error',
-        summary: `An error occurred: ${e}`,
-      });
-    }
+    return this.contractService.purchaseNFT(from, value);
   }
 
   private async getMintedAssets(address: string): Promise<NiftyAssetModel[]> {
@@ -108,7 +97,7 @@ export class BattleStatusComponent implements OnInit {
           asset.token_id || ''
         );
         const isEliminated = outOfPlayIndex !== -1;
-        const isOwner = this.metamaskService.isAccountOwner(
+        const isOwner = this.metamaskService.isOwnerAddress(
           asset.owner.address
         );
         const isWinner =

@@ -1,8 +1,10 @@
 import Web3 from 'web3';
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 import { ETHEREUM } from './ethereum.token';
 import { environment } from '../../environments/environment';
+import { SEVERITY, SUMMARY } from '../../models/toast.enum';
 
 const { network, etherscanApiKey } = environment;
 
@@ -14,6 +16,7 @@ export class ContractService {
 
   constructor(
     @Inject(ETHEREUM) private ethereum: any,
+    private messageService: MessageService,
     private http: HttpClient
   ) {}
 
@@ -64,8 +67,23 @@ export class ContractService {
     };
   }
 
-  purchaseNFT(from: string, value: number): Promise<any> {
-    return this.contract.methods.purchase(1).send({ from, value });
+  async purchaseNFT(from: string, value: number): Promise<void> {
+    try {
+      this.messageService.add({
+        severity: SEVERITY.INFO,
+        summary: SUMMARY.TRANSACTION_PROCESS,
+      });
+      await this.contract.methods.purchase(1).send({ from, value });
+      this.messageService.add({
+        severity: SEVERITY.SUCCESS,
+        summary: SUMMARY.TRANSACTION_CONFIRMED,
+      });
+    } catch (error) {
+      this.messageService.add({
+        severity: SEVERITY.ERROR,
+        summary: error.messsage,
+      });
+    }
   }
 
   private _initWeb3(): Promise<Web3> {

@@ -17,10 +17,10 @@
       <button
         class="text-sm sm:text-xl text-white bg-black leading-none rounded nifty-border-red border-2 px-6 py-4"
         (click)="onConnection()"
-        [disabled]="metamaskBtnDisabled || (isAccountConnected$ | async)"
+        [disabled]="isAccountConnected"
       >
         <i class="pi pi-wallet w-6 mr-1"></i>
-        {{ metamaskBtnText$ | async }}
+        {{ metamaskBtnText }}
       </button>
     </div>
   </div>

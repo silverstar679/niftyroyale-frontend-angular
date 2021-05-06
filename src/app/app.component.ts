@@ -1,66 +1,90 @@
 import MetaMaskOnboarding from '@metamask/onboarding';
-import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router, RouterEvent } from '@angular/router';
-import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { MetamaskService } from './services/metamask.service';
 import { MessageService } from 'primeng/api';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
+import { SEVERITY, SUMMARY } from '../models/toast.enum';
+import { MetamaskService } from './services/metamask.service';
 
 const currentUrl = new URL(window.location.href);
-const forwarderOrigin =
-  currentUrl.hostname === 'localhost' ? 'http://localhost:4200' : undefined;
+const isLocalhost = currentUrl.hostname === 'localhost';
+const forwarderOrigin = isLocalhost ? 'http://localhost:4200' : undefined;
+
+enum METAMASK_BTN_TEXTS {
+  CONNECT = 'Connect',
+  INSTALL = 'Install MetaMask',
+}
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
 })
-export class AppComponent implements OnInit {
-  showStatus$: Observable<boolean>;
-  isAccountConnected$: Observable<boolean>;
-  metamaskBtnText$: Observable<string>;
-  metamaskBtnDisabled = false;
+export class AppComponent implements OnInit, OnDestroy {
+  public showStatus$: Observable<boolean>;
+  public isAccountConnected = false;
+  public metamaskBtnText = '';
+  private subscriptions = new Subscription();
+
+  private static formatAddress(address: string): string {
+    const length = address.length;
+    const firstChar = address.slice(0, 6);
+    const lastChar = address.slice(length - 4, length);
+    return `${firstChar}...${lastChar}`;
+  }
 
   constructor(
     private messageService: MessageService,
     private metamaskService: MetamaskService,
     private router: Router
   ) {
-    this.isAccountConnected$ = this.metamaskService.isAccountConnected();
-    this.metamaskBtnText$ = this.metamaskService.metamaskBtnText();
     this.showStatus$ = this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
       map((event) => (event as RouterEvent).url.includes('status'))
     );
   }
 
+  get disconnectedText(): string {
+    return this.metamaskService.isMetamaskInstalled
+      ? METAMASK_BTN_TEXTS.CONNECT
+      : METAMASK_BTN_TEXTS.INSTALL;
+  }
+
   async ngOnInit(): Promise<void> {
     await this.metamaskService.ethAccounts();
+    this.subscriptions = this.metamaskService.account$
+      .pipe(
+        tap((account: string) => {
+          this.isAccountConnected = Boolean(account);
+          this.metamaskBtnText = this.isAccountConnected
+            ? AppComponent.formatAddress(account)
+            : this.disconnectedText;
+          if (!account) {
+            return this.messageService.add({
+              severity: SEVERITY.INFO,
+              summary: SUMMARY.NOT_CONNECTED,
+            });
+          } else {
+            return this.messageService.add({
+              severity: SEVERITY.SUCCESS,
+              summary: SUMMARY.CONNECTED,
+            });
+          }
+        })
+      )
+      .subscribe();
   }
 
   async onConnection(): Promise<void> {
     if (this.metamaskService.isMetamaskInstalled) {
-      await this.connect();
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Wallet connected!',
-      });
-    } else {
-      this.install();
-    }
-  }
-
-  private async connect(): Promise<void> {
-    try {
-      this.metamaskBtnDisabled = true;
       await this.metamaskService.ethRequestAccounts();
-      this.metamaskBtnDisabled = false;
-    } catch (error) {
-      console.error(error);
+    } else {
+      const onBoarding = new MetaMaskOnboarding({ forwarderOrigin });
+      onBoarding.startOnboarding();
     }
   }
 
-  private install(): void {
-    const onBoarding = new MetaMaskOnboarding({ forwarderOrigin });
-    onBoarding.startOnboarding();
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }
