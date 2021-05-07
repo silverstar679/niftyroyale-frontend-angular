@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { NiftyAssetModel } from '../../../models/nifty-royale.models';
+import { NiftyAssetModel } from '../../../../models/nifty-royale.models';
 
 @Component({
   selector: 'app-nft-card',

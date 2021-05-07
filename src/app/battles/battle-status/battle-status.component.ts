@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ContractService } from '../services/contract.service';
-import { MetamaskService } from '../services/metamask.service';
-import { OpenSeaService } from '../services/open-sea.service';
+import { ContractService } from '../../services/contract.service';
+import { MetamaskService } from '../../services/metamask.service';
+import { OpenSeaService } from '../../services/open-sea.service';
 import {
   BattleState,
   IpfsMetadataModel,
   NiftyAssetModel,
-} from '../../models/nifty-royale.models';
+} from '../../../models/nifty-royale.models';
 
 @Component({
   selector: 'app-battle-status',

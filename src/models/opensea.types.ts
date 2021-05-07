@@ -323,7 +323,7 @@ export interface OpenSeaAsset extends Asset {
   isPresale: boolean;
   image_url: string;
   imagePreviewUrl: string;
-  imageUrlOriginal: string;
+  image_original_url: string;
   imageUrlThumbnail: string;
   openseaLink: string;
   externalLink: string;
