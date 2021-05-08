@@ -8,29 +8,36 @@
   src: url(assets/fonts/Nifty-Regular.ttf) format("opentype");
 }
 
+a {
+  -ms-text-underline-position: below;
+  text-underline-position: under;
+}
+
 body {
-  background-color: black;
-  background-image: url("assets/images/background-2.webp");
   background-repeat: repeat;
   background-position: center;
+  background-color: black;
+  background-image: url("assets/images/background-2.webp");
 }
 
 .nifty-font {
   font-family: "nifty", "arial", sans-serif;
 }
 
-.nifty-text-gold {
-  color: #f2ca53;
+.nifty-text {
+  &-gold {
+    color: #f2ca53;
+  }
+  &-red {
+    color: #fd0002;
+  }
 }
 
-.nifty-text-red {
-  color: #fd0002;
-}
-
-.nifty-border-gold {
-  border-color: #f2ca53;
-}
-
-.nifty-border-red {
-  border-color: #fd0002;
+.nifty-border {
+  &-gold {
+    border-color: #f2ca53;
+  }
+  &-red {
+    border-color: #fd0002;
+  }
 }
