@@ -15,7 +15,7 @@ import { StoreModule } from './store/store.module';
 import { AppComponent } from './app.component';
 
 const ROUTES: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'battles/list' },
+  { path: '', pathMatch: 'full', redirectTo: 'drops/list' },
 ];
 
 @NgModule({
