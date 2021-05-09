@@ -1,4 +1,5 @@
 <div
+  *ngIf="!isLoading; else loading"
   class="flex flex-col items-center gap-10 md:flex-row md:items-stretch md:gap-5 text-white"
 >
   <img class="w-2/3 md:w-1/4" src="assets/images/nft.webp" alt="nft_image" />
@@ -6,17 +7,12 @@
     class="flex flex-col flex-grow text-lg lg:text-3xl text-center nifty-font"
   >
     <p>NFT Description</p>
-    <p>NFT Description</p>
-    <p>NFT Description</p>
-    <p>NFT Description</p>
-    <p>NFT Description</p>
-    <p>NFT Description</p>
-    <p>NFT Description</p>
     <div class="flex flex-col-reverse flex-grow">
       <p>{{ leftForSale }}</p>
     </div>
   </div>
   <div
+    *ngIf="isAccountConnected"
     class="w-2/3 md:w-1/3 flex flex-col justify-around p-10 bg-white text-lg lg:text-2xl text-gray-700"
   >
     <div
@@ -75,7 +71,7 @@
     </div>
     <button
       type="button"
-      class="bg-green-500 text-white rounded hover:bg-green-400 px-4 py-2 focus:outline-none"
+      class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-500 hover:bg-green-400 transition ease-in-out duration-150"
       (click)="!hasBattleStarted ? buy() : goTo('1')"
       [ngClass]="{
         'cursor-not-allowed hover:bg-green-500': isPurchaseProcessing
@@ -84,10 +80,34 @@
     >
       <svg
         *ngIf="isPurchaseProcessing"
-        class="animate-spin h-5 w-5 mr-3 ..."
+        class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
         viewBox="0 0 24 24"
-      ></svg>
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
       {{ checkoutBtnText }}
     </button>
   </div>
 </div>
+
+<ng-template #loading>
+  <div class="content-around">
+    <div class="flex flex-row justify-center">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+  </div>
+</ng-template>

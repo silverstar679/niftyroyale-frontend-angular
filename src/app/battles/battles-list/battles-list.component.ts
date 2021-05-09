@@ -8,6 +8,10 @@ import { Router } from '@angular/router';
 export class BattlesListComponent {
   battles = [
     {
+      address: '0xaFa735aBf851896d922c7501D404a4A35f02f5Ae',
+      name: 'NFT Battle Royale - 0xaFa735aBf851896d922c7501D404a4A35f02f5Ae',
+    },
+    {
       address: '0x9dCC49BD1fe90941E03184beD4b0DB422d1251CA',
       name: 'NFT Battle Royale - 0x9dCC49BD1fe90941E03184beD4b0DB422d1251CA',
     },
