@@ -11,6 +11,7 @@ import { OpenSeaService } from './services/open-sea.service';
 import { ContractService } from './services/contract.service';
 import { DropsModule } from './drops/drops.module';
 import { BattlesModule } from './battles/battles.module';
+import { StoreModule } from './store/store.module';
 import { AppComponent } from './app.component';
 
 const ROUTES: Routes = [
@@ -27,6 +28,7 @@ const ROUTES: Routes = [
     ToastModule,
     DropsModule,
     BattlesModule,
+    StoreModule,
   ],
   providers: [MetamaskService, OpenSeaService, ContractService, MessageService],
   bootstrap: [AppComponent],

@@ -2,7 +2,7 @@
   <img
     *ngIf="1 === asset.placement"
     class="mx-auto h-16 w-24"
-    src="../../../../assets/images/crown.webp"
+    src="assets/images/crown.webp"
     alt="crown"
   />
   <article
@@ -16,12 +16,12 @@
       <img
         *ngIf="asset.isEliminated"
         class="absolute h-full w-full z-10"
-        src="../../../../assets/images/cross.webp"
+        src="assets/images/cross.webp"
         alt="cross"
       />
       <img
         class="block rounded-sm h-auto w-full"
-        [src]="asset.image_original_url"
+        [src]="asset.nftImageURL"
         alt="nft-image"
       />
     </div>
@@ -37,29 +37,17 @@
       </p>
     </header>
     <footer
-      *ngIf="displayFooter"
       class="flex flex-row items-center justify-center text-white font-bold text-lg p-2"
     >
-      <ng-container *ngIf="asset.isForSale">
-        <div class="flex-shrink">{{ asset.price }} ETH</div>
-        <div class="flex flex-row-reverse flex-grow">
-          <button
-            (click)="onBuy.emit()"
-            type="button"
-            class="bg-green-500 text-gray-100 hover:bg-green-400 focus:outline-none rounded px-4 py-2"
-          >
-            Buy
-          </button>
-        </div>
-      </ng-container>
-      <button
-        *ngIf="!asset.isForSale"
-        type="button"
-        class="w-1/2 bg-red-500 text-gray-100 focus:outline-none rounded px-4 py-2 cursor-default"
-        [disabled]="true"
-      >
-        Sold
-      </button>
+      <div class="flex flex-row justify-center">
+        <button
+          type="button"
+          class="bg-green-500 text-gray-100 hover:bg-green-400 focus:outline-none rounded px-4 py-2"
+          (click)="goTo(asset.asset_contract.address, asset.token_id)"
+        >
+          Trade
+        </button>
+      </div>
     </footer>
   </article>
   <div *ngIf="asset.isOwner" class="text-center text-lg nifty-text-gold mt-1">

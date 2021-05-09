@@ -8,7 +8,6 @@ import { NiftyAssetModel } from '../../../../models/nifty-royale.models';
 })
 export class NftCardComponent {
   @Input() asset!: NiftyAssetModel;
-  @Input() displayFooter!: boolean;
   @Input() totalPlayers!: number;
   @Output() onBuy = new EventEmitter<void>();
 

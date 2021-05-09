@@ -31,26 +31,46 @@ export class ContractService {
     }
   }
 
-  async getBattleData(): Promise<any> {
+  async getSaleData(): Promise<any> {
     const [
-      contractCreator,
       baseTokenURI,
       tokenURI,
       ethPrice,
       maxMinted,
       totalMinted,
       battleState,
-      inPlayPlayers,
-      eliminatedPlayers,
-      intervalEliminationTime,
-      timestamp,
     ] = await Promise.all([
-      this.contract.methods.owner().call(),
       this.contract.methods.baseURI().call(),
       this.contract.methods.defaultTokenURI().call(),
       this.contract.methods.price().call(),
       this.contract.methods.maxSupply().call(),
       this.contract.methods.totalSupply().call(),
+      this.contract.methods.getBattleState().call(),
+    ]);
+
+    const uri = `${baseTokenURI}${tokenURI}`;
+
+    return {
+      uri,
+      ethPrice,
+      maxMinted,
+      totalMinted,
+      battleState,
+    };
+  }
+
+  async getBattleData(): Promise<any> {
+    const [
+      baseTokenURI,
+      tokenURI,
+      battleState,
+      inPlayPlayers,
+      eliminatedPlayers,
+      intervalEliminationTime,
+      timestamp,
+    ] = await Promise.all([
+      this.contract.methods.baseURI().call(),
+      this.contract.methods.defaultTokenURI().call(),
       this.contract.methods.getBattleState().call(),
       this.contract.methods.getInPlay().call(),
       this.contract.methods.getOutOfPlay().call(),
@@ -58,18 +78,14 @@ export class ContractService {
       this.contract.methods.timestamp().call(),
     ]);
 
+    const uri = `${baseTokenURI}${tokenURI}`;
     const lastEliminationTimestamp = Number(timestamp) || new Date().getTime();
     const nextElimination =
       lastEliminationTimestamp + Number(intervalEliminationTime) * 60;
     const nextEliminationTimestamp = nextElimination * 1000;
 
     return {
-      contractCreator,
-      baseTokenURI,
-      tokenURI,
-      ethPrice,
-      maxMinted,
-      totalMinted,
+      uri,
       battleState,
       inPlayPlayers,
       eliminatedPlayers,
@@ -94,6 +110,10 @@ export class ContractService {
         summary: error.messsage,
       });
     }
+  }
+
+  async getWinnerURI(tokenId: string): Promise<string> {
+    return this.contract.methods.tokenURI(tokenId).call();
   }
 
   private _initWeb3(): Promise<Web3> {

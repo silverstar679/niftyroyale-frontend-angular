@@ -9,16 +9,30 @@
       <img
         class="w-20 cursor-pointer focus:outline-none"
         routerLink="/battles"
-        src="../assets/images/logo.webp"
+        src="assets/images/logo.webp"
         alt="logo"
       />
       <div class="flex flex-grow justify-center gap-8 nifty-font">
-        <a class="hover:underline" role="button" routerLink="/drops">Drops</a>
-        <a class="hover:underline" role="button" routerLink="/battles">Battles</a>
+        <a
+          class="hover:underline"
+          role="button"
+          routerLink="/drops"
+          [routerLinkActive]="['underline']"
+        >
+          Drops
+        </a>
+        <a
+          class="hover:underline"
+          role="button"
+          routerLink="/battles"
+          [routerLinkActive]="['underline']"
+        >
+          Battles
+        </a>
       </div>
       <div class="flex">
         <button
-          class="text-sm sm:text-xl text-white bg-black leading-none rounded nifty-border-red border-2 px-6 py-4"
+          class="text-base sm:text-lg md:text-xl text-white bg-black leading-none rounded nifty-border-red border-2 px-6 py-4"
           (click)="onConnection()"
           [disabled]="isAccountConnected"
         >

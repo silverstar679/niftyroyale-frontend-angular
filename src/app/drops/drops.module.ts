@@ -20,6 +20,13 @@ const ROUTES: Routes = [
             (m) => m.DropsListModule
           ),
       },
+      {
+        path: 'sale/:contractAddress',
+        loadChildren: () =>
+          import('./drops-sale/drops-sale.module').then(
+            (m) => m.DropsSaleModule
+          ),
+      },
     ],
   },
 ];

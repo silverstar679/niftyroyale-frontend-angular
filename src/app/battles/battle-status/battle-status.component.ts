@@ -5,7 +5,6 @@ import { MetamaskService } from '../../services/metamask.service';
 import { OpenSeaService } from '../../services/open-sea.service';
 import {
   BattleState,
-  IpfsMetadataModel,
   NiftyAssetModel,
 } from '../../../models/nifty-royale.models';
 
@@ -16,11 +15,8 @@ import {
 export class BattleStatusComponent implements OnInit {
   battleStates = BattleState;
   assets = [] as NiftyAssetModel[];
-  ipfsMetadata = {} as IpfsMetadataModel;
-  contractCreator = '';
-  ethPrice = 0;
-  maxMinted = 0;
-  totalMinted = 0;
+  defaultPicture = '';
+  winnerPicture = '';
   currBattleState = BattleState.STANDBY;
   inPlayPlayers = [] as string[];
   eliminatedPlayers = [] as string[];
@@ -34,25 +30,12 @@ export class BattleStatusComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
-  get isAccountConnected(): boolean {
-    return this.metamaskService.isAccountConnected;
-  }
-
-  get isBattleEnded(): boolean {
-    return this.currBattleState === BattleState.ENDED;
-  }
-
   async ngOnInit(): Promise<void> {
     const { contractAddress } = this.route.snapshot.params;
     await this.contractService.init(contractAddress);
 
     const {
-      contractCreator,
-      baseTokenURI,
-      tokenURI,
-      ethPrice,
-      maxMinted,
-      totalMinted,
+      uri,
       battleState,
       inPlayPlayers,
       eliminatedPlayers,
@@ -61,31 +44,29 @@ export class BattleStatusComponent implements OnInit {
 
     this.initCountdown(nextEliminationTimestamp);
 
-    this.ipfsMetadata = await this.openSeaService
-      .getAssetMetadata(`${baseTokenURI}${tokenURI}`)
+    const defaultIpfsMetadata = await this.openSeaService
+      .getAssetMetadata(uri)
       .toPromise();
 
-    this.contractCreator = contractCreator;
-    this.ethPrice = ethPrice;
-    this.maxMinted = maxMinted;
-    this.totalMinted = totalMinted;
+    this.defaultPicture = defaultIpfsMetadata.image;
     this.currBattleState = battleState;
     this.eliminatedPlayers = eliminatedPlayers;
     this.inPlayPlayers = inPlayPlayers;
     this.totalPlayers = inPlayPlayers.length + eliminatedPlayers.length;
 
-    const mintedAssets = await this.getMintedAssets(contractAddress);
-    this.assets = [...mintedAssets];
-
-    if (this.currBattleState === BattleState.STANDBY) {
-      this.assets = this.getUnsoldAssets(contractAddress).concat(this.assets);
+    if (
+      this.inPlayPlayers.length === 1 &&
+      this.currBattleState === BattleState.ENDED
+    ) {
+      const winnerTokenId = this.inPlayPlayers[0];
+      const winnerURI = await this.contractService.getWinnerURI(winnerTokenId);
+      const winnerIpfsMetadata = await this.openSeaService
+        .getAssetMetadata(winnerURI)
+        .toPromise();
+      this.winnerPicture = winnerIpfsMetadata.image;
     }
-  }
 
-  async buy(): Promise<void> {
-    const from = this.metamaskService.currentAccount;
-    const value = Number(this.ethPrice) * 10 ** 18;
-    return this.contractService.purchaseNFT(from, value);
+    this.assets = await this.getMintedAssets(contractAddress);
   }
 
   private async getMintedAssets(address: string): Promise<NiftyAssetModel[]> {
@@ -111,35 +92,17 @@ export class BattleStatusComponent implements OnInit {
         } else if (isEliminated) {
           placement = this.totalPlayers - outOfPlayIndex;
         }
+        const nftImageURL =
+          placement === 1 ? this.winnerPicture : this.defaultPicture;
+
         return {
           ...asset,
-          isForSale: false,
+          nftImageURL,
           isEliminated,
           isOwner,
           placement,
         } as NiftyAssetModel;
       });
-  }
-
-  private getUnsoldAssets(address: string): NiftyAssetModel[] {
-    const assets: NiftyAssetModel[] = [];
-    for (let i = 1; i <= this.maxMinted - this.totalMinted; i++) {
-      assets.push({
-        image_url: this.ipfsMetadata.image,
-        name: this.ipfsMetadata.name,
-        token_id: 'xxxxxxxxxx',
-        asset_contract: { address },
-        owner: {
-          address: 'xxxxxxxxxx',
-        },
-        isEliminated: false,
-        isForSale: true,
-        isOwner: false,
-        placement: 0,
-        price: this.ethPrice,
-      } as NiftyAssetModel);
-    }
-    return assets;
   }
 
   private initCountdown(nextEliminationTimestamp: number): void {

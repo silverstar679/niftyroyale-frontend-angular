@@ -15,9 +15,8 @@ export interface IpfsMetadataModel {
 }
 
 export interface NiftyAssetModel extends OpenSeaAsset {
+  nftImageURL: string;
   isEliminated: boolean;
-  isForSale: boolean;
   isOwner: boolean;
   placement: number;
-  price: number;
 }

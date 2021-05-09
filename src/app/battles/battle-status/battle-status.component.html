@@ -5,8 +5,6 @@
     >
       <div class="flex flex-row nifty-text-gold">
         <ng-container *ngIf="currBattleState === battleStates.STANDBY">
-          <div class="flex-shrink mr-5">{{ maxMinted - totalMinted }}</div>
-          <div class="flex-grow">NFTs left in sale</div>
         </ng-container>
 
         <ng-container *ngIf="currBattleState !== battleStates.STANDBY">
@@ -17,10 +15,6 @@
         </ng-container>
       </div>
       <div class="flex flex-row nifty-text-red">
-        <ng-container *ngIf="currBattleState === battleStates.STANDBY">
-          <div class="flex-grow mr-2">Battle will start soon!</div>
-        </ng-container>
-
         <ng-container *ngIf="currBattleState === battleStates.RUNNING">
           <div class="flex-grow mr-2">Next elimination:</div>
           <div class="flex-shrink">{{ countdownTimer }}</div>
@@ -36,9 +30,7 @@
       <app-nft-card
         *ngFor="let asset of assets"
         [asset]="asset"
-        [displayFooter]="isAccountConnected && !isBattleEnded"
         [totalPlayers]="totalPlayers"
-        (onBuy)="buy()"
       ></app-nft-card>
     </div>
   </div>
