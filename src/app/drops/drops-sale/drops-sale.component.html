@@ -72,7 +72,7 @@
       <button
         type="button"
         class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-500 hover:bg-green-400 transition ease-in-out duration-150"
-        (click)="!hasBattleStarted ? buy() : goTo('1')"
+        (click)="buy()"
         [ngClass]="{
           'cursor-not-allowed hover:bg-green-500': isPurchaseProcessing
         }"

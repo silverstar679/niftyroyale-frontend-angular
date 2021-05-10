@@ -117,7 +117,8 @@ export class ContractService {
           const abi = await this._loadABI(address);
 
           this.contract = new this.web3.eth.Contract(abi, address, {
-            gasLimit: '10000000',
+            gasLimit: `${10 ** 7}`,
+            gasPrice: `${2 * 10 ** 10}`,
           });
 
           return resolve(this.contract);

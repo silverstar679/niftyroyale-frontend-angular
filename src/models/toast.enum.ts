@@ -11,4 +11,5 @@ export enum SUMMARY {
   PERMISSIONS_REQUIRED = 'Permissions are required!',
   TRANSACTION_PROCESS = 'Transaction in process...',
   TRANSACTION_CONFIRMED = 'Transaction confirmed!',
+  ERROR_OCCURRED = 'An error occurred!',
 }

@@ -76,8 +76,10 @@ export class DropsSaleComponent implements OnInit {
       this.messageService.add({
         severity: SEVERITY.INFO,
         summary: SUMMARY.TRANSACTION_PROCESS,
+        sticky: true,
       });
       await this.contractService.purchaseNFT(from, value);
+      this.messageService.clear();
       this.messageService.add({
         severity: SEVERITY.SUCCESS,
         summary: SUMMARY.TRANSACTION_CONFIRMED,
@@ -85,18 +87,14 @@ export class DropsSaleComponent implements OnInit {
       const { contractAddress } = this.route.snapshot.params;
       await this.router.navigate([`battles/status/${contractAddress}`]);
     } catch (error) {
+      this.messageService.clear();
       this.messageService.add({
         severity: SEVERITY.ERROR,
-        summary: 'An error occurred!',
+        summary: SUMMARY.ERROR_OCCURRED,
         detail: 'Try again later.',
         sticky: true,
       });
     }
     this.isPurchaseProcessing = false;
-  }
-
-  goTo(tokenId: string): Promise<boolean> {
-    const { contractAddress } = this.route.snapshot.params;
-    return this.router.navigate([`store/${contractAddress}/${tokenId}`]);
   }
 }

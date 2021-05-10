@@ -8,7 +8,7 @@ import {
   NiftyAssetModel,
 } from '../../../models/nifty-royale.models';
 import { MessageService } from 'primeng/api';
-import { SEVERITY } from '../../../models/toast.enum';
+import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
 
 @Component({
   selector: 'app-battle-status',
@@ -76,7 +76,7 @@ export class BattleStatusComponent implements OnInit {
     } catch (error) {
       this.messageService.add({
         severity: SEVERITY.ERROR,
-        summary: 'An error occurred!',
+        summary: SUMMARY.ERROR_OCCURRED,
         detail: 'Try again later.',
         sticky: true,
       });
