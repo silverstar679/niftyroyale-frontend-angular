@@ -5,7 +5,9 @@ import { ETHEREUM } from './ethereum.token';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
-const { network, etherscanApiKey, defiPulseAPIKey } = environment;
+const { network, etherscanApiKey } = environment;
+const chain = network || network !== 'mainnet' ? `api-${network}` : 'api';
+const etherscanBaseAPI = `https://${chain}.etherscan.io/api`;
 
 @Injectable()
 export class ContractService {
@@ -14,7 +16,6 @@ export class ContractService {
   public web3: any;
   public gasLimit = 100000;
   public gasPrice = 0;
-  private gasPriceURL = `https://data-api.defipulse.com/api/v1/egs/api/ethgasAPI.json?api-key=${defiPulseAPIKey}`;
 
   constructor(
     @Inject(ETHEREUM) private ethereum: any,
@@ -27,7 +28,7 @@ export class ContractService {
         this._getAverageGasPrice(),
         this._initWeb3(),
       ]);
-      this.gasPrice = gasPrice / 10;
+      this.gasPrice = gasPrice;
       await this._getContract(address, this.gasPrice);
 
       return Promise.resolve(this.contract);
@@ -95,9 +96,10 @@ export class ContractService {
   }
 
   private _getAverageGasPrice(): Promise<number> {
+    const url = `${etherscanBaseAPI}?module=gastracker&action=gasoracle&apikey=${etherscanApiKey}`;
     return this.http
-      .get<any>(this.gasPriceURL)
-      .pipe(map(({ average }) => average))
+      .get<any>(url)
+      .pipe(map(({ result }) => result.FastGasPrice))
       .toPromise();
   }
 
@@ -118,8 +120,7 @@ export class ContractService {
 
   private _loadABI(address: string): Promise<any> {
     if (!this.abi) {
-      const chain = network || network !== 'mainnet' ? `api-${network}` : 'api';
-      const url = `https://${chain}.etherscan.io/api?module=contract&action=getabi&address=${address}&apikey=${etherscanApiKey}&format=raw`;
+      const url = `${etherscanBaseAPI}?module=contract&action=getabi&address=${address}&apikey=${etherscanApiKey}&format=raw`;
       return this.http.get<any>(url).toPromise();
     }
     return Promise.resolve(this.abi);
