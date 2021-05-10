@@ -82,7 +82,7 @@ export class ContractService {
     return this.contract.methods.purchase(1).send({ from, value });
   }
 
-  async getWinnerURI(tokenId: string): Promise<string> {
+  async getTokenURI(tokenId: string): Promise<string> {
     return this.contract.methods.tokenURI(tokenId).call();
   }
 
@@ -93,8 +93,8 @@ export class ContractService {
           this.web3 = new Web3(this.ethereum);
 
           return resolve(this.web3);
-        } catch (e) {
-          return reject(e);
+        } catch (error) {
+          return reject(error);
         }
       }
       return resolve(this.web3);
@@ -112,7 +112,7 @@ export class ContractService {
 
   private _getContract(address: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
-      if (!this.contract) {
+      if (!this.contract || this.contract._address !== address) {
         try {
           const abi = await this._loadABI(address);
 
@@ -121,8 +121,8 @@ export class ContractService {
           });
 
           return resolve(this.contract);
-        } catch (e) {
-          return reject(e);
+        } catch (error) {
+          return reject(error);
         }
       }
       return resolve(this.contract);

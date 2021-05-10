@@ -7,6 +7,8 @@ import {
   BattleState,
   NiftyAssetModel,
 } from '../../../models/nifty-royale.models';
+import { MessageService } from 'primeng/api';
+import { SEVERITY } from '../../../models/toast.enum';
 
 @Component({
   selector: 'app-battle-status',
@@ -22,51 +24,63 @@ export class BattleStatusComponent implements OnInit {
   eliminatedPlayers = [] as string[];
   totalPlayers = 0;
   countdownTimer = '';
+  isLoading = true;
 
   constructor(
     private contractService: ContractService,
     private metamaskService: MetamaskService,
     private openSeaService: OpenSeaService,
+    private messageService: MessageService,
     private route: ActivatedRoute
   ) {}
 
   async ngOnInit(): Promise<void> {
-    const { contractAddress } = this.route.snapshot.params;
-    await this.contractService.init(contractAddress);
+    try {
+      const { contractAddress } = this.route.snapshot.params;
+      await this.contractService.init(contractAddress);
 
-    const {
-      uri,
-      battleState,
-      inPlayPlayers,
-      eliminatedPlayers,
-      nextEliminationTimestamp,
-    } = await this.contractService.getBattleData();
+      const {
+        uri,
+        battleState,
+        inPlayPlayers,
+        eliminatedPlayers,
+        nextEliminationTimestamp,
+      } = await this.contractService.getBattleData();
 
-    this.initCountdown(nextEliminationTimestamp);
+      this.initCountdown(nextEliminationTimestamp);
 
-    const defaultIpfsMetadata = await this.openSeaService
-      .getAssetMetadata(uri)
-      .toPromise();
-
-    this.defaultPicture = defaultIpfsMetadata.image;
-    this.currBattleState = battleState;
-    this.eliminatedPlayers = eliminatedPlayers;
-    this.inPlayPlayers = inPlayPlayers;
-    this.totalPlayers = inPlayPlayers.length + eliminatedPlayers.length;
-
-    if (
-      this.inPlayPlayers.length === 1 &&
-      this.currBattleState === BattleState.ENDED
-    ) {
-      const winnerTokenId = this.inPlayPlayers[0];
-      const winnerURI = await this.contractService.getWinnerURI(winnerTokenId);
-      const winnerIpfsMetadata = await this.openSeaService
-        .getAssetMetadata(winnerURI)
+      const defaultIpfsMetadata = await this.openSeaService
+        .getAssetMetadata(uri)
         .toPromise();
-      this.winnerPicture = winnerIpfsMetadata.image;
-    }
 
-    this.assets = await this.getMintedAssets(contractAddress);
+      this.defaultPicture = defaultIpfsMetadata.image;
+      this.currBattleState = battleState;
+      this.eliminatedPlayers = eliminatedPlayers;
+      this.inPlayPlayers = inPlayPlayers;
+      this.totalPlayers = inPlayPlayers.length + eliminatedPlayers.length;
+
+      if (
+        this.inPlayPlayers.length === 1 &&
+        this.currBattleState === BattleState.ENDED
+      ) {
+        const winnerTokenId = this.inPlayPlayers[0];
+        const winnerURI = await this.contractService.getTokenURI(winnerTokenId);
+        const winnerIpfsMetadata = await this.openSeaService
+          .getAssetMetadata(winnerURI)
+          .toPromise();
+        this.winnerPicture = winnerIpfsMetadata.image;
+      }
+
+      this.assets = await this.getMintedAssets(contractAddress);
+      this.isLoading = false;
+    } catch (error) {
+      this.messageService.add({
+        severity: SEVERITY.ERROR,
+        summary: 'An error occurred!',
+        detail: 'Try again later.',
+        sticky: true,
+      });
+    }
   }
 
   private async getMintedAssets(address: string): Promise<NiftyAssetModel[]> {

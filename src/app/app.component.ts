@@ -1,9 +1,9 @@
 import MetaMaskOnboarding from '@metamask/onboarding';
 import { MessageService } from 'primeng/api';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router, RouterEvent } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
+import { NavigationEnd, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter, tap } from 'rxjs/operators';
 import { SEVERITY, SUMMARY } from '../models/toast.enum';
 import { MetamaskService } from './services/metamask.service';
 
@@ -21,7 +21,6 @@ enum METAMASK_BTN_TEXTS {
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit, OnDestroy {
-  public showStatus$: Observable<boolean>;
   public isAccountConnected = false;
   public metamaskBtnText = '';
   private subscriptions = new Subscription();
@@ -38,10 +37,12 @@ export class AppComponent implements OnInit, OnDestroy {
     private metamaskService: MetamaskService,
     private router: Router
   ) {
-    this.showStatus$ = this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      map((event) => (event as RouterEvent).url.includes('status'))
-    );
+    this.subscriptions = this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        tap(() => this.messageService.clear())
+      )
+      .subscribe();
   }
 
   get disconnectedText(): string {
@@ -52,27 +53,29 @@ export class AppComponent implements OnInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     await this.metamaskService.ethAccounts();
-    this.subscriptions = this.metamaskService.account$
-      .pipe(
-        tap((account: string) => {
-          this.isAccountConnected = Boolean(account);
-          this.metamaskBtnText = this.isAccountConnected
-            ? AppComponent.formatAddress(account)
-            : this.disconnectedText;
-          if (!account) {
-            return this.messageService.add({
-              severity: SEVERITY.INFO,
-              summary: SUMMARY.NOT_CONNECTED,
-            });
-          } else {
-            return this.messageService.add({
-              severity: SEVERITY.SUCCESS,
-              summary: SUMMARY.CONNECTED,
-            });
-          }
-        })
-      )
-      .subscribe();
+    this.subscriptions.add(
+      this.metamaskService.account$
+        .pipe(
+          tap((account: string) => {
+            this.isAccountConnected = Boolean(account);
+            this.metamaskBtnText = this.isAccountConnected
+              ? AppComponent.formatAddress(account)
+              : this.disconnectedText;
+            if (!account) {
+              return this.messageService.add({
+                severity: SEVERITY.INFO,
+                summary: SUMMARY.NOT_CONNECTED,
+              });
+            } else {
+              return this.messageService.add({
+                severity: SEVERITY.SUCCESS,
+                summary: SUMMARY.CONNECTED,
+              });
+            }
+          })
+        )
+        .subscribe()
+    );
   }
 
   async onConnection(): Promise<void> {

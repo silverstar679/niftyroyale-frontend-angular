@@ -32,7 +32,7 @@ export class DropsSaleComponent implements OnInit {
     if (this.isPurchaseProcessing) {
       return 'Processing...';
     }
-    return !this.hasBattleStarted ? 'Checkout' : 'Trade';
+    return 'Checkout';
   }
 
   get hasBattleStarted(): boolean {
@@ -44,8 +44,9 @@ export class DropsSaleComponent implements OnInit {
   }
 
   get leftForSale(): string {
-    return this.battleState === BattleState.STANDBY
-      ? `${this.maxMinted - this.totalMinted}/${this.maxMinted} left for sale`
+    const leftForSale = this.maxMinted - this.totalMinted;
+    return leftForSale > 0 && !this.hasBattleStarted
+      ? `${leftForSale}/${this.maxMinted} left for sale`
       : 'Sale is over!';
   }
 
@@ -86,7 +87,9 @@ export class DropsSaleComponent implements OnInit {
     } catch (error) {
       this.messageService.add({
         severity: SEVERITY.ERROR,
-        summary: error.message,
+        summary: 'An error occurred!',
+        detail: 'Try again later.',
+        sticky: true,
       });
     }
     this.isPurchaseProcessing = false;

@@ -3,9 +3,6 @@
     <div
       class="flex flex-col items-center gap-4 text-2xl sm:flex-row sm:gap-0 sm:text-4xl nifty-text-gold"
     >
-      <!--<div class="flex items-center gap-4 nifty-font">-->
-      <!--<div *ngIf="showStatus$ | async">Status</div>-->
-      <!--</div>-->
       <img
         class="w-20 cursor-pointer focus:outline-none"
         routerLink="/battles"
@@ -16,18 +13,18 @@
         <a
           class="hover:underline"
           role="button"
-          routerLink="/drops"
-          [routerLinkActive]="['underline']"
+          routerLink="/battles"
+          [routerLinkActive]="['underline', 'nifty-text-red']"
         >
-          Drops
+          Battles
         </a>
         <a
           class="hover:underline"
           role="button"
-          routerLink="/battles"
-          [routerLinkActive]="['underline']"
+          routerLink="/drops"
+          [routerLinkActive]="['underline', 'nifty-text-red']"
         >
-          Battles
+          Drops
         </a>
       </div>
       <div class="flex">
