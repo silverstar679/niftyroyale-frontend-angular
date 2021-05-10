@@ -12,6 +12,7 @@ import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
   templateUrl: './drops-sale.component.html',
 })
 export class DropsSaleComponent implements OnInit {
+  dropName = '';
   gasPrice = 0;
   gasLimit = 0;
   ethPrice = 0;
@@ -61,6 +62,7 @@ export class DropsSaleComponent implements OnInit {
     await this.contractService.init(contractAddress);
 
     const {
+      name,
       ethPrice,
       maxMinted,
       totalMinted,
@@ -70,6 +72,7 @@ export class DropsSaleComponent implements OnInit {
     this.gasLimit = this.contractService.gasLimit;
     this.gasPrice = this.contractService.gasPrice;
 
+    this.dropName = name;
     this.ethPrice = Number(ethPrice);
     this.maxMinted = maxMinted;
     this.totalMinted = totalMinted;

@@ -38,7 +38,14 @@ export class ContractService {
   }
 
   async getSaleData(): Promise<any> {
-    const [ethPrice, maxMinted, totalMinted, battleState] = await Promise.all([
+    const [
+      name,
+      ethPrice,
+      maxMinted,
+      totalMinted,
+      battleState,
+    ] = await Promise.all([
+      this.contract.methods.name().call(),
       this.contract.methods.price().call(),
       this.contract.methods.maxSupply().call(),
       this.contract.methods.totalSupply().call(),
@@ -46,6 +53,7 @@ export class ContractService {
     ]);
 
     return {
+      name,
       ethPrice,
       maxMinted,
       totalMinted,
