@@ -12,6 +12,8 @@ import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
   templateUrl: './drops-sale.component.html',
 })
 export class DropsSaleComponent implements OnInit {
+  gasPrice = 0;
+  gasLimit = 0;
   ethPrice = 0;
   maxMinted = 0;
   totalMinted = 0;
@@ -33,6 +35,10 @@ export class DropsSaleComponent implements OnInit {
       return 'Processing...';
     }
     return 'Checkout';
+  }
+
+  get ethFees(): number {
+    return this.gasPrice * 10 / this.gasLimit;
   }
 
   get hasBattleStarted(): boolean {
@@ -61,7 +67,10 @@ export class DropsSaleComponent implements OnInit {
       battleState,
     } = await this.contractService.getSaleData();
 
-    this.ethPrice = ethPrice;
+    this.gasLimit = this.contractService.gasLimit;
+    this.gasPrice = this.contractService.gasPrice;
+
+    this.ethPrice = Number(ethPrice);
     this.maxMinted = maxMinted;
     this.totalMinted = totalMinted;
     this.battleState = battleState;

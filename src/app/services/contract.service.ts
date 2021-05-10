@@ -3,14 +3,18 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ETHEREUM } from './ethereum.token';
 import { environment } from '../../environments/environment';
+import { map } from 'rxjs/operators';
 
-const { network, etherscanApiKey } = environment;
+const { network, etherscanApiKey, defiPulseAPIKey } = environment;
 
 @Injectable()
 export class ContractService {
-  abi: any;
-  contract: any;
-  web3: any;
+  public abi: any;
+  public contract: any;
+  public web3: any;
+  public gasLimit = 100000;
+  public gasPrice = 0;
+  private gasPriceURL = `https://data-api.defipulse.com/api/v1/egs/api/ethgasAPI.json?api-key=${defiPulseAPIKey}`;
 
   constructor(
     @Inject(ETHEREUM) private ethereum: any,
@@ -19,12 +23,16 @@ export class ContractService {
 
   async init(address: string): Promise<any> {
     try {
-      await this._initWeb3();
-      await this._getContract(address);
+      const [gasPrice] = await Promise.all([
+        this._getAverageGasPrice(),
+        this._initWeb3(),
+      ]);
+      this.gasPrice = gasPrice / 10;
+      await this._getContract(address, this.gasPrice);
 
       return Promise.resolve(this.contract);
-    } catch (e) {
-      return Promise.reject(e);
+    } catch (error) {
+      return Promise.reject(error);
     }
   }
 
@@ -78,12 +86,19 @@ export class ContractService {
     };
   }
 
-  async purchaseNFT(from: string, value: number): Promise<void> {
+  getTokenURI(tokenId: string): Promise<string> {
+    return this.contract.methods.tokenURI(tokenId).call();
+  }
+
+  purchaseNFT(from: string, value: number): Promise<void> {
     return this.contract.methods.purchase(1).send({ from, value });
   }
 
-  async getTokenURI(tokenId: string): Promise<string> {
-    return this.contract.methods.tokenURI(tokenId).call();
+  private _getAverageGasPrice(): Promise<number> {
+    return this.http
+      .get<any>(this.gasPriceURL)
+      .pipe(map(({ average }) => average))
+      .toPromise();
   }
 
   private _initWeb3(): Promise<Web3> {
@@ -110,15 +125,15 @@ export class ContractService {
     return Promise.resolve(this.abi);
   }
 
-  private _getContract(address: string): Promise<any> {
+  private _getContract(address: string, gasPrice: number): Promise<any> {
     return new Promise(async (resolve, reject) => {
       if (!this.contract || this.contract._address !== address) {
         try {
           const abi = await this._loadABI(address);
 
           this.contract = new this.web3.eth.Contract(abi, address, {
-            gasLimit: `${10 ** 7}`,
-            gasPrice: `${2 * 10 ** 10}`,
+            gasLimit: `${this.gasLimit}`,
+            gasPrice: `${gasPrice * 10 ** 9}`,
           });
 
           return resolve(this.contract);
