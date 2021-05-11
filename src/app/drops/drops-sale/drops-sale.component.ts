@@ -39,7 +39,7 @@ export class DropsSaleComponent implements OnInit {
   }
 
   get ethFees(): number {
-    return (this.gasPrice * 10) / this.gasLimit;
+    return (this.gasPrice * this.gasLimit) / 10 ** 9;
   }
 
   get hasBattleStarted(): boolean {

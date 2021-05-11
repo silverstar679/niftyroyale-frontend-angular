@@ -1,25 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { CONTRACTS } from '../../../models/contracts';
 
 @Component({
   selector: 'app-list',
   templateUrl: './drops-list.component.html',
 })
 export class DropsListComponent {
-  drops = [
-    {
-      address: '0xaFa735aBf851896d922c7501D404a4A35f02f5Ae',
-      name: 'Beta drop #1 featuring Lushsux',
-    },
-    {
-      address: '0x9dCC49BD1fe90941E03184beD4b0DB422d1251CA',
-      name: 'Beta drop #2 featuring Lushsux',
-    },
-    {
-      address: '0x520BB8Ed49c03b39a05F31Af47B534C2846af5da',
-      name: 'Beta drop #3 featuring Lushsux',
-    },
-  ];
+  drops = CONTRACTS;
 
   constructor(private router: Router) {}
 
