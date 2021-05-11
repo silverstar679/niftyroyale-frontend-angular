@@ -58,26 +58,36 @@ export class DropsSaleComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    const { contractAddress } = this.route.snapshot.params;
-    await this.contractService.init(contractAddress);
+    try {
+      const { contractAddress } = this.route.snapshot.params;
+      await this.contractService.init(contractAddress);
 
-    const {
-      name,
-      ethPrice,
-      maxMinted,
-      totalMinted,
-      battleState,
-    } = await this.contractService.getSaleData();
+      const {
+        name,
+        ethPrice,
+        maxMinted,
+        totalMinted,
+        battleState,
+      } = await this.contractService.getSaleData();
 
-    this.gasLimit = this.contractService.gasLimit;
-    this.gasPrice = this.contractService.gasPrice;
+      this.gasLimit = this.contractService.gasLimit;
+      this.gasPrice = this.contractService.gasPrice;
 
-    this.dropName = name;
-    this.ethPrice = Number(ethPrice);
-    this.maxMinted = maxMinted;
-    this.totalMinted = totalMinted;
-    this.battleState = battleState;
-    this.isLoading = false;
+      this.dropName = name;
+      this.ethPrice = Number(ethPrice);
+      this.maxMinted = maxMinted;
+      this.totalMinted = totalMinted;
+      this.battleState = battleState;
+      this.isLoading = false;
+    } catch (error) {
+      this.messageService.add({
+        severity: SEVERITY.ERROR,
+        summary: SUMMARY.ERROR_OCCURRED,
+        detail: error.message,
+        sticky: true,
+      });
+    }
+
   }
 
   async buy(): Promise<void> {

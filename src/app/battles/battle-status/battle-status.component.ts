@@ -77,7 +77,7 @@ export class BattleStatusComponent implements OnInit {
       this.messageService.add({
         severity: SEVERITY.ERROR,
         summary: SUMMARY.ERROR_OCCURRED,
-        detail: 'Try again later.',
+        detail: error.message,
         sticky: true,
       });
     }
