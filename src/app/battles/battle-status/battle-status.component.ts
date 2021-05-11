@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ContractService } from '../../services/contract.service';
@@ -7,7 +8,6 @@ import {
   BattleState,
   NiftyAssetModel,
 } from '../../../models/nifty-royale.models';
-import { MessageService } from 'primeng/api';
 import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
 
 @Component({
@@ -19,7 +19,7 @@ export class BattleStatusComponent implements OnInit {
   assets = [] as NiftyAssetModel[];
   defaultPicture = '';
   winnerPicture = '';
-  currBattleState = BattleState.STANDBY;
+  currBattleState = '';
   inPlayPlayers = [] as string[];
   eliminatedPlayers = [] as string[];
   totalPlayers = 0;
@@ -138,24 +138,45 @@ export class BattleStatusComponent implements OnInit {
       this.countdownTimer = '';
 
       if (days > 0) {
+        if (`${days}`.length === 1) {
+          this.countdownTimer = this.countdownTimer + '0';
+        }
         this.countdownTimer = this.countdownTimer + days + ':';
+        if (hours === 0) {
+          this.countdownTimer = this.countdownTimer + '00';
+        }
       }
 
       if (hours > 0) {
+        if (`${hours}`.length === 1) {
+          this.countdownTimer = this.countdownTimer + '0';
+        }
         this.countdownTimer = this.countdownTimer + hours + ':';
+        if (minutes === 0) {
+          this.countdownTimer = this.countdownTimer + '00';
+        }
       }
 
       if (minutes > 0) {
+        if (`${minutes}`.length === 1) {
+          this.countdownTimer = this.countdownTimer + '0';
+        }
         this.countdownTimer = this.countdownTimer + minutes + ':';
+        if (seconds === 0) {
+          this.countdownTimer = this.countdownTimer + '00';
+        }
       }
 
       if (seconds > 0) {
+        if (`${seconds}`.length === 1) {
+          this.countdownTimer = this.countdownTimer + '0';
+        }
         this.countdownTimer = this.countdownTimer + seconds;
       }
 
-      if (distance < 0) {
+      if (days === 0 && hours === 0 && minutes === 0 && seconds === 0) {
         clearInterval(x);
-        this.countdownTimer = 'NEW ELIMINATION!';
+        this.countdownTimer = 'Now!';
       }
     }, 1000);
   }
