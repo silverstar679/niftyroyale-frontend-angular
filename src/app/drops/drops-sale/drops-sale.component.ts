@@ -13,8 +13,6 @@ import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
 })
 export class DropsSaleComponent implements OnInit {
   dropName = '';
-  gasPrice = 0;
-  gasLimit = 0;
   ethPrice = 0;
   maxMinted = 0;
   totalMinted = 0;
@@ -41,6 +39,18 @@ export class DropsSaleComponent implements OnInit {
 
   get ethFees(): number {
     return (this.gasPrice * this.gasLimit) / 10 ** 9;
+  }
+
+  get gasLimit(): number {
+    return this.contractService.gasLimit;
+  }
+
+  get gasPrice(): number {
+    return this.contractService.gasPrice;
+  }
+
+  get transactionHash(): string {
+    return this.contractService.transactionHash;
   }
 
   get hasBattleStarted(): boolean {
@@ -77,9 +87,6 @@ export class DropsSaleComponent implements OnInit {
         .toPromise();
 
       this.nftImage = defaultIpfsMetadata.image;
-
-      this.gasLimit = this.contractService.gasLimit;
-      this.gasPrice = this.contractService.gasPrice;
 
       this.dropName = name;
       this.ethPrice = Number(ethPrice);
@@ -125,5 +132,17 @@ export class DropsSaleComponent implements OnInit {
       });
     }
     this.isPurchaseProcessing = false;
+  }
+
+  goToBattle(): Promise<boolean> {
+    const { contractAddress } = this.route.snapshot.params;
+    return this.router.navigate([`battles/status/${contractAddress}`]);
+  }
+
+  formatAddress(address: string): string {
+    const length = address.length;
+    const firstChar = address.slice(0, 6);
+    const lastChar = address.slice(length - 4, length);
+    return `${firstChar}...${lastChar}`;
   }
 }

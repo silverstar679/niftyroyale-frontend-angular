@@ -18,6 +18,7 @@ export class ContractService {
   public web3: any;
   public gasLimit = 1000000;
   public gasPrice = 0;
+  public transactionHash = '';
 
   constructor(
     @Inject(ETHEREUM) private ethereum: any,
@@ -106,7 +107,12 @@ export class ContractService {
   }
 
   purchaseNFT(from: string, value: number): Promise<void> {
-    return this.contract.methods.purchase(1).send({ from, value });
+    return this.contract.methods
+      .purchase(1)
+      .send({ from, value })
+      .on('transactionHash', (hash: string) => {
+        this.transactionHash = hash;
+      });
   }
 
   private _getAverageGasPrice(): Promise<number> {

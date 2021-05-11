@@ -12,7 +12,7 @@ const isLocalhost = currentUrl.hostname === 'localhost';
 const forwarderOrigin = isLocalhost ? 'http://localhost:4200' : undefined;
 
 enum METAMASK_BTN_TEXTS {
-  CONNECT = 'Connect',
+  CONNECT = 'Connect Wallet',
   INSTALL = 'Install MetaMask',
 }
 
