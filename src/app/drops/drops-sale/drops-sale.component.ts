@@ -87,7 +87,6 @@ export class DropsSaleComponent implements OnInit {
         sticky: true,
       });
     }
-
   }
 
   async buy(): Promise<void> {
@@ -113,7 +112,7 @@ export class DropsSaleComponent implements OnInit {
       this.messageService.add({
         severity: SEVERITY.ERROR,
         summary: SUMMARY.ERROR_OCCURRED,
-        detail: 'Try again later.',
+        detail: error.message,
         sticky: true,
       });
     }
