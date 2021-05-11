@@ -5,9 +5,11 @@ import { ETHEREUM } from './ethereum.token';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
-const { network, etherscanApiKey } = environment;
-const chain = network || network !== 'mainnet' ? `api-${network}` : 'api';
-const etherscanBaseAPI = `https://${chain}.etherscan.io/api`;
+const { NETWORK, ETHERSCAN_API_KEY, ALCHEMY_KEY, INFURA_KEY } = environment;
+const chain = NETWORK || NETWORK !== 'mainnet' ? `api-${NETWORK}` : 'api';
+const etherscanBaseAPI = `https://${chain}.etherscan.io/api?apikey=${ETHERSCAN_API_KEY}`;
+const infuraProvider = `https://${NETWORK}.infura.io/v3/${INFURA_KEY}`;
+const alchemyProvider = `https://eth-${NETWORK}.alchemyapi.io/v2/${ALCHEMY_KEY}`;
 
 @Injectable()
 export class ContractService {
@@ -104,7 +106,7 @@ export class ContractService {
   }
 
   private _getAverageGasPrice(): Promise<number> {
-    const url = `${etherscanBaseAPI}?module=gastracker&action=gasoracle&apikey=${etherscanApiKey}`;
+    const url = `${etherscanBaseAPI}&module=gastracker&action=gasoracle`;
     return this.http
       .get<any>(url)
       .pipe(map(({ result }) => result.FastGasPrice))
@@ -115,7 +117,14 @@ export class ContractService {
     return new Promise(async (resolve, reject) => {
       if (!this.web3) {
         try {
-          this.web3 = new Web3(this.ethereum);
+          const defaultProvider = Boolean(INFURA_KEY)
+            ? infuraProvider
+            : alchemyProvider;
+          const metamaskProvider = this.ethereum;
+          const provider = Boolean(metamaskProvider)
+            ? metamaskProvider
+            : defaultProvider;
+          this.web3 = new Web3(provider);
 
           return resolve(this.web3);
         } catch (error) {
@@ -128,7 +137,7 @@ export class ContractService {
 
   private _loadABI(address: string): Promise<any> {
     if (!this.abi) {
-      const url = `${etherscanBaseAPI}?module=contract&action=getabi&address=${address}&apikey=${etherscanApiKey}&format=raw`;
+      const url = `${etherscanBaseAPI}&module=contract&action=getabi&address=${address}&format=raw`;
       return this.http.get<any>(url).toPromise();
     }
     return Promise.resolve(this.abi);
