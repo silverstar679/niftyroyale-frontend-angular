@@ -2,11 +2,11 @@
   <div
     *ngFor="let drop of drops"
     (click)="goTo(drop.address)"
-    class="flex flex-row items-center gap-10 w-full bg-black border-4 rounded-lg nifty-border-gold p-5 cursor-pointer"
+    class="flex flex-row items-center gap-10 p-5 w-full bg-black border-4 rounded-lg nifty-border-gold cursor-pointer"
   >
     <div class="flex-shrink">
-      <img class="w-24" src="assets/images/logo.webp" alt="battle-logo" />
+      <img class="w-12" src="assets/images/logo.webp" alt="battle-logo" />
     </div>
-    <div class="flex-1 text-lg font-bold">{{ drop.name }}</div>
+    <div class="flex-1 text-base md:text-lg font-bold">{{ drop.name }}</div>
   </div>
 </div>

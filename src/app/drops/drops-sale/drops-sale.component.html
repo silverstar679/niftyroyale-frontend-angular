@@ -20,7 +20,7 @@
       </div>
     </div>
     <div
-      *ngIf="isAccountConnected && !hasBattleStarted"
+      *ngIf="!hasBattleStarted"
       class="w-2/3 h-96 lg:w-1/4 lg:h-auto flex flex-col justify-around p-10 bg-white text-lg lg:text-2xl text-gray-700 rounded-md"
     >
       <div
@@ -52,16 +52,17 @@
       >
         <p>Gas fee</p>
         <div class="flex flex-row-reverse flex-grow">
-          <p>+{{ ethFees }}</p>
+          <p>+{{ ethFees.toFixed(4) }}</p>
         </div>
       </div>
       <div class="flex">
         <p class="font-bold">Total</p>
         <div class="flex flex-row-reverse flex-grow">
-          <p>{{ ethPrice + ethFees }} ETH</p>
+          <p>{{ (ethPrice + ethFees).toFixed(4) }} ETH</p>
         </div>
       </div>
       <button
+        *ngIf="isAccountConnected"
         type="button"
         class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-500 hover:bg-green-400 transition ease-in-out duration-150"
         (click)="buy()"
@@ -93,6 +94,12 @@
         </svg>
         {{ checkoutBtnText }}
       </button>
+      <div
+        *ngIf="!isAccountConnected"
+        class="flex justify-center nifty-text-red"
+      >
+        <p>Connect Wallet!</p>
+      </div>
     </div>
   </div>
 </div>
