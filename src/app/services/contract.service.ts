@@ -1,9 +1,9 @@
 import Web3 from 'web3';
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 import { ETHEREUM } from './ethereum.token';
 import { environment } from '../../environments/environment';
-import { map } from 'rxjs/operators';
 
 const { NETWORK, ETHERSCAN_API_KEY, ALCHEMY_KEY, INFURA_KEY } = environment;
 const chain = NETWORK || NETWORK !== 'mainnet' ? `api-${NETWORK}` : 'api';
@@ -41,12 +41,16 @@ export class ContractService {
 
   async getSaleData(): Promise<any> {
     const [
+      baseTokenURI,
+      tokenURI,
       name,
       ethPrice,
       maxMinted,
       totalMinted,
       battleState,
     ] = await Promise.all([
+      this.contract.methods.baseURI().call(),
+      this.contract.methods.defaultTokenURI().call(),
       this.contract.methods.name().call(),
       this.contract.methods.price().call(),
       this.contract.methods.maxSupply().call(),
@@ -55,6 +59,7 @@ export class ContractService {
     ]);
 
     return {
+      uri: `${baseTokenURI}${tokenURI}`,
       name,
       ethPrice,
       maxMinted,
@@ -82,14 +87,13 @@ export class ContractService {
       this.contract.methods.timestamp().call(),
     ]);
 
-    const uri = `${baseTokenURI}${tokenURI}`;
     const lastEliminationTimestamp = Number(timestamp) || new Date().getTime();
     const nextElimination =
       lastEliminationTimestamp + Number(intervalEliminationTime) * 60;
     const nextEliminationTimestamp = nextElimination * 1000;
 
     return {
-      uri,
+      uri: `${baseTokenURI}${tokenURI}`,
       battleState,
       inPlayPlayers,
       eliminatedPlayers,

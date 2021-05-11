@@ -18,6 +18,7 @@ export class DropsSaleComponent implements OnInit {
   ethPrice = 0;
   maxMinted = 0;
   totalMinted = 0;
+  nftImage = '';
   battleState = BattleState.STANDBY;
   isPurchaseProcessing = false;
   isLoading = true;
@@ -63,12 +64,19 @@ export class DropsSaleComponent implements OnInit {
       await this.contractService.init(contractAddress);
 
       const {
+        uri,
         name,
         ethPrice,
         maxMinted,
         totalMinted,
         battleState,
       } = await this.contractService.getSaleData();
+
+      const defaultIpfsMetadata = await this.openSeaService
+        .getAssetMetadata(uri)
+        .toPromise();
+
+      this.nftImage = defaultIpfsMetadata.image;
 
       this.gasLimit = this.contractService.gasLimit;
       this.gasPrice = this.contractService.gasPrice;
