@@ -25,7 +25,7 @@ export class NftCardComponent {
 
   get btnText(): string {
     const ownerText = !this.asset.sell_orders ? 'Sell' : 'Cancel Sale';
-    const notOwnerText = !this.asset.sell_orders ? 'Make an offer' : 'Buy';
+    const notOwnerText = !this.asset.sell_orders ? 'Make offer' : 'Buy';
     return this.asset.isOwner ? ownerText : notOwnerText;
   }
 
