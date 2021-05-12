@@ -17,8 +17,10 @@ export class DropsSaleComponent implements OnInit {
   maxMinted = 0;
   totalMinted = 0;
   nftImage = '';
+  nftDescription = '';
   battleState = BattleState.STANDBY;
   isPurchaseProcessing = false;
+  isPurchaseSuccessful = false;
   isLoading = true;
 
   constructor(
@@ -63,9 +65,7 @@ export class DropsSaleComponent implements OnInit {
 
   get leftForSale(): string {
     const leftForSale = this.maxMinted - this.totalMinted;
-    return leftForSale > 0 && !this.hasBattleStarted
-      ? `${leftForSale}/${this.maxMinted} left for sale`
-      : 'Sale is over!';
+    return `${leftForSale}/${this.maxMinted} left for sale`;
   }
 
   async ngOnInit(): Promise<void> {
@@ -87,6 +87,7 @@ export class DropsSaleComponent implements OnInit {
         .toPromise();
 
       this.nftImage = defaultIpfsMetadata.image;
+      this.nftDescription = defaultIpfsMetadata.description;
 
       this.dropName = name;
       this.ethPrice = Number(ethPrice);
@@ -115,13 +116,12 @@ export class DropsSaleComponent implements OnInit {
         sticky: true,
       });
       await this.contractService.purchaseNFT(from, value);
+      this.isPurchaseSuccessful = true;
       this.messageService.clear();
       this.messageService.add({
         severity: SEVERITY.SUCCESS,
         summary: SUMMARY.TRANSACTION_CONFIRMED,
       });
-      const { contractAddress } = this.route.snapshot.params;
-      await this.router.navigate([`battles/status/${contractAddress}`]);
     } catch (error) {
       this.messageService.clear();
       this.messageService.add({

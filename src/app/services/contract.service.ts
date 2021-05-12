@@ -73,6 +73,7 @@ export class ContractService {
     const [
       baseTokenURI,
       tokenURI,
+      name,
       battleState,
       inPlayPlayers,
       eliminatedPlayers,
@@ -81,6 +82,7 @@ export class ContractService {
     ] = await Promise.all([
       this.contract.methods.baseURI().call(),
       this.contract.methods.defaultTokenURI().call(),
+      this.contract.methods.name().call(),
       this.contract.methods.getBattleState().call(),
       this.contract.methods.getInPlay().call(),
       this.contract.methods.getOutOfPlay().call(),
@@ -95,6 +97,7 @@ export class ContractService {
 
     return {
       uri: `${baseTokenURI}${tokenURI}`,
+      name,
       battleState,
       inPlayPlayers,
       eliminatedPlayers,

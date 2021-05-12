@@ -17,6 +17,7 @@ import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
 export class BattleStatusComponent implements OnInit {
   battleStates = BattleState;
   assets = [] as NiftyAssetModel[];
+  dropName = '';
   defaultPicture = '';
   winnerPicture = '';
   currBattleState = '';
@@ -41,6 +42,7 @@ export class BattleStatusComponent implements OnInit {
 
       const {
         uri,
+        name,
         battleState,
         inPlayPlayers,
         eliminatedPlayers,
@@ -53,6 +55,7 @@ export class BattleStatusComponent implements OnInit {
         .getAssetMetadata(uri)
         .toPromise();
 
+      this.dropName = name;
       this.defaultPicture = defaultIpfsMetadata.image;
       this.currBattleState = battleState;
       this.eliminatedPlayers = eliminatedPlayers;
