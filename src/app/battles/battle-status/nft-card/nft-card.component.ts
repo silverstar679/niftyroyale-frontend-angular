@@ -19,6 +19,16 @@ export class NftCardComponent {
       : 'N/A';
   }
 
+  get isWinner(): boolean {
+    return this.asset.placement === 1;
+  }
+
+  get btnText(): string {
+    const ownerText = !this.asset.sell_orders ? 'Sell' : 'Cancel Sale';
+    const notOwnerText = !this.asset.sell_orders ? 'Make an offer' : 'Buy';
+    return this.asset.isOwner ? ownerText : notOwnerText;
+  }
+
   goTo(address: string, tokenId: string): Promise<boolean> {
     return this.router.navigate([`store/${address}/${tokenId}`]);
   }

@@ -319,7 +319,7 @@ export interface OpenSeaAsset extends Asset {
   owner: OpenSeaAccount;
   orders: Order[] | null;
   buyOrders: Order[] | null;
-  sellOrders: Order[] | null;
+  sell_orders: Order[] | null;
   isPresale: boolean;
   image_url: string;
   imagePreviewUrl: string;

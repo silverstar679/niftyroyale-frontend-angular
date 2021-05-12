@@ -1,6 +1,6 @@
 <div class="nifty-font">
   <img
-    *ngIf="1 === asset.placement"
+    *ngIf="isWinner"
     class="mx-auto h-16 w-24"
     src="assets/images/crown.webp"
     alt="crown"
@@ -8,7 +8,7 @@
   <article
     class="bg-black border-4 rounded-lg nifty-border-gold p-2"
     [ngClass]="{
-      'mt-16': 1 !== asset.placement,
+      'mt-16': !isWinner,
       'nifty-border-red': asset.isOwner
     }"
   >
@@ -45,7 +45,7 @@
           class="bg-green-500 text-gray-100 hover:bg-green-400 focus:outline-none rounded px-4 py-2"
           (click)="goTo(asset.asset_contract.address, asset.token_id)"
         >
-          Trade
+          {{ btnText }}
         </button>
       </div>
     </footer>
