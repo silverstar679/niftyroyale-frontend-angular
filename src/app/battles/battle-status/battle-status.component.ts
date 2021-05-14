@@ -1,6 +1,7 @@
 import { MessageService } from 'primeng/api';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ContractService } from '../../services/contract.service';
 import { MetamaskService } from '../../services/metamask.service';
 import { OpenSeaService } from '../../services/open-sea.service';
@@ -32,6 +33,7 @@ export class BattleStatusComponent implements OnInit {
     private metamaskService: MetamaskService,
     private openSeaService: OpenSeaService,
     private messageService: MessageService,
+    private sanitizer: DomSanitizer,
     private route: ActivatedRoute
   ) {}
 
@@ -109,14 +111,20 @@ export class BattleStatusComponent implements OnInit {
         } else if (isEliminated) {
           placement = this.totalPlayers - outOfPlayIndex;
         }
-        const nftImageURL =
+
+        const pictureURL =
           placement === 1 ? this.winnerPicture : this.defaultPicture;
+        const extension = pictureURL.split('.').pop();
+        const nftURL = this.sanitizer.bypassSecurityTrustResourceUrl(
+          pictureURL
+        );
 
         return {
           ...asset,
-          nftImageURL,
+          extension,
           isEliminated,
           isOwner,
+          nftURL,
           placement,
         } as NiftyAssetModel;
       });

@@ -20,10 +20,15 @@
         alt="cross"
       />
       <img
+        *ngIf="isImage"
         class="block rounded-sm h-auto w-full"
-        [src]="asset.nftImageURL"
+        [src]="asset.nftURL"
         alt="nft-image"
       />
+      <video *ngIf="isVideo" style="width: auto; height: auto" autoplay loop>
+        <source [src]="asset.nftURL" type="video/mp4" />
+        Your browser does not support playing this Video
+      </video>
     </div>
     <header class="flex flex-col text-white text-base">
       <p>Token ID: {{ asset.token_id }}</p>
