@@ -37,6 +37,19 @@ export class BattleStatusComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
 
+  get battleStatusText(): string {
+    if (this.currBattleState === BattleState.STANDBY) {
+      return 'Battle will start soon!';
+    }
+    if (this.currBattleState === BattleState.RUNNING) {
+      return 'Next elimination:';
+    }
+    if (this.currBattleState === BattleState.ENDED) {
+      return 'Battle has ended!';
+    }
+    return '';
+  }
+
   async ngOnInit(): Promise<void> {
     try {
       const { contractAddress } = this.route.snapshot.params;
@@ -92,7 +105,6 @@ export class BattleStatusComponent implements OnInit {
     const assets = await this.openSeaService.getAssets(address).toPromise();
 
     return assets
-      .sort((a, b) => Number(a.token_id) - Number(b.token_id))
       .map((asset) => {
         const outOfPlayIndex = this.eliminatedPlayers.indexOf(
           asset.token_id || ''
@@ -127,6 +139,13 @@ export class BattleStatusComponent implements OnInit {
           nftURL,
           placement,
         } as NiftyAssetModel;
+      })
+      .sort((a, b) => {
+        return (
+          Number(b.isOwner) - Number(a.isOwner) ||
+          Number(a.isEliminated) - Number(b.isEliminated) ||
+          Number(a.token_id) - Number(b.token_id)
+        );
       });
   }
 
