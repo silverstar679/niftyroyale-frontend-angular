@@ -16,8 +16,7 @@ export class NftCardComponent {
   constructor(private router: Router) {}
 
   get btnText(): string {
-    const ownerText =
-      (!this.asset.sell_orders ? 'Sell' : 'Cancel Sale') + ' | View Offer';
+    const ownerText = !this.asset.sell_orders ? 'Sell' : 'Cancel Sale';
     const notOwnerText = !this.asset.sell_orders ? 'Make Offer' : 'Buy';
     return this.asset.isOwner ? ownerText : notOwnerText;
   }
