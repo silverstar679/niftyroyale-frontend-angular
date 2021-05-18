@@ -22,6 +22,7 @@
     "@angular/platform-browser-dynamic": "~11.2.8",
     "@angular/router": "~11.2.8",
     "@metamask/onboarding": "^1.0.0",
+    "angular-animations": "^0.11.0",
     "firebase": "^7.0 || ^8.0",
     "ngx-build-plus": "^11.0.0",
     "primeicons": "^4.1.0",

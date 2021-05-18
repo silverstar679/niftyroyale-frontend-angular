@@ -2,7 +2,7 @@
   <img
     *ngIf="isWinner"
     class="mx-auto h-16 w-24"
-    src="assets/images/crown.webp"
+    src="../../../../assets/images/crown.webp"
     alt="crown"
   />
   <article
@@ -16,7 +16,7 @@
       <img
         *ngIf="asset.isEliminated"
         class="absolute h-full w-full z-10"
-        src="assets/images/cross.webp"
+        src="../../../../assets/images/cross.webp"
         alt="cross"
       />
       <app-nft-displayer [nftURL]="asset.nftURL"></app-nft-displayer>

@@ -1,3 +1,7 @@
+import {
+  flipInYOnEnterAnimation,
+  flipOutYOnLeaveAnimation,
+} from 'angular-animations';
 import { MessageService } from 'primeng/api';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,6 +14,7 @@ import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
 @Component({
   selector: 'app-drops-sale',
   templateUrl: './drops-sale.component.html',
+  animations: [flipInYOnEnterAnimation(), flipOutYOnLeaveAnimation()],
 })
 export class DropsSaleComponent implements OnInit {
   dropName = '';
@@ -23,6 +28,7 @@ export class DropsSaleComponent implements OnInit {
   isPurchaseProcessing = false;
   isPurchaseSuccessful = false;
   isLoading = true;
+  showWinnerNftImage = false;
 
   constructor(
     private contractService: ContractService,

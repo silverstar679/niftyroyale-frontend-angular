@@ -1,43 +1,65 @@
 <div
   *ngIf="!isLoading; else loading"
-  class="flex flex-col gap-6 text-xl md:text-2xl lg:text-3xl"
+  class="flex flex-col gap-6 text-xl md:text-2xl lg:text-3xl text-white nifty-font"
 >
   <div
-    class="flex flex-row w-full justify-center lg:justify-start nifty-text-gold nifty-font"
+    class="flex flex-row w-full justify-center lg:justify-start nifty-text-gold"
   >
     <p>{{ dropName }}</p>
   </div>
   <div
     class="flex flex-col items-center gap-10 lg:flex-row lg:items-stretch md:gap-5"
   >
-    <div class="w-2/3 lg:w-3/12 cursor-default">
-      <app-nft-displayer [nftURL]="defaultNftImage"></app-nft-displayer>
-      <app-nft-displayer [nftURL]="winnerNftImage"></app-nft-displayer>
-    </div>
     <div
-      class="flex flex-col gap-5 w-2/3 lg:w-5/12 text-center text-white nifty-font"
+      class="flex flex-col gap-5 w-2/3 lg:w-3/12 cursor-pointer"
+      (click)="showWinnerNftImage = !showWinnerNftImage"
     >
-      <p>NFT Description</p>
-      <p>{{ nftDescription }}</p>
-      <div
-        *ngIf="!hasBattleStarted"
-        class="flex flex-col-reverse gap-5 flex-grow nifty-text-gold"
-      >
-        <p>{{ leftForSale }}</p>
+      <div *ngIf="!showWinnerNftImage" [@flipInYOnEnter]>
+        <app-nft-displayer [nftURL]="defaultNftImage"></app-nft-displayer>
+        <p class="mt-2 text-xs">
+          Base NFT Shown. Click on the image to preview winning NFT upgrade.
+        </p>
+      </div>
+      <div *ngIf="showWinnerNftImage" [@flipInYOnEnter]>
+        <app-nft-displayer [nftURL]="winnerNftImage"></app-nft-displayer>
+        <p class="mt-2 text-xs">
+          Upgraded NFT Shown. Click on the image to preview base NFT.
+        </p>
       </div>
     </div>
-    <div
-      class="flex flex-col gap-5 w-2/3 lg:w-4/12 justify-around p-8 bg-black text-white text-center text-lg border-4 rounded-md nifty-border-gold nifty-font"
-    >
-      <ng-container *ngIf="!hasBattleStarted; else purchaseEnded">
-        <ng-container
-          *ngIf="
-            isPurchaseSuccessful;
-            then purchaseSuccessful;
-            else purchaseCheckout
-          "
-        ></ng-container>
-      </ng-container>
+    <div class="flex flex-col gap-5 w-2/3 lg:w-5/12">
+      <p>NFT Description</p>
+      <p>{{ nftDescription }}</p>
+      <div class="flex flex-col flex-grow justify-end gap-2 text-xs">
+        <p>Disclaimer:</p>
+        <p>
+          This is a signed and limited edition digital creation. With the
+          purchase, you acknowledge that you'll be given the right to use,
+          distribute and display the creation for non-commercial purposes. You
+          may also re-sell the same non-commercial use rights, to the creation,
+          through the secondary sales portal on the Battles page or any other
+          marketplace. Purchase of NFTs from the Drop entitles you to
+          participate in the Battle Royale game for this Drop with a fair chance
+          to win a 1/1 upgrade to replace the winning base NFT. All sales are
+          final.
+        </p>
+      </div>
+    </div>
+    <div class="flex flex-col gap-5 w-2/3 lg:w-4/12 text-lg text-center">
+      <p class="nifty-text-red">{{ leftForSale }}</p>
+      <div
+        class="flex flex-col gap-5 justify-around p-8 bg-black border-4 rounded-md nifty-border-gold"
+      >
+        <ng-container *ngIf="!hasBattleStarted; else purchaseEnded">
+          <ng-container
+            *ngIf="
+              isPurchaseSuccessful;
+              then purchaseSuccessful;
+              else purchaseCheckout
+            "
+          ></ng-container>
+        </ng-container>
+      </div>
     </div>
   </div>
 </div>

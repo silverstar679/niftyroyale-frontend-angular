@@ -2302,6 +2302,13 @@ alphanum-sort@^1.0.0:
   resolved "https://artifactory.csq.fr:443/api/npm/npm/alphanum-sort/-/alphanum-sort-1.0.2.tgz#97a1119649b211ad33691d9f9f486a8ec9fbe0a3"
   integrity sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
 
+angular-animations@^0.11.0:
+  version "0.11.0"
+  resolved "https://artifactory.csq.fr:443/api/npm/npm/angular-animations/-/angular-animations-0.11.0.tgz#1c36cad9e280c0d9b4ad5fe61a1ddeee517a6a6e"
+  integrity sha1-HDbK2eKAwNm0rV/mGh3e7lF6am4=
+  dependencies:
+    tslib "^2.0.0"
+
 ansi-align@^3.0.0:
   version "3.0.0"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/ansi-align/-/ansi-align-3.0.0.tgz#b536b371cf687caaef236c18d3e21fe3797467cb"
