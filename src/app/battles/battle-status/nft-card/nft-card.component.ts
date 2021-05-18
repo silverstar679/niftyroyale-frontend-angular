@@ -1,8 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { NiftyAssetModel } from '../../../../models/nifty-royale.models';
-import { IMAGE_EXTENSION } from '../../../../models/image-extension';
-import { VIDEO_EXTENSION } from '../../../../models/video-extension';
 
 @Component({
   selector: 'app-nft-card',
@@ -19,14 +17,6 @@ export class NftCardComponent {
     const ownerText = !this.asset.sell_orders ? 'Sell' : 'Cancel Sale';
     const notOwnerText = !this.asset.sell_orders ? 'Make Offer' : 'Buy';
     return this.asset.isOwner ? ownerText : notOwnerText;
-  }
-
-  get isImage(): boolean {
-    return IMAGE_EXTENSION.includes(this.asset.extension);
-  }
-
-  get isVideo(): boolean {
-    return VIDEO_EXTENSION.includes(this.asset.extension);
   }
 
   get isWinner(): boolean {

@@ -16,7 +16,8 @@ export class DropsSaleComponent implements OnInit {
   ethPrice = 0;
   maxMinted = 0;
   totalMinted = 0;
-  nftImage = '';
+  defaultNftImage = '';
+  winnerNftImage = '';
   nftDescription = '';
   battleState = BattleState.STANDBY;
   isPurchaseProcessing = false;
@@ -74,7 +75,8 @@ export class DropsSaleComponent implements OnInit {
       await this.contractService.init(contractAddress);
 
       const {
-        uri,
+        defaultURI,
+        winnerURI,
         name,
         ethPrice,
         maxMinted,
@@ -82,11 +84,13 @@ export class DropsSaleComponent implements OnInit {
         battleState,
       } = await this.contractService.getSaleData();
 
-      const defaultIpfsMetadata = await this.openSeaService
-        .getAssetMetadata(uri)
-        .toPromise();
+      const [defaultIpfsMetadata, winnerIpfsMetadata] = await Promise.all([
+        this.openSeaService.getAssetMetadata(defaultURI).toPromise(),
+        this.openSeaService.getAssetMetadata(winnerURI).toPromise(),
+      ]);
 
-      this.nftImage = defaultIpfsMetadata.image;
+      this.defaultNftImage = defaultIpfsMetadata.image;
+      this.winnerNftImage = winnerIpfsMetadata.image;
       this.nftDescription = defaultIpfsMetadata.description;
 
       this.dropName = name;

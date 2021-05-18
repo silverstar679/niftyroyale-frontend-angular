@@ -43,7 +43,8 @@ export class ContractService {
   async getSaleData(): Promise<any> {
     const [
       baseTokenURI,
-      tokenURI,
+      defaultTokenURI,
+      winnerTokenURI,
       name,
       ethPrice,
       maxMinted,
@@ -52,6 +53,7 @@ export class ContractService {
     ] = await Promise.all([
       this.contract.methods.baseURI().call(),
       this.contract.methods.defaultTokenURI().call(),
+      this.contract.methods.prizeTokenURI().call(),
       this.contract.methods.name().call(),
       this.contract.methods.price().call(),
       this.contract.methods.maxSupply().call(),
@@ -60,7 +62,8 @@ export class ContractService {
     ]);
 
     return {
-      uri: `${baseTokenURI}${tokenURI}`,
+      defaultURI: `${baseTokenURI}${defaultTokenURI}`,
+      winnerURI: `${baseTokenURI}${winnerTokenURI}`,
       name,
       ethPrice,
       maxMinted,
@@ -72,7 +75,7 @@ export class ContractService {
   async getBattleData(): Promise<any> {
     const [
       baseTokenURI,
-      tokenURI,
+      defaultTokenURI,
       name,
       battleState,
       inPlayPlayers,
@@ -96,7 +99,7 @@ export class ContractService {
     const nextEliminationTimestamp = nextElimination * 1000;
 
     return {
-      uri: `${baseTokenURI}${tokenURI}`,
+      defaultURI: `${baseTokenURI}${defaultTokenURI}`,
       name,
       battleState,
       inPlayPlayers,

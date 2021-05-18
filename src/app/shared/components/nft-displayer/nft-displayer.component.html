@@ -1,0 +1,10 @@
+<img
+  *ngIf="isImage"
+  class="block rounded-sm h-auto w-full"
+  [src]="safeNftURL"
+  alt="nft-image"
+/>
+<video *ngIf="isVideo" style="width: auto; height: auto" autoplay loop>
+  <source [src]="safeNftURL" type="video/mp4" />
+  Your browser does not support playing this Video
+</video>

@@ -1,7 +1,6 @@
 import { MessageService } from 'primeng/api';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DomSanitizer } from '@angular/platform-browser';
 import { ContractService } from '../../services/contract.service';
 import { MetamaskService } from '../../services/metamask.service';
 import { OpenSeaService } from '../../services/open-sea.service';
@@ -33,7 +32,6 @@ export class BattleStatusComponent implements OnInit {
     private metamaskService: MetamaskService,
     private openSeaService: OpenSeaService,
     private messageService: MessageService,
-    private sanitizer: DomSanitizer,
     private route: ActivatedRoute
   ) {}
 
@@ -56,7 +54,7 @@ export class BattleStatusComponent implements OnInit {
       await this.contractService.init(contractAddress);
 
       const {
-        uri,
+        defaultURI,
         name,
         battleState,
         inPlayPlayers,
@@ -67,7 +65,7 @@ export class BattleStatusComponent implements OnInit {
       this.initCountdown(nextEliminationTimestamp);
 
       const defaultIpfsMetadata = await this.openSeaService
-        .getAssetMetadata(uri)
+        .getAssetMetadata(defaultURI)
         .toPromise();
 
       this.dropName = name;
@@ -124,16 +122,11 @@ export class BattleStatusComponent implements OnInit {
           placement = this.totalPlayers - outOfPlayIndex;
         }
 
-        const pictureURL =
+        const nftURL =
           placement === 1 ? this.winnerPicture : this.defaultPicture;
-        const extension = pictureURL.split('.').pop();
-        const nftURL = this.sanitizer.bypassSecurityTrustResourceUrl(
-          pictureURL
-        );
 
         return {
           ...asset,
-          extension,
           isEliminated,
           isOwner,
           nftURL,
