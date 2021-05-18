@@ -40,38 +40,6 @@ export class ContractService {
     }
   }
 
-  async getSaleData(): Promise<any> {
-    const [
-      baseTokenURI,
-      defaultTokenURI,
-      winnerTokenURI,
-      name,
-      ethPrice,
-      maxMinted,
-      totalMinted,
-      battleState,
-    ] = await Promise.all([
-      this.contract.methods.baseURI().call(),
-      this.contract.methods.defaultTokenURI().call(),
-      this.contract.methods.prizeTokenURI().call(),
-      this.contract.methods.name().call(),
-      this.contract.methods.price().call(),
-      this.contract.methods.maxSupply().call(),
-      this.contract.methods.totalSupply().call(),
-      this.contract.methods.getBattleState().call(),
-    ]);
-
-    return {
-      defaultURI: `${baseTokenURI}${defaultTokenURI}`,
-      winnerURI: `${baseTokenURI}${winnerTokenURI}`,
-      name,
-      ethPrice,
-      maxMinted,
-      totalMinted,
-      battleState,
-    };
-  }
-
   async getBattleData(): Promise<any> {
     const [
       baseTokenURI,
@@ -105,6 +73,38 @@ export class ContractService {
       inPlayPlayers,
       eliminatedPlayers,
       nextEliminationTimestamp,
+    };
+  }
+
+  async getDropData(): Promise<any> {
+    const [
+      baseTokenURI,
+      defaultTokenURI,
+      winnerTokenURI,
+      name,
+      ethPrice,
+      maxMinted,
+      totalMinted,
+      battleState,
+    ] = await Promise.all([
+      this.contract.methods.baseURI().call(),
+      this.contract.methods.defaultTokenURI().call(),
+      this.contract.methods.prizeTokenURI().call(),
+      this.contract.methods.name().call(),
+      this.contract.methods.price().call(),
+      this.contract.methods.maxSupply().call(),
+      this.contract.methods.totalSupply().call(),
+      this.contract.methods.getBattleState().call(),
+    ]);
+
+    return {
+      defaultURI: `${baseTokenURI}${defaultTokenURI}`,
+      winnerURI: `${baseTokenURI}${winnerTokenURI}`,
+      name,
+      ethPrice,
+      maxMinted,
+      totalMinted,
+      battleState,
     };
   }
 

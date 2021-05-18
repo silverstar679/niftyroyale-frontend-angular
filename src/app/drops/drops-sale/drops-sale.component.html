@@ -4,22 +4,21 @@
 >
   <p class="nifty-text-gold">{{ dropName }}</p>
   <div class="grid grid-cols-1 gap-20 lg:grid-cols-2">
-    <div
-      class="cursor-pointer"
-      (click)="showWinnerNftImage = !showWinnerNftImage"
-    >
-      <div *ngIf="!showWinnerNftImage" [@flipInYOnEnter]>
-        <app-nft-displayer [nftURL]="defaultNftImage"></app-nft-displayer>
-        <p class="mt-2 text-xs">
-          Base NFT Shown. Click on the image to preview winning NFT upgrade.
-        </p>
+    <div class="flex flex-col gap-2">
+      <div
+        class="relative cursor-pointer"
+        (click)="showWinnerNftImage = !showWinnerNftImage"
+      >
+        <app-nft-displayer
+          [ngClass]="[!showWinnerNftImage ? 'block' : 'hidden']"
+          [nftURL]="defaultNftImage"
+        ></app-nft-displayer>
+        <app-nft-displayer
+          [ngClass]="[showWinnerNftImage ? 'block' : 'hidden']"
+          [nftURL]="winnerNftImage"
+        ></app-nft-displayer>
       </div>
-      <div *ngIf="showWinnerNftImage" [@flipInYOnEnter]>
-        <app-nft-displayer [nftURL]="winnerNftImage"></app-nft-displayer>
-        <p class="mt-2 text-xs">
-          Upgraded NFT Shown. Click on the image to preview base NFT.
-        </p>
-      </div>
+      <p class="text-xs">{{ nftImageText }}</p>
     </div>
     <div class="flex flex-col gap-5 text-lg text-center">
       <p class="nifty-text-red">{{ leftForSale }}</p>

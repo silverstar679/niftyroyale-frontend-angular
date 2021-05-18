@@ -1,7 +1,3 @@
-import {
-  flipInYOnEnterAnimation,
-  flipOutYOnLeaveAnimation,
-} from 'angular-animations';
 import { MessageService } from 'primeng/api';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,7 +10,6 @@ import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
 @Component({
   selector: 'app-drops-sale',
   templateUrl: './drops-sale.component.html',
-  animations: [flipInYOnEnterAnimation(), flipOutYOnLeaveAnimation()],
 })
 export class DropsSaleComponent implements OnInit {
   dropName = '';
@@ -58,10 +53,6 @@ export class DropsSaleComponent implements OnInit {
     return this.contractService.gasPrice;
   }
 
-  get transactionHash(): string {
-    return this.contractService.transactionHash;
-  }
-
   get hasBattleStarted(): boolean {
     return this.battleState !== BattleState.STANDBY;
   }
@@ -73,6 +64,17 @@ export class DropsSaleComponent implements OnInit {
   get leftForSale(): string {
     const leftForSale = this.maxMinted - this.totalMinted;
     return `${leftForSale}/${this.maxMinted} left for sale`;
+  }
+
+  get nftImageText(): string {
+    if (this.showWinnerNftImage) {
+      return 'Upgraded NFT Shown. Click on the image to preview base NFT.';
+    }
+    return 'Base NFT Shown. Click on the image to preview winning NFT upgrade.';
+  }
+
+  get transactionHash(): string {
+    return this.contractService.transactionHash;
   }
 
   async ngOnInit(): Promise<void> {
@@ -88,7 +90,7 @@ export class DropsSaleComponent implements OnInit {
         maxMinted,
         totalMinted,
         battleState,
-      } = await this.contractService.getSaleData();
+      } = await this.contractService.getDropData();
 
       const [defaultIpfsMetadata, winnerIpfsMetadata] = await Promise.all([
         this.openSeaService.getAssetMetadata(defaultURI).toPromise(),
