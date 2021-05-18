@@ -1,17 +1,11 @@
 <div
   *ngIf="!isLoading; else loading"
-  class="flex flex-col gap-6 text-xl md:text-2xl lg:text-3xl text-white nifty-font"
+  class="flex flex-col gap-16 w-9/12 mx-auto text-xl md:text-2xl lg:text-3xl text-white nifty-font"
 >
-  <div
-    class="flex flex-row w-full justify-center lg:justify-start nifty-text-gold"
-  >
-    <p>{{ dropName }}</p>
-  </div>
-  <div
-    class="flex flex-col items-center gap-10 lg:flex-row lg:items-stretch md:gap-5"
-  >
+  <p class="nifty-text-gold">{{ dropName }}</p>
+  <div class="grid grid-cols-1 gap-20 lg:grid-cols-2">
     <div
-      class="flex flex-col gap-5 w-2/3 lg:w-3/12 cursor-pointer"
+      class="cursor-pointer"
       (click)="showWinnerNftImage = !showWinnerNftImage"
     >
       <div *ngIf="!showWinnerNftImage" [@flipInYOnEnter]>
@@ -27,25 +21,7 @@
         </p>
       </div>
     </div>
-    <div class="flex flex-col gap-5 w-2/3 lg:w-5/12">
-      <p>NFT Description</p>
-      <p>{{ nftDescription }}</p>
-      <div class="flex flex-col flex-grow justify-end gap-2 text-xs">
-        <p>Disclaimer:</p>
-        <p>
-          This is a signed and limited edition digital creation. With the
-          purchase, you acknowledge that you'll be given the right to use,
-          distribute and display the creation for non-commercial purposes. You
-          may also re-sell the same non-commercial use rights, to the creation,
-          through the secondary sales portal on the Battles page or any other
-          marketplace. Purchase of NFTs from the Drop entitles you to
-          participate in the Battle Royale game for this Drop with a fair chance
-          to win a 1/1 upgrade to replace the winning base NFT. All sales are
-          final.
-        </p>
-      </div>
-    </div>
-    <div class="flex flex-col gap-5 w-2/3 lg:w-4/12 text-lg text-center">
+    <div class="flex flex-col gap-5 text-lg text-center">
       <p class="nifty-text-red">{{ leftForSale }}</p>
       <div
         class="flex flex-col gap-5 justify-around p-8 bg-black border-4 rounded-md nifty-border-gold"
@@ -61,6 +37,23 @@
         </ng-container>
       </div>
     </div>
+  </div>
+  <div class="flex flex-col gap-2">
+    <p>NFT Description</p>
+    <p>{{ nftDescription }}</p>
+  </div>
+  <div class="flex flex-col gap-2 text-xs">
+    <p>Disclaimer:</p>
+    <p>
+      This is a signed and limited edition digital creation. With the purchase,
+      you acknowledge that you'll be given the right to use, distribute and
+      display the creation for non-commercial purposes. You may also re-sell the
+      same non-commercial use rights, to the creation, through the secondary
+      sales portal on the Battles page or any other marketplace. Purchase of
+      NFTs from the Drop entitles you to participate in the Battle Royale game
+      for this Drop with a fair chance to win a 1/1 upgrade to replace the
+      winning base NFT. All sales are final.
+    </p>
   </div>
 </div>
 
