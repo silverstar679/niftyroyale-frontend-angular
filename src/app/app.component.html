@@ -1,13 +1,15 @@
 <div
-  class="flex flex-col gap-5 w-full text-xl sm:flex-row sm:gap-0 sm:text-2xl items-center fixed px-6 py-2 z-10 bg-black nifty-text-gold"
+  class="flex flex-col gap-5 w-full sm:flex-row sm:gap-0 items-center fixed px-6 py-2 z-10 bg-black"
 >
   <img
-    class="w-24 cursor-pointer focus:outline-none"
+    class="w-16 cursor-pointer focus:outline-none"
     routerLink="/drops"
     src="assets/images/logo-beta.webp"
     alt="logo"
   />
-  <div class="flex flex-grow justify-center gap-8 nifty-font">
+  <div
+    class="flex flex-grow justify-center gap-8 text-xl nifty-font nifty-text-gold"
+  >
     <a
       class="hover:underline"
       role="button"
@@ -27,7 +29,7 @@
   </div>
   <div class="flex">
     <button
-      class="text-base sm:text-lg text-white bg-black leading-none rounded nifty-border-red border-2 px-6 py-4"
+      class="text-base text-white bg-black leading-none rounded nifty-border-red border-2 px-6 py-4"
       (click)="onConnection()"
       [disabled]="isAccountConnected"
     >

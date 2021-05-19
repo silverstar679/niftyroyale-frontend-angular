@@ -1,9 +1,9 @@
-<div class="nifty-font">
+<div class="text-sm text-white nifty-font">
   <img
     *ngIf="isWinner"
     class="mx-auto h-16 w-24"
     src="../../../../assets/images/crown.webp"
-    alt="crown"
+    alt="winner_crown"
   />
   <article
     class="bg-black border-4 rounded-lg nifty-border-gold p-2"
@@ -21,7 +21,7 @@
       />
       <app-nft-displayer [nftURL]="asset.nftURL"></app-nft-displayer>
     </div>
-    <header class="flex flex-col text-white text-base">
+    <header class="flex flex-col gap-1">
       <p>Token ID: {{ asset.token_id }}</p>
       <p>Owner: {{ formatAddress(asset.owner.address) }}</p>
       <p>Placement: {{ placement }}</p>
@@ -32,18 +32,14 @@
         Name: {{ asset.name }}
       </p>
     </header>
-    <footer
-      class="flex flex-row items-center justify-center text-white font-bold text-lg p-2"
-    >
-      <div class="flex flex-row justify-center">
-        <button
-          type="button"
-          class="bg-red-500 text-white hover:bg-red-400 focus:outline-none rounded px-4 py-2"
-          (click)="goTo(asset.asset_contract.address, asset.token_id)"
-        >
-          {{ btnText }}
-        </button>
-      </div>
+    <footer class="flex flex-row items-center justify-center p-2">
+      <button
+        type="button"
+        class="bg-red-500 hover:bg-red-400 focus:outline-none rounded px-4 py-2"
+        (click)="goTo(asset.asset_contract.address, asset.token_id)"
+      >
+        {{ btnText }}
+      </button>
     </footer>
   </article>
   <div *ngIf="asset.isOwner" class="text-center text-lg nifty-text-gold mt-1">
