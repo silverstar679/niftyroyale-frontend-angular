@@ -1,12 +1,14 @@
 <div class="container mx-auto py-10">
-  <p
-    class="text-xl md:text-2xl lg:text-3xl nifty-text-red nifty-font mb-5 cursor-pointer"
+  <a
+    class="text-xl md:text-2xl lg:text-3xl nifty-text-red cursor-pointer"
     (click)="backToBattle()"
+    href="javascript:void(0)"
+    role="button"
   >
     Back to battle
-  </p>
+  </a>
   <iframe
-    class="h-screen w-full"
+    class="h-screen w-full mt-5"
     id="opensea-iframe"
     title="Embedded OpenSea Marketplace"
     [src]="openSeaURL$ | async"
