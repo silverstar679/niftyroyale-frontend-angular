@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -14,7 +15,11 @@ const { openSeaURL } = environment;
 export class StoreComponent {
   openSeaURL$: Observable<SafeResourceUrl>;
 
-  constructor(private sanitizer: DomSanitizer, private route: ActivatedRoute) {
+  constructor(
+    private sanitizer: DomSanitizer,
+    private route: ActivatedRoute,
+    private location: Location
+  ) {
     this.openSeaURL$ = this.route.params.pipe(
       map(({ contractAddress, tokenId }) => {
         return this.sanitizer.bypassSecurityTrustResourceUrl(
@@ -22,5 +27,9 @@ export class StoreComponent {
         );
       })
     );
+  }
+
+  backToBattle(): void {
+    this.location.back();
   }
 }
