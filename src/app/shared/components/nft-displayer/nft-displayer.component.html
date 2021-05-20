@@ -4,7 +4,15 @@
   [src]="safeNftURL"
   alt="nft-image"
 />
-<video *ngIf="isVideo" style="width: auto; height: auto" autoplay loop>
+<video
+  *ngIf="isVideo"
+  style="width: auto; height: auto"
+  loop
+  muted
+  autoplay
+  oncanplay="this.play()"
+  onloadedmetadata="this.muted = true"
+>
   <source [src]="safeNftURL" type="video/mp4" />
   Your browser does not support playing this Video
 </video>
