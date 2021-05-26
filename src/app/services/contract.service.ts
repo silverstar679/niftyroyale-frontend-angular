@@ -5,9 +5,8 @@ import { map } from 'rxjs/operators';
 import { ETHEREUM } from './ethereum.token';
 import { environment } from '../../environments/environment';
 
-const { NETWORK, ETHERSCAN_API_KEY, ALCHEMY_KEY, INFURA_KEY } = environment;
-const chain = NETWORK || NETWORK !== 'mainnet' ? `api-${NETWORK}` : 'api';
-const etherscanBaseAPI = `https://${chain}.etherscan.io/api?apikey=${ETHERSCAN_API_KEY}`;
+const { NETWORK, ALCHEMY_KEY, INFURA_KEY } = environment;
+const etherscanBaseAPI = `https://api.niftyroyale.com/etherscan/${NETWORK}`;
 const infuraProvider = `https://${NETWORK}.infura.io/v3/${INFURA_KEY}`;
 const alchemyProvider = `https://eth-${NETWORK}.alchemyapi.io/v2/${ALCHEMY_KEY}`;
 
@@ -122,7 +121,7 @@ export class ContractService {
   }
 
   private _getAverageGasPrice(): Promise<number> {
-    const url = `${etherscanBaseAPI}&module=gastracker&action=gasoracle`;
+    const url = `${etherscanBaseAPI}/gas-tracker`;
     return this.http
       .get<any>(url)
       .pipe(map(({ result }) => result.FastGasPrice))
@@ -153,7 +152,7 @@ export class ContractService {
 
   private _loadABI(address: string): Promise<any> {
     if (!this.abi) {
-      const url = `${etherscanBaseAPI}&module=contract&action=getabi&address=${address}&format=raw`;
+      const url = `${etherscanBaseAPI}/contract-abi/${address}`;
       return this.http.get<any>(url).toPromise();
     }
     return Promise.resolve(this.abi);

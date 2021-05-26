@@ -4,11 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "NODE_ENV=production ng build --prod --aot",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "deploy": "NODE_ENV=production ng build --prod --aot && firebase deploy"
+    "deploy": "ng build && firebase deploy"
   },
   "private": true,
   "dependencies": {
