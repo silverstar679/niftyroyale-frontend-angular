@@ -4,13 +4,19 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { NETWORK } from './network.token';
 import { OpenSeaAsset } from '../../models/opensea.types';
-import { IpfsMetadataModel } from '../../models/nifty-royale.models';
+import {
+  EthereumNetwork,
+  IpfsMetadataModel,
+} from '../../models/nifty-royale.models';
 
 @Injectable()
 export class OpenSeaService {
   private readonly openseaBaseAPI: string;
 
-  constructor(@Inject(NETWORK) private network: any, private http: HttpClient) {
+  constructor(
+    @Inject(NETWORK) private network: EthereumNetwork,
+    private http: HttpClient
+  ) {
     this.openseaBaseAPI = `https://api.niftyroyale.com/opensea/${network}`;
   }
 

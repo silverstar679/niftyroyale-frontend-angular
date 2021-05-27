@@ -1,5 +1,11 @@
 import { OpenSeaAsset } from './opensea.types';
 
+export enum EthereumNetwork {
+  MAINNET = 'mainnet',
+  RINKEBY = 'rinkeby',
+  KOVAN = 'kovan',
+}
+
 export enum BattleState {
   STANDBY = 'STANDBY',
   RUNNING = 'RUNNING',

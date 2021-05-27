@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { NETWORK } from '../../services/network.token';
 import { Contract, CONTRACTS } from '../../../models/contracts';
+import { EthereumNetwork } from '../../../models/nifty-royale.models';
 
 @Component({
   selector: 'app-list',
@@ -10,7 +11,10 @@ import { Contract, CONTRACTS } from '../../../models/contracts';
 export class DropsListComponent {
   drops: Contract[];
 
-  constructor(@Inject(NETWORK) private network: any, private router: Router) {
+  constructor(
+    @Inject(NETWORK) private network: EthereumNetwork,
+    private router: Router
+  ) {
     this.drops = CONTRACTS[network];
   }
 

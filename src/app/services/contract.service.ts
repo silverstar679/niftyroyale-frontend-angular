@@ -2,6 +2,7 @@ import Web3 from 'web3';
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { EthereumNetwork } from '../../models/nifty-royale.models';
 import { ETHEREUM } from './ethereum.token';
 import { NETWORK } from './network.token';
 import { environment } from '../../environments/environment';
@@ -21,7 +22,7 @@ export class ContractService {
   private readonly alchemyProvider: string;
 
   constructor(
-    @Inject(NETWORK) private network: any,
+    @Inject(NETWORK) private network: EthereumNetwork,
     @Inject(ETHEREUM) private ethereum: any,
     private http: HttpClient
   ) {

@@ -1,12 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { Location } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
-
-const { openSeaURL } = environment;
+import { NETWORK } from '../services/network.token';
+import { EthereumNetwork } from '../../models/nifty-royale.models';
 
 @Component({
   selector: 'app-store',
@@ -16,10 +15,14 @@ export class StoreComponent {
   openSeaURL$: Observable<SafeResourceUrl>;
 
   constructor(
+    @Inject(NETWORK) private network: EthereumNetwork,
     private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private location: Location
   ) {
+    const openSeaNetwork =
+      EthereumNetwork.MAINNET !== this.network ? 'testnets.' : '';
+    const openSeaURL = `https://${openSeaNetwork}opensea.io/assets`;
     this.openSeaURL$ = this.route.params.pipe(
       map(({ contractAddress, tokenId }) => {
         return this.sanitizer.bypassSecurityTrustResourceUrl(
