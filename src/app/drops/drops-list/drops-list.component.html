@@ -1,12 +1,21 @@
 <div class="flex flex-col gap-5 text-white">
-  <div
-    *ngFor="let drop of drops"
-    (click)="goTo(drop.address)"
-    class="flex flex-row items-center gap-5 p-5 w-full bg-black border-4 rounded-lg nifty-border-gold cursor-pointer"
-  >
-    <div class="flex-shrink">
-      <img class="w-16" src="assets/images/logo-beta.webp" alt="battle-logo" />
+  <ng-container *ngIf="!drops.length; else dropsResult">
+    <p>No drops yet!</p>
+  </ng-container>
+  <ng-template #dropsResult>
+    <div
+      *ngFor="let drop of drops"
+      (click)="goTo(drop.address)"
+      class="flex flex-row items-center gap-5 p-5 w-full bg-black border-4 rounded-lg nifty-border-gold cursor-pointer"
+    >
+      <div class="flex-shrink">
+        <img
+          class="w-16"
+          src="assets/images/logo-beta.webp"
+          alt="battle-logo"
+        />
+      </div>
+      <div class="flex-1 text-base md:text-lg">{{ drop.name }}</div>
     </div>
-    <div class="flex-1 text-base md:text-lg">{{ drop.name }}</div>
-  </div>
+  </ng-template>
 </div>

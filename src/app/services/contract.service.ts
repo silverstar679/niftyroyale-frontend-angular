@@ -3,12 +3,10 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { ETHEREUM } from './ethereum.token';
+import { NETWORK } from './network.token';
 import { environment } from '../../environments/environment';
 
-const { NETWORK, ALCHEMY_KEY, INFURA_KEY } = environment;
-const etherscanBaseAPI = `https://api.niftyroyale.com/etherscan/${NETWORK}`;
-const infuraProvider = `https://${NETWORK}.infura.io/v3/${INFURA_KEY}`;
-const alchemyProvider = `https://eth-${NETWORK}.alchemyapi.io/v2/${ALCHEMY_KEY}`;
+const { ALCHEMY_KEY, INFURA_KEY } = environment;
 
 @Injectable()
 export class ContractService {
@@ -18,11 +16,19 @@ export class ContractService {
   public gasLimit = 500000;
   public gasPrice = 0;
   public transactionHash = '';
+  private readonly etherscanBaseAPI: string;
+  private readonly infuraProvider: string;
+  private readonly alchemyProvider: string;
 
   constructor(
+    @Inject(NETWORK) private network: any,
     @Inject(ETHEREUM) private ethereum: any,
     private http: HttpClient
-  ) {}
+  ) {
+    this.etherscanBaseAPI = `https://api.niftyroyale.com/etherscan/${network}`;
+    this.infuraProvider = `https://${network}.infura.io/v3/${INFURA_KEY}`;
+    this.alchemyProvider = `https://eth-${network}.alchemyapi.io/v2/${ALCHEMY_KEY}`;
+  }
 
   async init(address: string): Promise<any> {
     try {
@@ -121,7 +127,7 @@ export class ContractService {
   }
 
   private _getAverageGasPrice(): Promise<number> {
-    const url = `${etherscanBaseAPI}/gas-tracker`;
+    const url = `${this.etherscanBaseAPI}/gas-tracker`;
     return this.http
       .get<any>(url)
       .pipe(map(({ result }) => result.FastGasPrice))
@@ -133,8 +139,8 @@ export class ContractService {
       if (!this.web3) {
         try {
           const defaultProvider = Boolean(INFURA_KEY)
-            ? infuraProvider
-            : alchemyProvider;
+            ? this.infuraProvider
+            : this.alchemyProvider;
           const metamaskProvider = this.ethereum;
           const provider = Boolean(metamaskProvider)
             ? metamaskProvider
@@ -152,7 +158,7 @@ export class ContractService {
 
   private _loadABI(address: string): Promise<any> {
     if (!this.abi) {
-      const url = `${etherscanBaseAPI}/contract-abi/${address}`;
+      const url = `${this.etherscanBaseAPI}/contract-abi/${address}`;
       return this.http.get<any>(url).toPromise();
     }
     return Promise.resolve(this.abi);

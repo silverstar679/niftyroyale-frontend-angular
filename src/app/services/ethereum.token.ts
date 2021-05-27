@@ -1,7 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { inject, InjectionToken } from '@angular/core';
 
-export const ETHEREUM = new InjectionToken<any>('Ethereum window object', {
+export const ETHEREUM = new InjectionToken<any>('ETHEREUM WINDOW OBJECT', {
   providedIn: 'root',
   factory: () => {
     const { defaultView } = inject(DOCUMENT);
