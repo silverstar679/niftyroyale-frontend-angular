@@ -19,6 +19,7 @@
       <app-nft-card
         *ngFor="let asset of assets"
         [asset]="asset"
+        [contractAddress]="contractAddress"
         [totalPlayers]="totalPlayers"
       ></app-nft-card>
     </div>

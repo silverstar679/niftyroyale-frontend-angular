@@ -1,5 +1,3 @@
-import { OpenSeaAsset } from './opensea.types';
-
 export enum EthereumNetwork {
   MAINNET = 'mainnet',
   RINKEBY = 'rinkeby',
@@ -20,10 +18,14 @@ export interface IpfsMetadataModel {
   name: string;
 }
 
-export interface NiftyAssetModel extends OpenSeaAsset {
+export interface NiftyAssetModel {
+  contractAddress: string;
   extension: string;
   isEliminated: boolean;
   isOwner: boolean;
+  name: string;
   nftURL: string;
+  ownerAddress: string;
   placement: number;
+  tokenId: string;
 }

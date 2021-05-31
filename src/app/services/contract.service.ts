@@ -114,6 +114,10 @@ export class ContractService {
     };
   }
 
+  getOwnerAddress(tokenId: string): Promise<string> {
+    return this.contract.methods.ownerOf(tokenId).call();
+  }
+
   getTokenURI(tokenId: string): Promise<string> {
     return this.contract.methods.tokenURI(tokenId).call();
   }

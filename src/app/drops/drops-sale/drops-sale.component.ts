@@ -1,17 +1,19 @@
 import { MessageService } from 'primeng/api';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContractService } from '../../services/contract.service';
 import { MetamaskService } from '../../services/metamask.service';
 import { OpenSeaService } from '../../services/open-sea.service';
 import { BattleState } from '../../../models/nifty-royale.models';
 import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
+import { Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-drops-sale',
   templateUrl: './drops-sale.component.html',
 })
-export class DropsSaleComponent implements OnInit {
+export class DropsSaleComponent implements OnInit, OnDestroy {
   dropName = '';
   ethPrice = 0;
   maxMinted = 0;
@@ -20,10 +22,13 @@ export class DropsSaleComponent implements OnInit {
   winnerNftImage = '';
   nftDescription = '';
   battleState = BattleState.STANDBY;
+  hasBattleStarted = false;
+  isAccountConnected = false;
   isPurchaseProcessing = false;
   isPurchaseSuccessful = false;
   isLoading = true;
   showWinnerNftImage = false;
+  private subscriptions = new Subscription();
 
   constructor(
     private contractService: ContractService,
@@ -32,7 +37,11 @@ export class DropsSaleComponent implements OnInit {
     private messageService: MessageService,
     private route: ActivatedRoute,
     private router: Router
-  ) {}
+  ) {
+    this.subscriptions = this.metamaskService.account$
+      .pipe(tap((account) => (this.isAccountConnected = Boolean(account))))
+      .subscribe();
+  }
 
   get checkoutBtnText(): string {
     if (this.isPurchaseProcessing) {
@@ -51,14 +60,6 @@ export class DropsSaleComponent implements OnInit {
 
   get gasPrice(): number {
     return this.contractService.gasPrice;
-  }
-
-  get hasBattleStarted(): boolean {
-    return this.battleState !== BattleState.STANDBY;
-  }
-
-  get isAccountConnected(): boolean {
-    return this.metamaskService.isAccountConnected;
   }
 
   get leftForSale(): string {
@@ -81,31 +82,7 @@ export class DropsSaleComponent implements OnInit {
     try {
       const { contractAddress } = this.route.snapshot.params;
       await this.contractService.init(contractAddress);
-
-      const {
-        defaultURI,
-        winnerURI,
-        name,
-        ethPrice,
-        maxMinted,
-        totalMinted,
-        battleState,
-      } = await this.contractService.getDropData();
-
-      const [defaultIpfsMetadata, winnerIpfsMetadata] = await Promise.all([
-        this.openSeaService.getAssetMetadata(defaultURI).toPromise(),
-        this.openSeaService.getAssetMetadata(winnerURI).toPromise(),
-      ]);
-
-      this.defaultNftImage = defaultIpfsMetadata.image;
-      this.winnerNftImage = winnerIpfsMetadata.image;
-      this.nftDescription = defaultIpfsMetadata.description;
-
-      this.dropName = name;
-      this.ethPrice = Number(ethPrice);
-      this.maxMinted = maxMinted;
-      this.totalMinted = totalMinted;
-      this.battleState = battleState;
+      await this.initDropData();
       this.isLoading = false;
     } catch (error) {
       this.messageService.add({
@@ -139,16 +116,13 @@ export class DropsSaleComponent implements OnInit {
       this.messageService.add({
         severity: SEVERITY.ERROR,
         summary: SUMMARY.ERROR_OCCURRED,
-        detail: error.message,
+        detail:
+          error.message.split('{')[0] +
+          'you have already purchased one NFT with this account.',
         sticky: true,
       });
     }
     this.isPurchaseProcessing = false;
-  }
-
-  goToBattle(): Promise<boolean> {
-    const { contractAddress } = this.route.snapshot.params;
-    return this.router.navigate([`battles/status/${contractAddress}`]);
   }
 
   formatAddress(address: string): string {
@@ -156,5 +130,42 @@ export class DropsSaleComponent implements OnInit {
     const firstChar = address.slice(0, 6);
     const lastChar = address.slice(length - 4, length);
     return `${firstChar}...${lastChar}`;
+  }
+
+  goToBattle(): Promise<boolean> {
+    const { contractAddress } = this.route.snapshot.params;
+    return this.router.navigate([`battles/status/${contractAddress}`]);
+  }
+
+  private async initDropData(): Promise<void> {
+    const {
+      defaultURI,
+      winnerURI,
+      name,
+      ethPrice,
+      maxMinted,
+      totalMinted,
+      battleState,
+    } = await this.contractService.getDropData();
+
+    const [defaultIpfsMetadata, winnerIpfsMetadata] = await Promise.all([
+      this.openSeaService.getAssetMetadata(defaultURI).toPromise(),
+      this.openSeaService.getAssetMetadata(winnerURI).toPromise(),
+    ]);
+
+    this.nftDescription = defaultIpfsMetadata.description;
+    this.defaultNftImage = defaultIpfsMetadata.image;
+    this.winnerNftImage = winnerIpfsMetadata.image;
+
+    this.battleState = battleState;
+    this.dropName = name;
+    this.ethPrice = Number(ethPrice);
+    this.hasBattleStarted = this.battleState !== BattleState.STANDBY;
+    this.maxMinted = maxMinted;
+    this.totalMinted = totalMinted;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

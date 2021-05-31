@@ -1,14 +1,14 @@
 <div class="text-sm text-white">
   <img
-    *ngIf="isWinner"
+    *ngIf="asset.placement === 1"
     class="mx-auto h-16 w-24"
-    src="../../../../assets/images/crown.webp"
+    src="assets/images/crown.webp"
     alt="winner_crown"
   />
   <article
     class="bg-black border-4 rounded-lg nifty-border-gold p-2"
     [ngClass]="{
-      'mt-16': !isWinner,
+      'mt-16': asset.placement !== 1,
       'nifty-border-red': asset.isOwner
     }"
   >
@@ -16,14 +16,14 @@
       <img
         *ngIf="asset.isEliminated"
         class="absolute h-full w-full z-10"
-        src="../../../../assets/images/cross.webp"
+        src="assets/images/cross.webp"
         alt="cross"
       />
       <app-nft-displayer [nftURL]="asset.nftURL"></app-nft-displayer>
     </div>
     <header class="flex flex-col gap-1">
-      <p>Token ID: {{ asset.token_id }}</p>
-      <p>Owner: {{ formatAddress(asset.owner.address) }}</p>
+      <p>Token ID: {{ asset.tokenId }}</p>
+      <p>Owner: {{ formatAddress(asset.ownerAddress) }}</p>
       <p>Placement: {{ placement }}</p>
       <p
         class="whitespace-nowrap overflow-hidden overflow-ellipsis"
@@ -36,7 +36,7 @@
       <button
         type="button"
         class="bg-red-500 hover:bg-red-400 focus:outline-none rounded px-4 py-2"
-        (click)="goTo(asset.asset_contract.address, asset.token_id)"
+        (click)="goTo(contractAddress, asset.tokenId)"
       >
         {{ btnText }}
       </button>

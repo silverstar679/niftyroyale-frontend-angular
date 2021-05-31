@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { Location } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -10,15 +10,16 @@ import { EthereumNetwork } from '../../models/nifty-royale.models';
 @Component({
   selector: 'app-store',
   templateUrl: './store.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoreComponent {
   openSeaURL$: Observable<SafeResourceUrl>;
 
   constructor(
     @Inject(NETWORK) private network: EthereumNetwork,
-    private sanitizer: DomSanitizer,
+    private location: Location,
     private route: ActivatedRoute,
-    private location: Location
+    private sanitizer: DomSanitizer
   ) {
     const openSeaNetwork =
       EthereumNetwork.MAINNET !== this.network ? 'testnets.' : '';

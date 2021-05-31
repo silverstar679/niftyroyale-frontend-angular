@@ -2,8 +2,8 @@ import { MessageService } from 'primeng/api';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ContractService } from '../../services/contract.service';
-import { MetamaskService } from '../../services/metamask.service';
 import { OpenSeaService } from '../../services/open-sea.service';
+import { MetamaskService } from '../../services/metamask.service';
 import {
   BattleState,
   NiftyAssetModel,
@@ -17,8 +17,12 @@ import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
 export class BattleStatusComponent implements OnInit {
   battleStates = BattleState;
   assets = [] as NiftyAssetModel[];
+  ownerAddresses: { [tokenId: string]: string } = {};
+  contractAddress = '';
   dropName = '';
+  defaultNftName = '';
   defaultPicture = '';
+  winnerNftName = '';
   winnerPicture = '';
   currBattleState = '';
   inPlayPlayers = [] as string[];
@@ -48,46 +52,20 @@ export class BattleStatusComponent implements OnInit {
     return '';
   }
 
+  get isBattleEnded(): boolean {
+    return (
+      this.currBattleState === BattleState.ENDED &&
+      1 === this.inPlayPlayers.length
+    );
+  }
+
   async ngOnInit(): Promise<void> {
     try {
-      const { contractAddress } = this.route.snapshot.params;
-      await this.contractService.init(contractAddress);
-
-      const {
-        defaultURI,
-        name,
-        battleState,
-        inPlayPlayers,
-        eliminatedPlayers,
-        nextEliminationTimestamp,
-      } = await this.contractService.getBattleData();
-
-      this.initCountdown(nextEliminationTimestamp);
-
-      const defaultIpfsMetadata = await this.openSeaService
-        .getAssetMetadata(defaultURI)
-        .toPromise();
-
-      this.dropName = name;
-      this.defaultPicture = defaultIpfsMetadata.image;
-      this.currBattleState = battleState;
-      this.eliminatedPlayers = eliminatedPlayers;
-      this.inPlayPlayers = inPlayPlayers;
-      this.totalPlayers = inPlayPlayers.length + eliminatedPlayers.length;
-
-      if (
-        this.inPlayPlayers.length === 1 &&
-        this.currBattleState === BattleState.ENDED
-      ) {
-        const winnerTokenId = this.inPlayPlayers[0];
-        const winnerURI = await this.contractService.getTokenURI(winnerTokenId);
-        const winnerIpfsMetadata = await this.openSeaService
-          .getAssetMetadata(winnerURI)
-          .toPromise();
-        this.winnerPicture = winnerIpfsMetadata.image;
-      }
-
-      this.assets = await this.getMintedAssets(contractAddress);
+      this.contractAddress = this.route.snapshot.params.contractAddress;
+      await this.contractService.init(this.contractAddress);
+      await this.initBattleData();
+      await this.getOwnerAddresses();
+      this.assets = this.getMintedAssets();
       this.isLoading = false;
     } catch (error) {
       this.messageService.add({
@@ -99,47 +77,91 @@ export class BattleStatusComponent implements OnInit {
     }
   }
 
-  private async getMintedAssets(address: string): Promise<NiftyAssetModel[]> {
-    const assets = await this.openSeaService.getAssets(address).toPromise();
+  private getMintedAssets(): NiftyAssetModel[] {
+    const assets = [] as NiftyAssetModel[];
 
-    return assets
-      .map((asset) => {
-        const outOfPlayIndex = this.eliminatedPlayers.indexOf(
-          asset.token_id || ''
-        );
-        const isEliminated = outOfPlayIndex !== -1;
-        const isOwner = this.metamaskService.isOwnerAddress(
-          asset.owner.address
-        );
-        const isWinner =
-          BattleState.ENDED === this.currBattleState &&
-          1 === this.inPlayPlayers.length &&
-          asset.token_id === this.inPlayPlayers[0];
-        let placement = 0;
-        if (isWinner) {
-          placement = 1;
-        } else if (isEliminated) {
-          placement = this.totalPlayers - outOfPlayIndex;
-        }
+    for (let i = 1; i <= this.totalPlayers; i++) {
+      const asset = {
+        tokenId: `${i}`,
+        isEliminated: false,
+        isOwner: false,
+        name: '',
+        nftURL: '',
+        ownerAddress: '',
+        placement: 0,
+      } as NiftyAssetModel;
 
-        const nftURL =
-          placement === 1 ? this.winnerPicture : this.defaultPicture;
+      const outOfPlayIndex = this.eliminatedPlayers.indexOf(asset.tokenId);
+      asset.isEliminated = outOfPlayIndex !== -1;
+      asset.ownerAddress = this.ownerAddresses[`${i}`];
+      asset.isOwner = this.metamaskService.isOwnerAddress(asset.ownerAddress);
+      const isWinner =
+        this.isBattleEnded && asset.tokenId === this.inPlayPlayers[0];
+      if (isWinner) {
+        asset.placement = 1;
+      } else if (asset.isEliminated) {
+        asset.placement = this.totalPlayers - outOfPlayIndex;
+      }
+      asset.name =
+        asset.placement === 1 ? this.winnerNftName : this.defaultNftName;
+      asset.nftURL =
+        asset.placement === 1 ? this.winnerPicture : this.defaultPicture;
+      assets.push(asset);
+    }
 
-        return {
-          ...asset,
-          isEliminated,
-          isOwner,
-          nftURL,
-          placement,
-        } as NiftyAssetModel;
-      })
-      .sort((a, b) => {
-        return (
-          Number(b.isOwner) - Number(a.isOwner) ||
-          Number(a.isEliminated) - Number(b.isEliminated) ||
-          Number(a.token_id) - Number(b.token_id)
-        );
-      });
+    return assets.sort((a, b) => {
+      return (
+        Number(b.isOwner) - Number(a.isOwner) ||
+        Number(a.isEliminated) - Number(b.isEliminated) ||
+        Number(a.tokenId) - Number(b.tokenId)
+      );
+    });
+  }
+
+  private async getOwnerAddresses(): Promise<void> {
+    const promises = [];
+    for (let i = 1; i <= this.totalPlayers; i++) {
+      promises.push(this.contractService.getOwnerAddress(`${i}`));
+    }
+    const ownerAddresses = await Promise.all(promises);
+    for (let i = 0; i < ownerAddresses.length; i++) {
+      this.ownerAddresses[`${i + 1}`] = ownerAddresses[i].toLowerCase();
+    }
+  }
+
+  private async initBattleData(): Promise<void> {
+    const {
+      defaultURI,
+      name,
+      battleState,
+      inPlayPlayers,
+      eliminatedPlayers,
+      nextEliminationTimestamp,
+    } = await this.contractService.getBattleData();
+
+    const defaultIpfsMetadata = await this.openSeaService
+      .getAssetMetadata(defaultURI)
+      .toPromise();
+
+    this.dropName = name;
+    this.defaultNftName = defaultIpfsMetadata.name;
+    this.defaultPicture = defaultIpfsMetadata.image;
+    this.currBattleState = battleState;
+    this.eliminatedPlayers = eliminatedPlayers;
+    this.inPlayPlayers = inPlayPlayers;
+    this.totalPlayers = inPlayPlayers.length + eliminatedPlayers.length;
+
+    if (this.isBattleEnded) {
+      const winnerTokenId = this.inPlayPlayers[0];
+      const winnerURI = await this.contractService.getTokenURI(winnerTokenId);
+      const winnerIpfsMetadata = await this.openSeaService
+        .getAssetMetadata(winnerURI)
+        .toPromise();
+      this.winnerNftName = winnerIpfsMetadata.name;
+      this.winnerPicture = winnerIpfsMetadata.image;
+    }
+
+    this.initCountdown(nextEliminationTimestamp);
   }
 
   private initCountdown(nextEliminationTimestamp: number): void {
