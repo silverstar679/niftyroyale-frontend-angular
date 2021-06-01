@@ -8,22 +8,24 @@
     alt="logo"
   />
   <div class="flex flex-grow justify-center gap-8 text-xl nifty-text-gold">
-    <a
-      class="hover:underline"
-      role="button"
-      routerLink="/drops"
-      [routerLinkActive]="['underline', 'nifty-text-red']"
-    >
-      Drops
-    </a>
-    <a
-      class="hover:underline"
-      role="button"
-      routerLink="/battles"
-      [routerLinkActive]="['underline', 'nifty-text-red']"
-    >
-      Battles
-    </a>
+    <ng-container *ngIf="isGoodNetwork">
+      <a
+        class="hover:underline"
+        role="button"
+        routerLink="/drops"
+        [routerLinkActive]="['underline', 'nifty-text-red']"
+      >
+        Drops
+      </a>
+      <a
+        class="hover:underline"
+        role="button"
+        routerLink="/battles"
+        [routerLinkActive]="['underline', 'nifty-text-red']"
+      >
+        Battles
+      </a>
+    </ng-container>
   </div>
   <div class="flex">
     <button
@@ -38,6 +40,6 @@
 </div>
 
 <div class="container w-4/5 mx-auto pt-64 pb-10 sm:pt-36">
-  <router-outlet></router-outlet>
+  <router-outlet *ngIf="isGoodNetwork"></router-outlet>
   <p-toast position="bottom-left"></p-toast>
 </div>

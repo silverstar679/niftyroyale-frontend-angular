@@ -1,20 +1,29 @@
 import MetaMaskOnboarding from '@metamask/onboarding';
 import { MessageService } from 'primeng/api';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
+import { filter, skip, tap } from 'rxjs/operators';
 import { SEVERITY, SUMMARY } from '../models/toast.enum';
+import { ETHEREUM } from './services/ethereum.token';
+import { NETWORK } from './services/network.token';
 import { MetamaskService } from './services/metamask.service';
+import { EthereumNetwork } from '../models/nifty-royale.models';
 
 const currentUrl = new URL(window.location.href);
 const isLocalhost = currentUrl.hostname === 'localhost';
 const forwarderOrigin = isLocalhost ? 'http://localhost:4200' : undefined;
 
-enum METAMASK_BTN_TEXTS {
-  CONNECT = 'Connect Wallet',
-  INSTALL = 'Install MetaMask',
-}
+const METAMASK_BTN_TEXTS = {
+  CONNECT: 'Connect Wallet',
+  INSTALL: 'Install MetaMask',
+};
+
+const networkChainIds = {
+  mainnet: '0x1',
+  rinkeby: '0x4',
+  kovan: '0x2a',
+};
 
 @Component({
   selector: 'app-root',
@@ -23,6 +32,7 @@ enum METAMASK_BTN_TEXTS {
 export class AppComponent implements OnInit, OnDestroy {
   public isAccountConnected = false;
   public metamaskBtnText = '';
+  public isGoodNetwork = false;
   private subscriptions = new Subscription();
 
   private static formatAddress(address: string): string {
@@ -33,6 +43,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   constructor(
+    @Inject(ETHEREUM) private ethereum: any,
+    @Inject(NETWORK) private network: EthereumNetwork,
     private messageService: MessageService,
     private metamaskService: MetamaskService,
     private router: Router
@@ -40,6 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscriptions = this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
+        skip(1),
         tap(() => this.messageService.clear())
       )
       .subscribe();
@@ -61,6 +74,18 @@ export class AppComponent implements OnInit, OnDestroy {
             this.metamaskBtnText = this.isAccountConnected
               ? AppComponent.formatAddress(account)
               : this.disconnectedText;
+            this.isGoodNetwork =
+              networkChainIds[this.network] === this.ethereum.chainId;
+            if (!this.isGoodNetwork) {
+              return this.messageService.add({
+                severity: SEVERITY.ERROR,
+                summary: `${
+                  SUMMARY.WRONG_NETWORK
+                }${this.network.toUpperCase()}.`,
+                sticky: true,
+                closable: false,
+              });
+            }
             if (!account) {
               return this.messageService.add({
                 severity: SEVERITY.INFO,
