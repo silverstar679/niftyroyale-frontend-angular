@@ -65,7 +65,7 @@ export class BattleStatusComponent implements OnInit {
       await this.contractService.init(this.contractAddress);
       await this.initBattleData();
       await this.getOwnerAddresses();
-      this.assets = this.getMintedAssets();
+      this.assets = await this.getMintedAssets();
       this.isLoading = false;
     } catch (error) {
       this.messageService.add({
@@ -77,45 +77,48 @@ export class BattleStatusComponent implements OnInit {
     }
   }
 
-  private getMintedAssets(): NiftyAssetModel[] {
-    const assets = [] as NiftyAssetModel[];
+  private async getMintedAssets(): Promise<NiftyAssetModel[]> {
+    const assets = await this.openSeaService
+      .getAssets(this.contractAddress)
+      .toPromise();
 
-    for (let i = 1; i <= this.totalPlayers; i++) {
-      const asset = {
-        tokenId: `${i}`,
-        isEliminated: false,
-        isOwner: false,
-        name: '',
-        nftURL: '',
-        ownerAddress: '',
-        placement: 0,
-      } as NiftyAssetModel;
+    return assets
+      .map((a) => {
+        const asset = {
+          ...a,
+          tokenId: a.token_id,
+          isEliminated: false,
+          isOwner: false,
+          name: '',
+          nftURL: '',
+          ownerAddress: '',
+          placement: 0,
+        } as NiftyAssetModel;
 
-      const outOfPlayIndex = this.eliminatedPlayers.indexOf(asset.tokenId);
-      asset.isEliminated = outOfPlayIndex !== -1;
-      asset.ownerAddress = this.ownerAddresses[`${i}`];
-      asset.isOwner = this.metamaskService.isOwnerAddress(asset.ownerAddress);
-      const isWinner =
-        this.isBattleEnded && asset.tokenId === this.inPlayPlayers[0];
-      if (isWinner) {
-        asset.placement = 1;
-      } else if (asset.isEliminated) {
-        asset.placement = this.totalPlayers - outOfPlayIndex;
-      }
-      asset.name =
-        asset.placement === 1 ? this.winnerNftName : this.defaultNftName;
-      asset.nftURL =
-        asset.placement === 1 ? this.winnerPicture : this.defaultPicture;
-      assets.push(asset);
-    }
-
-    return assets.sort((a, b) => {
-      return (
-        Number(b.isOwner) - Number(a.isOwner) ||
-        Number(a.isEliminated) - Number(b.isEliminated) ||
-        Number(a.tokenId) - Number(b.tokenId)
-      );
-    });
+        const outOfPlayIndex = this.eliminatedPlayers.indexOf(asset.tokenId);
+        asset.isEliminated = outOfPlayIndex !== -1;
+        asset.ownerAddress = this.ownerAddresses[asset.tokenId];
+        asset.isOwner = this.metamaskService.isOwnerAddress(asset.ownerAddress);
+        const isWinner =
+          this.isBattleEnded && asset.tokenId === this.inPlayPlayers[0];
+        if (isWinner) {
+          asset.placement = 1;
+        } else if (asset.isEliminated) {
+          asset.placement = this.totalPlayers - outOfPlayIndex;
+        }
+        asset.name =
+          asset.placement === 1 ? this.winnerNftName : this.defaultNftName;
+        asset.nftURL =
+          asset.placement === 1 ? this.winnerPicture : this.defaultPicture;
+        return asset;
+      })
+      .sort((a, b) => {
+        return (
+          Number(b.isOwner) - Number(a.isOwner) ||
+          Number(a.isEliminated) - Number(b.isEliminated) ||
+          Number(a.tokenId) - Number(b.tokenId)
+        );
+      });
   }
 
   private async getOwnerAddresses(): Promise<void> {
