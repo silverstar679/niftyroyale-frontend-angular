@@ -2,9 +2,9 @@ import Web3 from 'web3';
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { EthereumNetwork } from '../../models/nifty-royale.models';
 import { ETHEREUM } from './ethereum.token';
 import { NETWORK } from './network.token';
+import { EthereumNetwork } from '../../models/nifty-royale.models';
 import { environment } from '../../environments/environment';
 
 const { ALCHEMY_KEY, INFURA_KEY } = environment;
@@ -89,6 +89,7 @@ export class ContractService {
       winnerTokenURI,
       name,
       ethPrice,
+      maxUnits,
       maxMinted,
       totalMinted,
       battleState,
@@ -98,6 +99,7 @@ export class ContractService {
       this.contract.methods.prizeTokenURI().call(),
       this.contract.methods.name().call(),
       this.contract.methods.price().call(),
+      this.contract.methods.unitsPerTransaction().call(),
       this.contract.methods.maxSupply().call(),
       this.contract.methods.totalSupply().call(),
       this.contract.methods.getBattleState().call(),
@@ -108,6 +110,7 @@ export class ContractService {
       winnerURI: `${baseTokenURI}${winnerTokenURI}`,
       name,
       ethPrice,
+      maxUnits,
       maxMinted,
       totalMinted,
       battleState,

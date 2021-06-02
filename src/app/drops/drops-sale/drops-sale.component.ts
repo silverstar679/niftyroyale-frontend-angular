@@ -1,13 +1,13 @@
 import { MessageService } from 'primeng/api';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { ContractService } from '../../services/contract.service';
 import { MetamaskService } from '../../services/metamask.service';
 import { OpenSeaService } from '../../services/open-sea.service';
 import { BattleState } from '../../../models/nifty-royale.models';
 import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
-import { Subscription } from 'rxjs';
-import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-drops-sale',
@@ -16,6 +16,8 @@ import { tap } from 'rxjs/operators';
 export class DropsSaleComponent implements OnInit, OnDestroy {
   dropName = '';
   ethPrice = 0;
+  quantity = 0;
+  maxUnits = 0;
   maxMinted = 0;
   totalMinted = 0;
   defaultNftImage = '';
@@ -50,7 +52,18 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     return 'Checkout';
   }
 
+  get isCheckoutBtnDisabled(): boolean {
+    return !this.quantity || this.isPurchaseProcessing;
+  }
+
+  get totalPrice(): number {
+    return this.quantity * this.ethPrice;
+  }
+
   get ethFees(): number {
+    if (!this.quantity) {
+      return 0;
+    }
     return (this.gasPrice * this.gasLimit) / 10 ** 9;
   }
 
@@ -143,6 +156,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
       winnerURI,
       name,
       ethPrice,
+      maxUnits,
       maxMinted,
       totalMinted,
       battleState,
@@ -159,7 +173,9 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
 
     this.battleState = battleState;
     this.dropName = name;
-    this.ethPrice = Number(ethPrice);
+    this.ethPrice = Number(ethPrice) / 10 ** 18;
+    this.quantity = maxUnits;
+    this.maxUnits = maxUnits;
     this.hasBattleStarted = this.battleState !== BattleState.STANDBY;
     this.maxMinted = maxMinted;
     this.totalMinted = totalMinted;

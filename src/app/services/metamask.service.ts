@@ -23,19 +23,15 @@ export class MetamaskService {
     private messageService: MessageService
   ) {
     this.ethereum?.on(ETH_METHODS.ACCOUNTS_CHANGED, (accounts: string[]) => {
-      this.handleAccountsChanged(accounts);
+      window.location.reload();
     });
     this.ethereum?.on(ETH_METHODS.CHAIN_CHANGED, (chainId: string) => {
-      this.handleChainChanged(chainId);
+      window.location.reload();
     });
   }
 
   get currentAccount(): string {
     return this.accountSubject.getValue();
-  }
-
-  get isAccountConnected(): boolean {
-    return Boolean(this.currentAccount);
   }
 
   get isMetamaskInstalled(): boolean {
@@ -104,9 +100,5 @@ export class MetamaskService {
   private handleAccountsChanged(accounts: string[]): void {
     const account = accounts.length > 0 ? accounts[0] : '';
     this.accountSubject.next(account);
-  }
-
-  private handleChainChanged(chainId: string): void {
-    window.location.reload();
   }
 }

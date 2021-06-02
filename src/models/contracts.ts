@@ -11,6 +11,12 @@ export const CONTRACTS: Contracts = {
   mainnet: [],
   rinkeby: [
     {
+      address: '0xB46747f1633E9BEf69913A0d2ceA2d4815409ee1',
+      name: 'Nifty Royale Testnet Drop 1',
+    },
+  ],
+  legacy: [
+    {
       address: '0xE025BC21c13a3C5d9b222e3795e9BBe1247633dB',
       name: 'Beta drop #1 featuring Lushsux (50 pieces)',
     },
