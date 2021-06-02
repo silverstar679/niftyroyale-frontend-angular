@@ -111,13 +111,14 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     try {
       this.isPurchaseProcessing = true;
       const from = this.metamaskService.currentAccount;
-      const value = Number(this.ethPrice) * 10 ** 18;
+      const unitValue = Number(this.ethPrice) * 10 ** 18;
+      const quantity = Number(this.quantity);
       this.messageService.add({
         severity: SEVERITY.INFO,
         summary: SUMMARY.TRANSACTION_PROCESS,
         sticky: true,
       });
-      await this.contractService.purchaseNFT(from, value);
+      await this.contractService.purchaseNFT(from, quantity * unitValue, quantity);
       this.isPurchaseSuccessful = true;
       this.messageService.clear();
       this.messageService.add({
@@ -129,9 +130,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
       this.messageService.add({
         severity: SEVERITY.ERROR,
         summary: SUMMARY.ERROR_OCCURRED,
-        detail:
-          error.message.split('{')[0] +
-          'you have already purchased one NFT with this account.',
+        detail: error.message,
         sticky: true,
       });
     }

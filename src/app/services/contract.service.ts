@@ -125,9 +125,9 @@ export class ContractService {
     return this.contract.methods.tokenURI(tokenId).call();
   }
 
-  purchaseNFT(from: string, value: number): Promise<void> {
+  purchaseNFT(from: string, value: number, quantity: number): Promise<void> {
     return this.contract.methods
-      .purchase(1)
+      .purchase(quantity)
       .send({ from, value })
       .on('transactionHash', (hash: string) => {
         this.transactionHash = hash;
