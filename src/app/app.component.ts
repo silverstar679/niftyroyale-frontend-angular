@@ -4,11 +4,10 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter, skip, tap } from 'rxjs/operators';
-import { SEVERITY, SUMMARY } from '../models/toast.enum';
-import { ETHEREUM } from './services/ethereum.token';
 import { NETWORK } from './services/network.token';
 import { MetamaskService } from './services/metamask.service';
 import { EthereumNetwork } from '../models/nifty-royale.models';
+import { SEVERITY, SUMMARY } from '../models/toast.enum';
 
 const currentUrl = new URL(window.location.href);
 const isLocalhost = currentUrl.hostname === 'localhost';
@@ -31,8 +30,8 @@ const networkChainIds = {
 })
 export class AppComponent implements OnInit, OnDestroy {
   public isAccountConnected = false;
-  public metamaskBtnText = '';
   public isGoodNetwork = false;
+  public metamaskBtnText = '';
   private subscriptions = new Subscription();
 
   private static formatAddress(address: string): string {
@@ -43,7 +42,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    @Inject(ETHEREUM) private ethereum: any,
     @Inject(NETWORK) private network: EthereumNetwork,
     private messageService: MessageService,
     private metamaskService: MetamaskService,
@@ -71,12 +69,12 @@ export class AppComponent implements OnInit, OnDestroy {
         .pipe(
           tap((account: string) => {
             this.isAccountConnected = Boolean(account);
+            this.isGoodNetwork =
+              networkChainIds[this.network] === this.metamaskService.chainId;
             this.metamaskBtnText = this.isAccountConnected
               ? AppComponent.formatAddress(account)
               : this.disconnectedText;
-            this.isGoodNetwork =
-              networkChainIds[this.network] === this.ethereum.chainId;
-            if (!this.isGoodNetwork) {
+            if (this.isAccountConnected && !this.isGoodNetwork) {
               return this.messageService.add({
                 severity: SEVERITY.ERROR,
                 summary: `${
@@ -86,7 +84,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 closable: false,
               });
             }
-            if (!account) {
+            if (!this.isAccountConnected) {
               return this.messageService.add({
                 severity: SEVERITY.INFO,
                 summary: SUMMARY.NOT_CONNECTED,

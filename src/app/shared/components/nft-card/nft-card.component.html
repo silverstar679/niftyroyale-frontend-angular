@@ -34,12 +34,19 @@
     </header>
     <footer class="flex flex-row items-center justify-center p-2">
       <button
+        *ngIf="asset.token_id; else delayMessage"
         type="button"
         class="bg-red-500 hover:bg-red-400 focus:outline-none rounded px-4 py-2"
         (click)="goTo(contractAddress, asset.tokenId)"
       >
         {{ btnText }}
       </button>
+      <ng-template #delayMessage>
+        <p class="text-xs nifty-text-red">
+          Waiting on NFT to be updated on OpenSea before secondary sales are
+          available
+        </p>
+      </ng-template>
     </footer>
   </article>
   <div *ngIf="asset.isOwner" class="text-center text-lg nifty-text-gold mt-1">

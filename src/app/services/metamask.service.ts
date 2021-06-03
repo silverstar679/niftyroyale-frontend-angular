@@ -30,6 +30,10 @@ export class MetamaskService {
     });
   }
 
+  get chainId(): string {
+    return this.ethereum?.chainId;
+  }
+
   get currentAccount(): string {
     return this.accountSubject.getValue();
   }
@@ -98,7 +102,7 @@ export class MetamaskService {
   }
 
   private handleAccountsChanged(accounts: string[]): void {
-    const account = accounts.length > 0 ? accounts[0] : '';
+    const account = accounts?.length > 0 ? accounts[0] : '';
     this.accountSubject.next(account);
   }
 }

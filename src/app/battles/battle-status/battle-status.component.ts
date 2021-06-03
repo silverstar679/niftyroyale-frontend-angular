@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ContractService } from '../../services/contract.service';
 import { OpenSeaService } from '../../services/open-sea.service';
 import { MetamaskService } from '../../services/metamask.service';
+import { OpenSeaAsset } from '../../../models/opensea.types';
 import {
   BattleState,
   NiftyAssetModel,
@@ -16,7 +17,8 @@ import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
 })
 export class BattleStatusComponent implements OnInit {
   battleStates = BattleState;
-  assets = [] as NiftyAssetModel[];
+  displayedAssets = [] as NiftyAssetModel[];
+  openseaAssets: { [tokenId: string]: OpenSeaAsset } = {};
   ownerAddresses: { [tokenId: string]: string } = {};
   contractAddress = '';
   dropName = '';
@@ -64,8 +66,11 @@ export class BattleStatusComponent implements OnInit {
       this.contractAddress = this.route.snapshot.params.contractAddress;
       await this.contractService.init(this.contractAddress);
       await this.initBattleData();
-      await this.getOwnerAddresses();
-      this.assets = await this.getMintedAssets();
+      await Promise.all([
+        this.getOwnerAddresses(this.totalPlayers),
+        this.getOpenseaAssets(this.totalPlayers),
+      ]);
+      this.displayedAssets = this.getDisplayedAssets(this.totalPlayers);
       this.isLoading = false;
     } catch (error) {
       this.messageService.add({
@@ -77,53 +82,61 @@ export class BattleStatusComponent implements OnInit {
     }
   }
 
-  private async getMintedAssets(): Promise<NiftyAssetModel[]> {
-    const assets = await this.openSeaService
-      .getAssets(this.contractAddress)
-      .toPromise();
+  private getDisplayedAssets(totalAssets: number): NiftyAssetModel[] {
+    const displayedAssets = [] as NiftyAssetModel[];
 
-    return assets
-      .map((a) => {
-        const asset = {
-          ...a,
-          tokenId: a.token_id,
-          isEliminated: false,
-          isOwner: false,
-          name: '',
-          nftURL: '',
-          ownerAddress: '',
-          placement: 0,
-        } as NiftyAssetModel;
+    for (let i = 1; i <= totalAssets; i++) {
+      const tokenId = `${i}`;
+      const openseaAsset = this.openseaAssets[tokenId] || {};
+      const ownerAddress = this.ownerAddresses[tokenId];
+      const outOfPlayIndex = this.eliminatedPlayers.indexOf(tokenId);
+      const isEliminated = outOfPlayIndex !== -1;
+      const isWinner = this.isBattleEnded && tokenId === this.inPlayPlayers[0];
+      let placement = 0;
+      if (isWinner) {
+        placement = 1;
+      } else if (isEliminated) {
+        placement = totalAssets - outOfPlayIndex;
+      }
+      displayedAssets.push({
+        ...openseaAsset,
+        tokenId,
+        isEliminated,
+        ownerAddress,
+        placement,
+        isOwner: this.metamaskService.isOwnerAddress(ownerAddress),
+        name: placement === 1 ? this.winnerNftName : this.defaultNftName,
+        nftURL: placement === 1 ? this.winnerPicture : this.defaultPicture,
+      } as NiftyAssetModel);
+    }
 
-        const outOfPlayIndex = this.eliminatedPlayers.indexOf(asset.tokenId);
-        asset.isEliminated = outOfPlayIndex !== -1;
-        asset.ownerAddress = this.ownerAddresses[asset.tokenId];
-        asset.isOwner = this.metamaskService.isOwnerAddress(asset.ownerAddress);
-        const isWinner =
-          this.isBattleEnded && asset.tokenId === this.inPlayPlayers[0];
-        if (isWinner) {
-          asset.placement = 1;
-        } else if (asset.isEliminated) {
-          asset.placement = this.totalPlayers - outOfPlayIndex;
-        }
-        asset.name =
-          asset.placement === 1 ? this.winnerNftName : this.defaultNftName;
-        asset.nftURL =
-          asset.placement === 1 ? this.winnerPicture : this.defaultPicture;
-        return asset;
-      })
-      .sort((a, b) => {
-        return (
-          Number(b.isOwner) - Number(a.isOwner) ||
-          Number(a.isEliminated) - Number(b.isEliminated) ||
-          Number(a.tokenId) - Number(b.tokenId)
-        );
-      });
+    return displayedAssets.sort((a, b) => {
+      return (
+        Number(b.isOwner) - Number(a.isOwner) ||
+        Number(a.isEliminated) - Number(b.isEliminated) ||
+        Number(a.tokenId) - Number(b.tokenId)
+      );
+    });
   }
 
-  private async getOwnerAddresses(): Promise<void> {
+  private async getOpenseaAssets(totalAssets: number): Promise<void> {
+    const pages = Math.floor(totalAssets / 50) + 1;
     const promises = [];
-    for (let i = 1; i <= this.totalPlayers; i++) {
+    for (let i = 0; i < pages; i++) {
+      promises.push(
+        this.openSeaService.getAssets(this.contractAddress, i * 50).toPromise()
+      );
+    }
+    const promiseResults = (await Promise.all(promises)) as OpenSeaAsset[][];
+    const assets = ([] as OpenSeaAsset[]).concat.apply([], promiseResults);
+    for (const asset of assets) {
+      this.openseaAssets[asset.token_id] = asset;
+    }
+  }
+
+  private async getOwnerAddresses(totalPlayers: number): Promise<void> {
+    const promises = [];
+    for (let i = 1; i <= totalPlayers; i++) {
       promises.push(this.contractService.getOwnerAddress(`${i}`));
     }
     const ownerAddresses = await Promise.all(promises);

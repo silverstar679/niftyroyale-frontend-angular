@@ -125,10 +125,16 @@ export class ContractService {
     return this.contract.methods.tokenURI(tokenId).call();
   }
 
-  purchaseNFT(from: string, value: number, quantity: number): Promise<void> {
+  purchaseNFT(
+    from: string,
+    value: number,
+    quantity: number,
+    gasLimit: number
+  ): Promise<void> {
+    const gasPrice = `${this.gasPrice * 10 ** 9}`;
     return this.contract.methods
       .purchase(quantity)
-      .send({ from, value })
+      .send({ from, value, gasLimit, gasPrice })
       .on('transactionHash', (hash: string) => {
         this.transactionHash = hash;
       });

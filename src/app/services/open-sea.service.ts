@@ -20,8 +20,8 @@ export class OpenSeaService {
     this.openseaBaseAPI = `https://api.niftyroyale.com/opensea/${network}`;
   }
 
-  getAssets(address: string): Observable<OpenSeaAsset[]> {
-    const url = `${this.openseaBaseAPI}/assets/${address}`;
+  getAssets(address: string, offset: number): Observable<OpenSeaAsset[]> {
+    const url = `${this.openseaBaseAPI}/assets/${address}?offset=${offset}&limit=50`;
     return this.http
       .get<{ assets: OpenSeaAsset[] }>(url)
       .pipe(map(({ assets }) => assets));

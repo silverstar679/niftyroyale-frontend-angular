@@ -68,7 +68,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
   }
 
   get gasLimit(): number {
-    return this.contractService.gasLimit;
+    return this.quantity * this.contractService.gasLimit;
   }
 
   get gasPrice(): number {
@@ -111,14 +111,20 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     try {
       this.isPurchaseProcessing = true;
       const from = this.metamaskService.currentAccount;
-      const unitValue = Number(this.ethPrice) * 10 ** 18;
       const quantity = Number(this.quantity);
+      const ethPrice = Number(this.ethPrice);
+      const value = quantity * ethPrice * 10 ** 18;
       this.messageService.add({
         severity: SEVERITY.INFO,
         summary: SUMMARY.TRANSACTION_PROCESS,
         sticky: true,
       });
-      await this.contractService.purchaseNFT(from, quantity * unitValue, quantity);
+      await this.contractService.purchaseNFT(
+        from,
+        value,
+        quantity,
+        this.gasLimit
+      );
       this.isPurchaseSuccessful = true;
       this.messageService.clear();
       this.messageService.add({
