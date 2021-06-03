@@ -14,6 +14,10 @@ export const CONTRACTS: Contracts = {
       address: '0xB46747f1633E9BEf69913A0d2ceA2d4815409ee1',
       name: 'Nifty Royale Testnet Drop 1',
     },
+    {
+      address: '0xAa79A77BaBbDa34d20a013925Cdb8DE0791E1c94',
+      name: 'Nifty Royale Testnet Drop 2',
+    },
   ],
   legacy: [
     {

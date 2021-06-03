@@ -119,16 +119,12 @@ export class BattleStatusComponent implements OnInit {
     });
   }
 
-  private async getOpenseaAssets(totalAssets: number): Promise<void> {
-    const pages = Math.floor(totalAssets / 50) + 1;
-    const promises = [];
-    for (let i = 0; i < pages; i++) {
-      promises.push(
-        this.openSeaService.getAssets(this.contractAddress, i * 50).toPromise()
-      );
-    }
-    const promiseResults = (await Promise.all(promises)) as OpenSeaAsset[][];
-    const assets = ([] as OpenSeaAsset[]).concat.apply([], promiseResults);
+  private async getOpenseaAssets(totalAssets: number): Promise<any> {
+    const itemsPerPage = 50;
+    const numberOfPages = Math.floor(totalAssets / itemsPerPage) + 1;
+    const assets = await this.openSeaService
+      .getAssets(this.contractAddress, numberOfPages, itemsPerPage)
+      .toPromise();
     for (const asset of assets) {
       this.openseaAssets[asset.token_id] = asset;
     }
