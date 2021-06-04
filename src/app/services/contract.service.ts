@@ -1,7 +1,8 @@
 import Web3 from 'web3';
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { defer, Observable, range } from 'rxjs';
+import { map, mergeMap, scan, takeLast } from 'rxjs/operators';
 import { ETHEREUM } from './ethereum.token';
 import { NETWORK } from './network.token';
 import { EthereumNetwork } from '../../models/nifty-royale.models';
@@ -119,6 +120,16 @@ export class ContractService {
 
   getOwnerAddress(tokenId: string): Promise<string> {
     return this.contract.methods.ownerOf(tokenId).call();
+  }
+
+  getOwnerAddresses(totalPlayers: number): Observable<string[]> {
+    return range(1, totalPlayers).pipe(
+      mergeMap((tokenId) => {
+        return defer(() => this.getOwnerAddress(`${tokenId}`));
+      }),
+      scan((acc: string[], value: string) => [...acc, value], []),
+      takeLast(1)
+    );
   }
 
   getTokenURI(tokenId: string): Promise<string> {

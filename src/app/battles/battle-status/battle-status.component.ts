@@ -114,7 +114,7 @@ export class BattleStatusComponent implements OnInit {
       return (
         Number(b.isOwner) - Number(a.isOwner) ||
         Number(a.isEliminated) - Number(b.isEliminated) ||
-        Number(a.tokenId) - Number(b.tokenId)
+        Number(a.placement) - Number(b.placement)
       );
     });
   }
@@ -131,11 +131,9 @@ export class BattleStatusComponent implements OnInit {
   }
 
   private async getOwnerAddresses(totalPlayers: number): Promise<void> {
-    const promises = [];
-    for (let i = 1; i <= totalPlayers; i++) {
-      promises.push(this.contractService.getOwnerAddress(`${i}`));
-    }
-    const ownerAddresses = await Promise.all(promises);
+    const ownerAddresses = await this.contractService
+      .getOwnerAddresses(totalPlayers)
+      .toPromise();
     for (let i = 0; i < ownerAddresses.length; i++) {
       this.ownerAddresses[`${i + 1}`] = ownerAddresses[i].toLowerCase();
     }
