@@ -69,23 +69,6 @@ export class MetamaskService {
     }
   }
 
-  async walletRequestPermissions(): Promise<void> {
-    try {
-      const permissions = await this.ethereum?.request({
-        method: ETH_METHODS.WALLET_REQ_PERMISSIONS,
-        params: [{ eth_accounts: {} }],
-      });
-      const accountsPermission = permissions.find((permission: any) => {
-        return permission.parentCapability === ETH_METHODS.ETH_ACCOUNTS;
-      });
-      if (accountsPermission) {
-        console.log('eth_accounts permission successfully requested!');
-      }
-    } catch (error) {
-      this.errorHandler(error);
-    }
-  }
-
   private errorHandler(error: any): void {
     if (error.code === 4001) {
       // EIP-1193 userRejectedRequest error
@@ -103,6 +86,6 @@ export class MetamaskService {
 
   private handleAccountsChanged(accounts: string[]): void {
     const account = accounts?.length > 0 ? accounts[0] : '';
-    this.accountSubject.next(account);
+    this.accountSubject.next(account.toLowerCase());
   }
 }

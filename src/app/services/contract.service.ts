@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { defer, Observable, range } from 'rxjs';
-import { map, mergeMap, scan, takeLast } from 'rxjs/operators';
+import { map, mergeMap, tap } from 'rxjs/operators';
 import { ETHEREUM } from './ethereum.token';
 import { NETWORK } from './network.token';
 import { EthereumNetwork } from '../../models/nifty-royale.models';
@@ -18,6 +18,7 @@ export class ContractService {
   public gasLimit = 500000;
   public gasPrice = 0;
   public transactionHash = '';
+  public ownerAddresses: { [tokenId: string]: string } = {};
   private readonly etherscanBaseAPI: string;
   private readonly infuraProvider: string;
   private readonly alchemyProvider: string;
@@ -34,6 +35,7 @@ export class ContractService {
 
   async init(address: string): Promise<any> {
     try {
+      this.ownerAddresses = {};
       const [gasPrice] = await Promise.all([
         this._getAverageGasPrice(),
         this._initWeb3(),
@@ -122,13 +124,15 @@ export class ContractService {
     return this.contract.methods.ownerOf(tokenId).call();
   }
 
-  getOwnerAddresses(totalPlayers: number): Observable<string[]> {
+  getOwnerAddresses(totalPlayers: number): Observable<string> {
     return range(1, totalPlayers).pipe(
       mergeMap((tokenId) => {
-        return defer(() => this.getOwnerAddress(`${tokenId}`));
-      }),
-      scan((acc: string[], value: string) => [...acc, value], []),
-      takeLast(1)
+        return defer(() => this.getOwnerAddress(`${tokenId}`)).pipe(
+          tap((address) => {
+            this.ownerAddresses[tokenId] = address.toLowerCase();
+          })
+        );
+      })
     );
   }
 

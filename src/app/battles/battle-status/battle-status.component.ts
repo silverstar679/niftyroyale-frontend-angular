@@ -19,7 +19,6 @@ export class BattleStatusComponent implements OnInit {
   battleStates = BattleState;
   displayedAssets = [] as NiftyAssetModel[];
   openseaAssets: { [tokenId: string]: OpenSeaAsset } = {};
-  ownerAddresses: { [tokenId: string]: string } = {};
   contractAddress = '';
   dropName = '';
   defaultNftName = '';
@@ -67,7 +66,7 @@ export class BattleStatusComponent implements OnInit {
       await this.contractService.init(this.contractAddress);
       await this.initBattleData();
       await Promise.all([
-        this.getOwnerAddresses(this.totalPlayers),
+        this.contractService.getOwnerAddresses(this.totalPlayers).toPromise(),
         this.getOpenseaAssets(this.totalPlayers),
       ]);
       this.displayedAssets = this.getDisplayedAssets(this.totalPlayers);
@@ -88,7 +87,7 @@ export class BattleStatusComponent implements OnInit {
     for (let i = 1; i <= totalAssets; i++) {
       const tokenId = `${i}`;
       const openseaAsset = this.openseaAssets[tokenId] || {};
-      const ownerAddress = this.ownerAddresses[tokenId];
+      const ownerAddress = this.contractService.ownerAddresses[tokenId];
       const outOfPlayIndex = this.eliminatedPlayers.indexOf(tokenId);
       const isEliminated = outOfPlayIndex !== -1;
       const isWinner = this.isBattleEnded && tokenId === this.inPlayPlayers[0];
@@ -130,15 +129,6 @@ export class BattleStatusComponent implements OnInit {
     }
   }
 
-  private async getOwnerAddresses(totalPlayers: number): Promise<void> {
-    const ownerAddresses = await this.contractService
-      .getOwnerAddresses(totalPlayers)
-      .toPromise();
-    for (let i = 0; i < ownerAddresses.length; i++) {
-      this.ownerAddresses[`${i + 1}`] = ownerAddresses[i].toLowerCase();
-    }
-  }
-
   private async initBattleData(): Promise<void> {
     const {
       defaultURI,
@@ -175,6 +165,9 @@ export class BattleStatusComponent implements OnInit {
   }
 
   private initCountdown(nextEliminationTimestamp: number): void {
+    if (BattleState.RUNNING !== this.currBattleState) {
+      return;
+    }
     const x = setInterval(() => {
       // Get today's date and time
       const now = new Date().getTime();
