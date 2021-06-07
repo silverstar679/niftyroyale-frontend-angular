@@ -254,13 +254,6 @@
   dependencies:
     tslib "^2.0.0"
 
-"@angular/fire@^6.1.4":
-  version "6.1.4"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@angular/fire/-/fire-6.1.4.tgz#d3923a68336d7177abbb2676731d0aef566b9739"
-  integrity sha1-05I6aDNtcXeruyZ2cx0K71Zrlzk=
-  dependencies:
-    tslib "^2.0.0"
-
 "@angular/forms@~11.2.8":
   version "11.2.9"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/@angular/forms/-/forms-11.2.9.tgz#127a62f99e354210f0882d30e268c69b7c5e6c4f"
@@ -1354,230 +1347,6 @@
     "@ethersproject/properties" "^5.1.0"
     "@ethersproject/strings" "^5.1.0"
 
-"@firebase/analytics-types@0.4.0":
-  version "0.4.0"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/analytics-types/-/analytics-types-0.4.0.tgz#d6716f9fa36a6e340bc0ecfe68af325aa6f60508"
-  integrity sha1-1nFvn6NqbjQLwOz+aK8yWqb2BQg=
-
-"@firebase/analytics@0.6.8":
-  version "0.6.8"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/analytics/-/analytics-0.6.8.tgz#ec69a8673df2e0381bdebc892d28448e2d97ee8a"
-  integrity sha1-7GmoZz3y4Dgb3ryJLShEji2X7oo=
-  dependencies:
-    "@firebase/analytics-types" "0.4.0"
-    "@firebase/component" "0.4.0"
-    "@firebase/installations" "0.4.24"
-    "@firebase/logger" "0.2.6"
-    "@firebase/util" "0.4.1"
-    tslib "^2.1.0"
-
-"@firebase/app-types@0.6.2":
-  version "0.6.2"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/app-types/-/app-types-0.6.2.tgz#8578cb1061a83ced4570188be9e225d54e0f27fb"
-  integrity sha1-hXjLEGGoPO1FcBiL6eIl1U4PJ/s=
-
-"@firebase/app@0.6.19":
-  version "0.6.19"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/app/-/app-0.6.19.tgz#40fe266889436ab0fcf035ee5a415db7339c1936"
-  integrity sha1-QP4maIlDarD88DXuWkFdtzOcGTY=
-  dependencies:
-    "@firebase/app-types" "0.6.2"
-    "@firebase/component" "0.4.0"
-    "@firebase/logger" "0.2.6"
-    "@firebase/util" "0.4.1"
-    dom-storage "2.1.0"
-    tslib "^2.1.0"
-    xmlhttprequest "1.8.0"
-
-"@firebase/auth-interop-types@0.1.5":
-  version "0.1.5"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/auth-interop-types/-/auth-interop-types-0.1.5.tgz#9fc9bd7c879f16b8d1bb08373a0f48c3a8b74557"
-  integrity sha1-n8m9fIefFrjRuwg3Og9Iw6i3RVc=
-
-"@firebase/auth-types@0.10.2":
-  version "0.10.2"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/auth-types/-/auth-types-0.10.2.tgz#3fad953380c447b7545122430a4c7a9bc8355001"
-  integrity sha1-P62VM4DER7dUUSJDCkx6m8g1UAE=
-
-"@firebase/auth@0.16.4":
-  version "0.16.4"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/auth/-/auth-0.16.4.tgz#6249d80f1e974b0db122930ae9fac885eccead5c"
-  integrity sha1-YknYDx6XSw2xIpMK6frIhezOrVw=
-  dependencies:
-    "@firebase/auth-types" "0.10.2"
-
-"@firebase/component@0.4.0":
-  version "0.4.0"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/component/-/component-0.4.0.tgz#90baa455d75160c8a5134b3e9d642df11f0ac818"
-  integrity sha1-kLqkVddRYMilE0s+nWQt8R8KyBg=
-  dependencies:
-    "@firebase/util" "0.4.1"
-    tslib "^2.1.0"
-
-"@firebase/database-types@0.7.1":
-  version "0.7.1"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/database-types/-/database-types-0.7.1.tgz#3505e3e8d57e94a3ce6038649a95afe0af040757"
-  integrity sha1-NQXj6NV+lKPOYDhkmpWv4K8EB1c=
-  dependencies:
-    "@firebase/app-types" "0.6.2"
-
-"@firebase/database@0.9.8":
-  version "0.9.8"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/database/-/database-0.9.8.tgz#244eb897033ecacfc4a1fa5f031cda9b5e4009e5"
-  integrity sha1-JE64lwM+ys/EofpfAxzam15ACeU=
-  dependencies:
-    "@firebase/auth-interop-types" "0.1.5"
-    "@firebase/component" "0.4.0"
-    "@firebase/database-types" "0.7.1"
-    "@firebase/logger" "0.2.6"
-    "@firebase/util" "0.4.1"
-    faye-websocket "0.11.3"
-    tslib "^2.1.0"
-
-"@firebase/firestore-types@2.2.0":
-  version "2.2.0"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/firestore-types/-/firestore-types-2.2.0.tgz#9a3f3f2906232c3b4a726d988a6ef077f35f9093"
-  integrity sha1-mj8/KQYjLDtKcm2Yim7wd/NfkJM=
-
-"@firebase/firestore@2.2.3":
-  version "2.2.3"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/firestore/-/firestore-2.2.3.tgz#e76d9191c48ef4c51ae73c2fcce7d547be2a8c17"
-  integrity sha1-522RkcSO9MUa5zwvzOfVR74qjBc=
-  dependencies:
-    "@firebase/component" "0.4.0"
-    "@firebase/firestore-types" "2.2.0"
-    "@firebase/logger" "0.2.6"
-    "@firebase/util" "0.4.1"
-    "@firebase/webchannel-wrapper" "0.4.1"
-    "@grpc/grpc-js" "^1.0.0"
-    "@grpc/proto-loader" "^0.5.0"
-    node-fetch "2.6.1"
-    tslib "^2.1.0"
-
-"@firebase/functions-types@0.4.0":
-  version "0.4.0"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/functions-types/-/functions-types-0.4.0.tgz#0b789f4fe9a9c0b987606c4da10139345b40f6b9"
-  integrity sha1-C3ifT+mpwLmHYGxNoQE5NFtA9rk=
-
-"@firebase/functions@0.6.6":
-  version "0.6.6"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/functions/-/functions-0.6.6.tgz#06b786e68b269a615fc83598d99cda7b11ec740e"
-  integrity sha1-BreG5osmmmFfyDWY2ZzaexHsdA4=
-  dependencies:
-    "@firebase/component" "0.4.0"
-    "@firebase/functions-types" "0.4.0"
-    "@firebase/messaging-types" "0.5.0"
-    node-fetch "2.6.1"
-    tslib "^2.1.0"
-
-"@firebase/installations-types@0.3.4":
-  version "0.3.4"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/installations-types/-/installations-types-0.3.4.tgz#589a941d713f4f64bf9f4feb7f463505bab1afa2"
-  integrity sha1-WJqUHXE/T2S/n0/rf0Y1Bbqxr6I=
-
-"@firebase/installations@0.4.24":
-  version "0.4.24"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/installations/-/installations-0.4.24.tgz#acaf3d48c156f3a3a5ddb53e8e8c63a89fce2f55"
-  integrity sha1-rK89SMFW86Ol3bU+joxjqJ/OL1U=
-  dependencies:
-    "@firebase/component" "0.4.0"
-    "@firebase/installations-types" "0.3.4"
-    "@firebase/util" "0.4.1"
-    idb "3.0.2"
-    tslib "^2.1.0"
-
-"@firebase/logger@0.2.6":
-  version "0.2.6"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/logger/-/logger-0.2.6.tgz#3aa2ca4fe10327cabf7808bd3994e88db26d7989"
-  integrity sha1-OqLKT+EDJ8q/eAi9OZTojbJteYk=
-
-"@firebase/messaging-types@0.5.0":
-  version "0.5.0"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/messaging-types/-/messaging-types-0.5.0.tgz#c5d0ef309ced1758fda93ef3ac70a786de2e73c4"
-  integrity sha1-xdDvMJztF1j9qT7zrHCnht4uc8Q=
-
-"@firebase/messaging@0.7.8":
-  version "0.7.8"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/messaging/-/messaging-0.7.8.tgz#90119a2f1cd5055fd61206732024e0281de80616"
-  integrity sha1-kBGaLxzVBV/WEgZzICTgKB3oBhY=
-  dependencies:
-    "@firebase/component" "0.4.0"
-    "@firebase/installations" "0.4.24"
-    "@firebase/messaging-types" "0.5.0"
-    "@firebase/util" "0.4.1"
-    idb "3.0.2"
-    tslib "^2.1.0"
-
-"@firebase/performance-types@0.0.13":
-  version "0.0.13"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/performance-types/-/performance-types-0.0.13.tgz#58ce5453f57e34b18186f74ef11550dfc558ede6"
-  integrity sha1-WM5UU/V+NLGBhvdO8RVQ38VY7eY=
-
-"@firebase/performance@0.4.10":
-  version "0.4.10"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/performance/-/performance-0.4.10.tgz#c78ed1c15c26884eae23edf1498e930bb729b51f"
-  integrity sha1-x47RwVwmiE6uI+3xSY6TC7cptR8=
-  dependencies:
-    "@firebase/component" "0.4.0"
-    "@firebase/installations" "0.4.24"
-    "@firebase/logger" "0.2.6"
-    "@firebase/performance-types" "0.0.13"
-    "@firebase/util" "0.4.1"
-    tslib "^2.1.0"
-
-"@firebase/polyfill@0.3.36":
-  version "0.3.36"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/polyfill/-/polyfill-0.3.36.tgz#c057cce6748170f36966b555749472b25efdb145"
-  integrity sha1-wFfM5nSBcPNpZrVVdJRysl79sUU=
-  dependencies:
-    core-js "3.6.5"
-    promise-polyfill "8.1.3"
-    whatwg-fetch "2.0.4"
-
-"@firebase/remote-config-types@0.1.9":
-  version "0.1.9"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/remote-config-types/-/remote-config-types-0.1.9.tgz#fe6bbe4d08f3b6e92fce30e4b7a9f4d6a96d6965"
-  integrity sha1-/mu+TQjztukvzjDkt6n01qltaWU=
-
-"@firebase/remote-config@0.1.35":
-  version "0.1.35"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/remote-config/-/remote-config-0.1.35.tgz#792b6d9e2d8e5db0a883ee53579629c2412ae1f5"
-  integrity sha1-eSttni2OXbCog+5TV5YpwkEq4fU=
-  dependencies:
-    "@firebase/component" "0.4.0"
-    "@firebase/installations" "0.4.24"
-    "@firebase/logger" "0.2.6"
-    "@firebase/remote-config-types" "0.1.9"
-    "@firebase/util" "0.4.1"
-    tslib "^2.1.0"
-
-"@firebase/storage-types@0.3.13":
-  version "0.3.13"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/storage-types/-/storage-types-0.3.13.tgz#cd43e939a2ab5742e109eb639a313673a48b5458"
-  integrity sha1-zUPpOaKrV0LhCetjmjE2c6SLVFg=
-
-"@firebase/storage@0.4.7":
-  version "0.4.7"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/storage/-/storage-0.4.7.tgz#541a2d96af6da9c345b190858345c1106650fce0"
-  integrity sha1-VBotlq9tqcNFsZCFg0XBEGZQ/OA=
-  dependencies:
-    "@firebase/component" "0.4.0"
-    "@firebase/storage-types" "0.3.13"
-    "@firebase/util" "0.4.1"
-    tslib "^2.1.0"
-
-"@firebase/util@0.4.1":
-  version "0.4.1"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/util/-/util-0.4.1.tgz#fe76cf0238901dc5455b341cf02e298e7bf68df4"
-  integrity sha1-/nbPAjiQHcVFWzQc8C4pjnv2jfQ=
-  dependencies:
-    tslib "^2.1.0"
-
-"@firebase/webchannel-wrapper@0.4.1":
-  version "0.4.1"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@firebase/webchannel-wrapper/-/webchannel-wrapper-0.4.1.tgz#600f2275ff54739ad5ac0102f1467b8963cd5f71"
-  integrity sha1-YA8idf9Uc5rVrAEC8UZ7iWPNX3E=
-
 "@fullhuman/postcss-purgecss@^3.1.3":
   version "3.1.3"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/@fullhuman/postcss-purgecss/-/postcss-purgecss-3.1.3.tgz#47af7b87c9bfb3de4bc94a38f875b928fffdf339"
@@ -1636,15 +1405,6 @@
   dependencies:
     semver "^6.2.0"
 
-"@grpc/grpc-js@^1.0.0":
-  version "1.2.12"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/@grpc/grpc-js/-/grpc-js-1.2.12.tgz#0153f27512acf69184bb52c0a1035ca91d6c14b0"
-  integrity sha1-AVPydRKs9pGEu1LAoQNcqR1sFLA=
-  dependencies:
-    "@types/node" ">=12.12.47"
-    google-auth-library "^6.1.1"
-    semver "^6.2.0"
-
 "@grpc/grpc-js@~1.0.3":
   version "1.0.5"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/@grpc/grpc-js/-/grpc-js-1.0.5.tgz#09948c0810e62828fdd61455b2eb13d7879888b0"
@@ -1652,7 +1412,7 @@
   dependencies:
     semver "^6.2.0"
 
-"@grpc/proto-loader@^0.5.0", "@grpc/proto-loader@^0.5.1":
+"@grpc/proto-loader@^0.5.1":
   version "0.5.6"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/@grpc/proto-loader/-/proto-loader-0.5.6.tgz#1dea4b8a6412b05e2d58514d507137b63a52a98d"
   integrity sha1-HepLimQSsF4tWFFNUHE3tjpSqY0=
@@ -1943,7 +1703,7 @@
   resolved "https://artifactory.csq.fr:443/api/npm/npm/@types/minimatch/-/minimatch-3.0.4.tgz#f0ec25dbf2f0e4b18647313ac031134ca5b24b21"
   integrity sha1-8Owl2/Lw5LGGRzE6wDETTKWySyE=
 
-"@types/node@*", "@types/node@>=10.0.0", "@types/node@>=12.12.47":
+"@types/node@*", "@types/node@>=10.0.0":
   version "14.14.37"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/@types/node/-/node-14.14.37.tgz#a3dd8da4eb84a996c36e331df98d82abd76b516e"
   integrity sha1-o92NpOuEqZbDbjMd+Y2Cq9drUW4=
@@ -3900,11 +3660,6 @@ core-js-compat@^3.8.0:
     browserslist "^4.16.3"
     semver "7.0.0"
 
-core-js@3.6.5:
-  version "3.6.5"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/core-js/-/core-js-3.6.5.tgz#7395dc273af37fb2e50e9bd3d9fe841285231d1a"
-  integrity sha1-c5XcJzrzf7LlDpvT2f6EEoUjHRo=
-
 core-js@3.8.3:
   version "3.8.3"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/core-js/-/core-js-3.8.3.tgz#c21906e1f14f3689f93abcc6e26883550dd92dd0"
@@ -4567,11 +4322,6 @@ dom-serializer@0:
   dependencies:
     domelementtype "^2.0.1"
     entities "^2.0.0"
-
-dom-storage@2.1.0:
-  version "2.1.0"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/dom-storage/-/dom-storage-2.1.0.tgz#00fb868bc9201357ea243c7bcfd3304c1e34ea39"
-  integrity sha1-APuGi8kgE1fqJDx7z9MwTB406jk=
 
 dom-walk@^0.1.0:
   version "0.1.2"
@@ -5301,7 +5051,7 @@ fastq@^1.6.0:
   dependencies:
     reusify "^1.0.4"
 
-faye-websocket@0.11.3, faye-websocket@^0.11.3:
+faye-websocket@^0.11.3:
   version "0.11.3"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/faye-websocket/-/faye-websocket-0.11.3.tgz#5c0e9a8968e8912c286639fde977a8b209f2508e"
   integrity sha1-XA6aiWjokSwoZjn96XeosgnyUI4=
@@ -5472,26 +5222,6 @@ firebase-tools@^8.0.0:
     uuid "^3.0.0"
     winston "^3.0.0"
     ws "^7.2.3"
-
-"firebase@^7.0 || ^8.0":
-  version "8.3.3"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/firebase/-/firebase-8.3.3.tgz#21d8fb8eec2c43b0d8f98ab6bda5535b7454fa54"
-  integrity sha1-Idj7juwsQ7DY+Yq2vaVTW3RU+lQ=
-  dependencies:
-    "@firebase/analytics" "0.6.8"
-    "@firebase/app" "0.6.19"
-    "@firebase/app-types" "0.6.2"
-    "@firebase/auth" "0.16.4"
-    "@firebase/database" "0.9.8"
-    "@firebase/firestore" "2.2.3"
-    "@firebase/functions" "0.6.6"
-    "@firebase/installations" "0.4.24"
-    "@firebase/messaging" "0.7.8"
-    "@firebase/performance" "0.4.10"
-    "@firebase/polyfill" "0.3.36"
-    "@firebase/remote-config" "0.1.35"
-    "@firebase/storage" "0.4.7"
-    "@firebase/util" "0.4.1"
 
 flat-arguments@^1.0.0:
   version "1.0.2"
@@ -5719,17 +5449,6 @@ gaxios@^2.1.0:
     is-stream "^2.0.0"
     node-fetch "^2.3.0"
 
-gaxios@^4.0.0:
-  version "4.2.0"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/gaxios/-/gaxios-4.2.0.tgz#33bdc4fc241fc33b8915a4b8c07cfb368b932e46"
-  integrity sha1-M73E/CQfwzuJFaS4wHz7NouTLkY=
-  dependencies:
-    abort-controller "^3.0.0"
-    extend "^3.0.2"
-    https-proxy-agent "^5.0.0"
-    is-stream "^2.0.0"
-    node-fetch "^2.3.0"
-
 gcp-metadata@^3.4.0:
   version "3.5.0"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/gcp-metadata/-/gcp-metadata-3.5.0.tgz#6d28343f65a6bbf8449886a0c0e4a71c77577055"
@@ -5737,14 +5456,6 @@ gcp-metadata@^3.4.0:
   dependencies:
     gaxios "^2.1.0"
     json-bigint "^0.3.0"
-
-gcp-metadata@^4.2.0:
-  version "4.2.1"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/gcp-metadata/-/gcp-metadata-4.2.1.tgz#31849fbcf9025ef34c2297c32a89a1e7e9f2cd62"
-  integrity sha1-MYSfvPkCXvNMIpfDKomh5+nyzWI=
-  dependencies:
-    gaxios "^4.0.0"
-    json-bigint "^1.0.0"
 
 gensync@^1.0.0-beta.1, gensync@^1.0.0-beta.2:
   version "1.0.0-beta.2"
@@ -5922,21 +5633,6 @@ google-auth-library@^5.0.0, google-auth-library@^5.5.0:
     jws "^4.0.0"
     lru-cache "^5.0.0"
 
-google-auth-library@^6.1.1:
-  version "6.1.6"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/google-auth-library/-/google-auth-library-6.1.6.tgz#deacdcdb883d9ed6bac78bb5d79a078877fdf572"
-  integrity sha1-3qzc24g9nta6x4u115oHiHf99XI=
-  dependencies:
-    arrify "^2.0.0"
-    base64-js "^1.3.0"
-    ecdsa-sig-formatter "^1.0.11"
-    fast-text-encoding "^1.0.0"
-    gaxios "^4.0.0"
-    gcp-metadata "^4.2.0"
-    gtoken "^5.0.4"
-    jws "^4.0.0"
-    lru-cache "^6.0.0"
-
 google-gax@^1.14.2:
   version "1.15.3"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/google-gax/-/google-gax-1.15.3.tgz#e88cdcbbd19c7d88cc5fd7d7b932c4d1979a5aca"
@@ -5984,13 +5680,6 @@ google-p12-pem@^2.0.0:
   integrity sha1-A2RiOU4mZHJjKni2hfDMPfTvM3s=
   dependencies:
     node-forge "^0.9.0"
-
-google-p12-pem@^3.0.3:
-  version "3.0.3"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/google-p12-pem/-/google-p12-pem-3.0.3.tgz#673ac3a75d3903a87f05878f3c75e06fc151669e"
-  integrity sha1-ZzrDp105A6h/BYePPHXgb8FRZp4=
-  dependencies:
-    node-forge "^0.10.0"
 
 got@9.6.0, got@^9.6.0:
   version "9.6.0"
@@ -6043,15 +5732,6 @@ gtoken@^4.1.0:
     google-p12-pem "^2.0.0"
     jws "^4.0.0"
     mime "^2.2.0"
-
-gtoken@^5.0.4:
-  version "5.2.1"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/gtoken/-/gtoken-5.2.1.tgz#4dae1fea17270f457954b4a45234bba5fc796d16"
-  integrity sha1-Ta4f6hcnD0V5VLSkUjS7pfx5bRY=
-  dependencies:
-    gaxios "^4.0.0"
-    google-p12-pem "^3.0.3"
-    jws "^4.0.0"
 
 handle-thing@^2.0.0:
   version "2.0.1"
@@ -6383,11 +6063,6 @@ icss-utils@^5.0.0:
   version "5.1.0"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/icss-utils/-/icss-utils-5.1.0.tgz#c6be6858abd013d768e98366ae47e25d5887b1ae"
   integrity sha1-xr5oWKvQE9do6YNmrkfiXViHsa4=
-
-idb@3.0.2:
-  version "3.0.2"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/idb/-/idb-3.0.2.tgz#c8e9122d5ddd40f13b60ae665e4862f8b13fa384"
-  integrity sha1-yOkSLV3dQPE7YK5mXkhi+LE/o4Q=
 
 idna-uts46-hx@^2.3.1:
   version "2.3.1"
@@ -7255,13 +6930,6 @@ json-bigint@^0.3.0:
   version "0.3.1"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/json-bigint/-/json-bigint-0.3.1.tgz#0c1729d679f580d550899d6a2226c228564afe60"
   integrity sha1-DBcp1nn1gNVQiZ1qIibCKFZK/mA=
-  dependencies:
-    bignumber.js "^9.0.0"
-
-json-bigint@^1.0.0:
-  version "1.0.0"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/json-bigint/-/json-bigint-1.0.0.tgz#ae547823ac0cad8398667f8cd9ef4730f5b01ff1"
-  integrity sha1-rlR4I6wMrYOYZn+M2e9HMPWwH/E=
   dependencies:
     bignumber.js "^9.0.0"
 
@@ -8517,7 +8185,7 @@ node-emoji@^1.4.1, node-emoji@^1.8.1:
   dependencies:
     lodash.toarray "^4.4.0"
 
-node-fetch@2.6.1, node-fetch@^2.3.0, node-fetch@^2.6.0, node-fetch@^2.6.1:
+node-fetch@^2.3.0, node-fetch@^2.6.0, node-fetch@^2.6.1:
   version "2.6.1"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha1-BFvTI2Mfdu0uK1VXM5RBa2OaAFI=
@@ -9799,11 +9467,6 @@ promise-inflight@^1.0.1:
   version "1.0.1"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/promise-inflight/-/promise-inflight-1.0.1.tgz#98472870bf228132fcbdd868129bad12c3c029e3"
   integrity sha1-mEcocL8igTL8vdhoEputEsPAKeM=
-
-promise-polyfill@8.1.3:
-  version "8.1.3"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/promise-polyfill/-/promise-polyfill-8.1.3.tgz#8c99b3cf53f3a91c68226ffde7bde81d7f904116"
-  integrity sha1-jJmzz1PzqRxoIm/9573oHX+QQRY=
 
 promise-retry@^1.1.1:
   version "1.1.1"
@@ -11828,7 +11491,7 @@ tslib@^1.10.0, tslib@^1.11.0, tslib@^1.13.0, tslib@^1.8.1, tslib@^1.9.0:
   resolved "https://artifactory.csq.fr:443/api/npm/npm/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha1-zy04vcNKE0vK8QkcQfZhni9nLQA=
 
-tslib@^2.0.0, tslib@^2.1.0:
+tslib@^2.0.0:
   version "2.2.0"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/tslib/-/tslib-2.2.0.tgz#fb2c475977e35e241311ede2693cee1ec6698f5c"
   integrity sha1-+yxHWXfjXiQTEe3iaTzuHsZpj1w=
@@ -12750,11 +12413,6 @@ websocket@^1.0.32:
     utf-8-validate "^5.0.2"
     yaeti "^0.0.6"
 
-whatwg-fetch@2.0.4:
-  version "2.0.4"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/whatwg-fetch/-/whatwg-fetch-2.0.4.tgz#dde6a5df315f9d39991aa17621853d720b85566f"
-  integrity sha1-3eal3zFfnTmZGqF2IYU9cguFVm8=
-
 whatwg-mimetype@^2.3.0:
   version "2.3.0"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/whatwg-mimetype/-/whatwg-mimetype-2.3.0.tgz#3d4b1e0312d2079879f826aff18dbeeca5960fbf"
@@ -12986,11 +12644,6 @@ xmldom@^0.5.0:
   version "0.5.0"
   resolved "https://artifactory.csq.fr:443/api/npm/npm/xmldom/-/xmldom-0.5.0.tgz#193cb96b84aa3486127ea6272c4596354cb4962e"
   integrity sha1-GTy5a4SqNIYSfqYnLEWWNUy0li4=
-
-xmlhttprequest@1.8.0:
-  version "1.8.0"
-  resolved "https://artifactory.csq.fr:443/api/npm/npm/xmlhttprequest/-/xmlhttprequest-1.8.0.tgz#67fe075c5c24fef39f9d65f5f7b7fe75171968fc"
-  integrity sha1-Z/4HXFwk/vOfnWX197f+dRcZaPw=
 
 xtend@^4.0.0, xtend@^4.0.2, xtend@~4.0.0, xtend@~4.0.1:
   version "4.0.2"

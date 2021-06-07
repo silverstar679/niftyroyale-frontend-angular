@@ -1,0 +1,31 @@
+version: 0.2
+
+env:
+  variables:
+    S3_BUCKET: "app-nifty-royale"
+    APP_NAME: "nifty-royale-frontend"
+    CDN_DISTRIBUTION_ID: "EWT3WI4Q2V69R"
+
+phases:
+  install:
+    runtime-versions:
+      # NodeJS included in the docker image
+      nodejs: 12
+    commands:
+      # Install node dependencies.
+      - npm install
+
+  build:
+    commands:
+      # Builds Angular application.
+      - npm run build:prod
+
+  post_build:
+    commands:
+      # Clear S3 bucket.
+      - aws s3 rm s3://$S3_BUCKET --recursive
+      # Copy files from dist to S3
+      - cd dist
+      - aws s3 cp $APP_NAME s3://$S3_BUCKET --recursive
+      # Begin cloudfront invalidation
+      - aws cloudfront create-invalidation --distribution-id $CDN_DISTRIBUTION_ID --paths "/*"
