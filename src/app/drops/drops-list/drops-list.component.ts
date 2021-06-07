@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { NETWORK } from '../../services/network.token';
-import { Contract, CONTRACTS } from '../../../models/contracts';
+import { Contract, CONTRACTS } from '../../../constants/contracts';
 import { EthereumNetwork } from '../../../models/nifty-royale.models';
 
 @Component({
