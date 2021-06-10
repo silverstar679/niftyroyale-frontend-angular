@@ -9,7 +9,12 @@ export interface Contracts {
 
 export const CONTRACTS: Contracts = {
   mainnet: [],
-  kovan: [],
+  kovan: [
+    {
+      address: '0x6bafc7AfD6bD2E32Cf754c56D219E733278DD29e',
+      name: 'Nifty Royale Testnet Drop 1',
+    },
+  ],
   rinkeby: [
     {
       address: '0xB46747f1633E9BEf69913A0d2ceA2d4815409ee1',
