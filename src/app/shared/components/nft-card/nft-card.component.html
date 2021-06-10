@@ -41,7 +41,7 @@
   </header>
   <footer
     *ngIf="showFooter"
-    class="flex flex-col gap-1 items-center justify-center p-2 h-24"
+    class="flex flex-col gap-1 items-center justify-center p-2"
   >
     <ng-container *ngIf="asset.tokenId; else delayMessage">
       <button
@@ -51,10 +51,12 @@
       >
         {{ btnText }}
       </button>
-      <p *ngIf="asset.order.sell" class="text-sm">
-        For sale: {{ formatPrice(asset.order.sell.base_price) }} Ξ
-      </p>
-      <p *ngIf="asset.order.buy" class="text-sm">Offer available</p>
+      <div class="flex flex-col gap-1 items-center justify-center text-xs h-8">
+        <p *ngIf="asset.order.sell">
+          For sale: {{ formatPrice(asset.order.sell.base_price) }} Ξ
+        </p>
+        <p *ngIf="asset.order.buy">Offer available</p>
+      </div>
     </ng-container>
     <ng-template #delayMessage>
       <p class="text-xs nifty-text-red">

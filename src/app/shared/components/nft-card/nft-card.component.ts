@@ -32,7 +32,9 @@ export class NftCardComponent {
   get btnText(): string {
     const ownerSellText = this.asset.order.sell ? 'Cancel Sale' : 'Sell';
     const ownerBuyText = this.asset.order.buy ? ' | Check Offers' : '';
-    const notOwnerBuyText = this.asset.order.sell ? 'Buy' : 'Make Offer';
+    const notOwnerBuyText = this.asset.order.sell
+      ? 'Buy | Make Offer'
+      : 'Make Offer';
     return this.asset.isOwner
       ? `${ownerSellText}${ownerBuyText}`
       : `${notOwnerBuyText}`;
