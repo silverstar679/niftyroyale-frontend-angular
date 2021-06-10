@@ -1,4 +1,4 @@
-import { OpenSeaAsset } from './opensea.types';
+import { OrderJSON } from './opensea.types';
 
 export enum EthereumNetwork {
   MAINNET = 'mainnet',
@@ -20,7 +20,13 @@ export interface IpfsMetadataModel {
   name: string;
 }
 
-export interface NiftyAssetModel extends OpenSeaAsset {
+export interface NiftyOrderModel {
+  buy?: OrderJSON;
+  sell?: OrderJSON;
+}
+
+export interface NiftyAssetModel {
+  order: NiftyOrderModel;
   contractAddress: string;
   extension: string;
   isEliminated: boolean;

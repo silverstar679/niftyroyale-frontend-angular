@@ -495,6 +495,7 @@ export interface Order extends UnsignedOrder, Partial<ECSignature> {
  * list of API query parameters and documentation.
  */
 export interface OrderJSON extends Partial<ECSignature> {
+  asset: OpenSeaAsset;
   exchange: string;
   maker: string;
   taker: string;
@@ -515,7 +516,7 @@ export interface OrderJSON extends Partial<ECSignature> {
   staticExtradata: string;
   paymentToken: string;
   quantity: string;
-  basePrice: string;
+  base_price: string;
   englishAuctionReservePrice: string | undefined;
   extra: string;
   createdTime?: number | string;

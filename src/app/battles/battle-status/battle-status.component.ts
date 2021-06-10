@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ContractService } from '../../services/contract.service';
 import { OpenSeaService } from '../../services/open-sea.service';
 import { MetamaskService } from '../../services/metamask.service';
-import { OpenSeaAsset } from '../../../models/opensea.types';
 import {
   BattleState,
   NiftyAssetModel,
@@ -18,7 +17,6 @@ import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
 export class BattleStatusComponent implements OnInit {
   battleStates = BattleState;
   displayedAssets = [] as NiftyAssetModel[];
-  openseaAssets: { [tokenId: string]: OpenSeaAsset } = {};
   contractAddress = '';
   dropName = '';
   defaultNftName = '';
@@ -67,7 +65,9 @@ export class BattleStatusComponent implements OnInit {
       await this.initBattleData();
       await Promise.all([
         this.contractService.getOwnerAddresses(this.totalPlayers).toPromise(),
-        this.getOpenseaAssets(this.totalPlayers),
+        this.openSeaService
+          .getOrders(this.contractAddress, this.totalPlayers)
+          .toPromise(),
       ]);
       this.displayedAssets = this.getDisplayedAssets(this.totalPlayers);
       this.isLoading = false;
@@ -86,7 +86,10 @@ export class BattleStatusComponent implements OnInit {
 
     for (let i = 1; i <= totalAssets; i++) {
       const tokenId = `${i}`;
-      const openseaAsset = this.openseaAssets[tokenId] || {};
+      const order = this.openSeaService.orders[tokenId] || {
+        buy: null,
+        sell: null,
+      };
       const ownerAddress = this.contractService.ownerAddresses[tokenId];
       const outOfPlayIndex = this.eliminatedPlayers.indexOf(tokenId);
       const isEliminated = outOfPlayIndex !== -1;
@@ -98,7 +101,7 @@ export class BattleStatusComponent implements OnInit {
         placement = totalAssets - outOfPlayIndex;
       }
       displayedAssets.push({
-        ...openseaAsset,
+        order,
         tokenId,
         isEliminated,
         ownerAddress,
@@ -116,17 +119,6 @@ export class BattleStatusComponent implements OnInit {
         Number(a.placement) - Number(b.placement)
       );
     });
-  }
-
-  private async getOpenseaAssets(totalAssets: number): Promise<any> {
-    const itemsPerPage = 50;
-    const numberOfPages = Math.floor(totalAssets / itemsPerPage) + 1;
-    const assets = await this.openSeaService
-      .getAssets(this.contractAddress, numberOfPages, itemsPerPage)
-      .toPromise();
-    for (const asset of assets) {
-      this.openseaAssets[asset.token_id] = asset;
-    }
   }
 
   private async initBattleData(): Promise<void> {
