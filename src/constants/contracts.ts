@@ -9,6 +9,7 @@ export interface Contracts {
 
 export const CONTRACTS: Contracts = {
   mainnet: [],
+  kovan: [],
   rinkeby: [
     {
       address: '0xB46747f1633E9BEf69913A0d2ceA2d4815409ee1',

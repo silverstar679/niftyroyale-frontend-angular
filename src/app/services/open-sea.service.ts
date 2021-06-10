@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, range } from 'rxjs';
+import { Observable, of, range } from 'rxjs';
 import { map, mergeMap, scan, takeLast } from 'rxjs/operators';
 import { OpenSeaAsset, OrderbookResponse } from '../../models/opensea.types';
 import {
@@ -44,6 +44,9 @@ export class OpenSeaService {
   }
 
   getOrders(address: string, total: number): Observable<string[]> {
+    if (this.network === EthereumNetwork.KOVAN) {
+      return of([]);
+    }
     const ordersBaseAPI = 'https://rinkeby-api.opensea.io/wyvern/v1/orders';
     let url = `${ordersBaseAPI}?asset_contract_address=${address}`;
     for (let i = 1; i <= total; i++) {

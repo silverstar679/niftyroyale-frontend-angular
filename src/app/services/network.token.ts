@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { inject, InjectionToken } from '@angular/core';
 import { EthereumNetwork } from '../../models/nifty-royale.models';
 
-export const NETWORK = new InjectionToken<any>('ETHEREUM NETWORK', {
+export const NETWORK = new InjectionToken<EthereumNetwork>('ETHEREUM NETWORK', {
   providedIn: 'root',
   factory: () => {
     const { location } = inject(DOCUMENT);
@@ -13,8 +13,14 @@ export const NETWORK = new InjectionToken<any>('ETHEREUM NETWORK', {
 
     const network = location.hostname.split('.')[0];
 
-    return 'app' === network
-      ? EthereumNetwork.MAINNET
-      : EthereumNetwork.RINKEBY;
+    if ('localhost' === network) {
+      return EthereumNetwork.RINKEBY;
+    }
+
+    if ('app' === network) {
+      return EthereumNetwork.MAINNET;
+    }
+
+    return network as EthereumNetwork;
   },
 });

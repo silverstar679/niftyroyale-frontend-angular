@@ -20,11 +20,14 @@ export class NftCardComponent {
   @Input() asset!: NiftyAssetModel;
   @Input() contractAddress!: string;
   @Input() totalPlayers!: number;
+  showFooter = true;
 
   constructor(
     @Inject(NETWORK) private network: EthereumNetwork,
     private router: Router
-  ) {}
+  ) {
+    this.showFooter = this.network !== EthereumNetwork.KOVAN;
+  }
 
   get btnText(): string {
     const ownerSellText = this.asset.order.sell ? 'Cancel Sale' : 'Sell';
