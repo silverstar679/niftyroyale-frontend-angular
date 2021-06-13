@@ -39,3 +39,30 @@ body {
     border-color: #fd0002;
   }
 }
+
+.dark-panel {
+  &.p-dropdown {
+    background: black;
+    &:not(.p-disabled):hover {
+      border-color: #f2ca53;
+    }
+    .p-inputtext {
+      font-family: "nifty", "arial", sans-serif;
+      color: #ffffff;
+    }
+    .p-dropdown-trigger {
+      color: #ffffff;
+    }
+  }
+  &.p-dropdown-panel {
+    background: black;
+    font-family: "nifty", "arial", sans-serif;
+    .p-dropdown-items .p-dropdown-item {
+      color: #ffffff;
+      &.p-highlight {
+        background: black;
+        color: #f2ca53;
+      }
+    }
+  }
+}
