@@ -16,8 +16,8 @@ import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
 export class DropsSaleComponent implements OnInit, OnDestroy {
   dropName = '';
   ethPrice = 0;
-  quantity = 0;
-  maxUnits = 0;
+  quantity = 1;
+  maxUnits = 1;
   maxMinted = 0;
   totalMinted = 0;
   defaultNftImage = '';
@@ -161,7 +161,6 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
       winnerURI,
       name,
       ethPrice,
-      maxUnits,
       maxMinted,
       totalMinted,
       battleState,
@@ -179,8 +178,6 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     this.battleState = battleState;
     this.dropName = name;
     this.ethPrice = Number(ethPrice) / 10 ** 18;
-    this.quantity = maxUnits;
-    this.maxUnits = maxUnits;
     this.hasBattleStarted = this.battleState !== BattleState.STANDBY;
     this.maxMinted = maxMinted;
     this.totalMinted = totalMinted;
