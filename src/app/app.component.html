@@ -1,7 +1,6 @@
 <div
   class="
     flex flex-col
-    gap-5
     w-full
     sm:flex-row sm:gap-0
     items-center
@@ -12,14 +11,14 @@
     bg-black
   "
 >
-  <a role="button" href="https://niftyroyale.com" target="_blank">
+  <a role="button" href="https://niftyroyale.com">
     <img
-      class="w-16 focus:outline-none cursor-pointer"
+      class="w-16 mr-12 focus:outline-none cursor-pointer"
       src="assets/images/logo-beta.webp"
       alt="logo"
     />
   </a>
-  <div class="flex flex-grow justify-center gap-8 text-xl nifty-text-gold">
+  <div class="flex flex-grow gap-8 text-xl nifty-text-gold">
     <ng-container *ngIf="!isAccountConnected || isGoodNetwork">
       <a class="hover:underline" role="button" href="https://niftyroyale.com">
         Home
@@ -113,18 +112,10 @@
   </div>
   <div class="flex flex-col gap-3 text-center">
     <div class="text-base font-bold">Important Links</div>
-    <a
-      class="text-xs hover:underline"
-      href="https://niftyroyale.com/terms"
-      target="_blank"
-    >
+    <a class="text-xs hover:underline" href="https://niftyroyale.com/terms">
       Terms & Condition
     </a>
-    <a
-      class="text-xs hover:underline"
-      href="https://niftyroyale.com/privacy"
-      target="_blank"
-    >
+    <a class="text-xs hover:underline" href="https://niftyroyale.com/privacy">
       Privacy Policy
     </a>
   </div>
