@@ -12,14 +12,18 @@
     bg-black
   "
 >
-  <img
-    class="w-16 focus:outline-none cursor-pointer"
-    routerLink="/drops"
-    src="assets/images/logo-beta.webp"
-    alt="logo"
-  />
+  <a role="button" href="https://niftyroyale.com" target="_blank">
+    <img
+      class="w-16 focus:outline-none cursor-pointer"
+      src="assets/images/logo-beta.webp"
+      alt="logo"
+    />
+  </a>
   <div class="flex flex-grow justify-center gap-8 text-xl nifty-text-gold">
     <ng-container *ngIf="!isAccountConnected || isGoodNetwork">
+      <a class="hover:underline" role="button" href="https://niftyroyale.com">
+        Home
+      </a>
       <a
         class="hover:underline"
         role="button"
@@ -58,8 +62,70 @@
     </button>
   </div>
 </div>
-
-<div class="container w-4/5 mx-auto pt-64 pb-10 sm:pt-36">
-  <router-outlet *ngIf="!isAccountConnected || isGoodNetwork"></router-outlet>
-  <p-toast position="bottom-left"></p-toast>
+<div class="bg-body pt-64 pb-10 sm:pt-36">
+  <div class="container w-4/5 min-h-screen h-full mx-auto">
+    <router-outlet *ngIf="!isAccountConnected || isGoodNetwork"></router-outlet>
+    <p-toast position="bottom-left"></p-toast>
+  </div>
+</div>
+<div class="flex flex-row justify-around items-center py-3 bg-black text-white">
+  <img class="h-20" src="assets/images/logo.webp" alt="nifty-royale-logo" />
+  <div class="flex flex-col gap-3 text-center">
+    <div class="text-base font-bold">Follow us</div>
+    <div class="flex flex-row gap-3">
+      <a
+        class="w-7"
+        role="button"
+        href="https://twitter.com/NiftyRoyale"
+        rel="noopener"
+        target="_blank"
+      >
+        <img src="assets/images/twitter.webp" alt="twitter-logo" />
+      </a>
+      <a
+        class="w-7"
+        role="button"
+        href="https://www.instagram.com/niftyroyale/"
+        rel="noopener"
+        target="_blank"
+      >
+        <img src="assets/images/instagram.webp" alt="instagram-logo" />
+      </a>
+      <a
+        class="w-7"
+        role="button"
+        href="https://discord.gg/jkuT3qWTnE"
+        rel="noopener"
+        target="_blank"
+      >
+        <img src="assets/images/discord.webp" alt="discord-logo" />
+      </a>
+      <a
+        class="w-7"
+        role="button"
+        href="https://niftyroyale.medium.com/"
+        rel="noopener"
+        target="_blank"
+      >
+        <img src="assets/images/medium.webp" alt="medium-logo" />
+      </a>
+    </div>
+  </div>
+  <div class="flex flex-col gap-3 text-center">
+    <div class="text-base font-bold">Important Links</div>
+    <a
+      class="text-xs hover:underline"
+      href="https://niftyroyale.com/privacy"
+      target="_blank"
+    >
+      Privacy Policy
+    </a>
+    <a
+      class="text-xs hover:underline"
+      href="https://niftyroyale.com/terms"
+      target="_blank"
+    >
+      Terms & Condition
+    </a>
+  </div>
 </div>
