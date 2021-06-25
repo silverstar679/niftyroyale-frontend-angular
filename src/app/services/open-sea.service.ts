@@ -44,30 +44,35 @@ export class OpenSeaService {
   }
 
   getOrders(address: string, total: number): Observable<string[]> {
-    if (this.network === EthereumNetwork.KOVAN) {
+    if (!total || this.network === EthereumNetwork.KOVAN) {
       return of([]);
     }
-    const ordersBaseAPI = 'https://rinkeby-api.opensea.io/wyvern/v1/orders';
+    const prefix = this.network === EthereumNetwork.RINKEBY ? 'rinkeby-' : '';
+    const ordersBaseAPI = `https://${prefix}api.opensea.io/wyvern/v1/orders`;
     let url = `${ordersBaseAPI}?asset_contract_address=${address}`;
     for (let i = 1; i <= total; i++) {
       url += `&token_ids=${i}`;
     }
-    return this.http.get<OrderbookResponse>(url).pipe(
-      map(({ orders }) =>
-        orders.map((order) => {
-          const tokenId = order.asset.token_id;
-          if (!this.orders[tokenId]) {
-            this.orders[tokenId] = {};
-          }
-          if (0 === order.side) {
-            this.orders[tokenId].buy = order;
-          } else if (1 === order.side) {
-            this.orders[tokenId].sell = order;
-          }
-          return tokenId;
-        })
-      )
-    );
+    return this.http
+      .get<OrderbookResponse>(url, {
+        headers: { 'X-API-KEY': '0e1bf05b31b84741beb801f347e6e30a' },
+      })
+      .pipe(
+        map(({ orders }) =>
+          orders.map((order) => {
+            const tokenId = order.asset.token_id;
+            if (!this.orders[tokenId]) {
+              this.orders[tokenId] = {};
+            }
+            if (0 === order.side) {
+              this.orders[tokenId].buy = order;
+            } else if (1 === order.side) {
+              this.orders[tokenId].sell = order;
+            }
+            return tokenId;
+          })
+        )
+      );
   }
 
   getAssetMetadata(uri: string): Observable<IpfsMetadataModel> {
