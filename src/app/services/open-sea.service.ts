@@ -53,6 +53,7 @@ export class OpenSeaService {
     for (let i = 1; i <= total; i++) {
       url += `&token_ids=${i}`;
     }
+    // TODO - find a way to hide this API key, probably by using AWS lambda function
     return this.http
       .get<OrderbookResponse>(url, {
         headers: { 'X-API-KEY': '0e1bf05b31b84741beb801f347e6e30a' },
