@@ -160,9 +160,9 @@
     "
     (click)="buy()"
     [ngClass]="{
-      'cursor-not-allowed hover:bg-green-500': isCheckoutBtnDisabled
+      'cursor-not-allowed hover:bg-green-500': isCheckoutDisabled
     }"
-    [disabled]="isCheckoutBtnDisabled"
+    [disabled]="isCheckoutDisabled"
   >
     <app-spinner *ngIf="isPurchaseProcessing"></app-spinner>
     {{ checkoutBtnText }}

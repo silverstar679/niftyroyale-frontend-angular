@@ -16,8 +16,8 @@ import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
 export class DropsSaleComponent implements OnInit, OnDestroy {
   dropName = '';
   ethPrice = 0;
-  quantity = 1;
-  maxUnits = 1;
+  quantity = 0;
+  maxUnits = 0;
   maxMinted = 0;
   totalMinted = 0;
   defaultNftImage = '';
@@ -52,8 +52,12 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     return 'Checkout';
   }
 
-  get isCheckoutBtnDisabled(): boolean {
-    return !this.quantity || this.isPurchaseProcessing;
+  get isCheckoutDisabled(): boolean {
+    return (
+      !this.quantity ||
+      this.quantity > this.maxUnits ||
+      this.isPurchaseProcessing
+    );
   }
 
   get totalPrice(): number {
@@ -109,6 +113,9 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
 
   async buy(): Promise<void> {
     try {
+      if (this.isCheckoutDisabled) {
+        return;
+      }
       this.isPurchaseProcessing = true;
       const from = this.metamaskService.currentAccount;
       const quantity = Number(this.quantity);
@@ -161,6 +168,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
       winnerURI,
       name,
       ethPrice,
+      maxUnits,
       maxMinted,
       totalMinted,
       battleState,
@@ -178,6 +186,8 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     this.battleState = battleState;
     this.dropName = name;
     this.ethPrice = Number(ethPrice) / 10 ** 18;
+    this.quantity = maxUnits;
+    this.maxUnits = maxUnits;
     this.hasBattleStarted = this.battleState !== BattleState.STANDBY;
     this.maxMinted = maxMinted;
     this.totalMinted = totalMinted;
