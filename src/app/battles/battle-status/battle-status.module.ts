@@ -1,5 +1,6 @@
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DropdownModule } from 'primeng/dropdown';
+import { DialogModule } from 'primeng/dialog';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
@@ -18,6 +19,7 @@ const ROUTES: Routes = [{ path: '', component: BattleStatusComponent }];
     FormsModule,
     ProgressSpinnerModule,
     DropdownModule,
+    DialogModule,
   ],
 })
 export class BattleStatusModule {}

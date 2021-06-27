@@ -19,7 +19,7 @@
     'nifty-border-red': asset.isOwner
   }"
 >
-  <div class="relative mb-3">
+  <div class="relative mb-3 cursor-pointer" (click)="imgClick.emit()">
     <img
       *ngIf="asset.isEliminated"
       class="absolute h-full w-full z-10"

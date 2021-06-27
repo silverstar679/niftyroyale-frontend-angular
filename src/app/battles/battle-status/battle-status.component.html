@@ -40,6 +40,7 @@
           [asset]="asset"
           [contractAddress]="contractAddress"
           [totalPlayers]="totalPlayers"
+          (imgClick)="showImageDialog(asset.nftURL)"
         ></app-nft-card>
       </div>
     </ng-container>
@@ -55,3 +56,10 @@
     <p-progressSpinner></p-progressSpinner>
   </div>
 </ng-template>
+
+<p-dialog [(visible)]="displayDialog" (onHide)="imgDialog = ''">
+  <app-nft-displayer
+    *ngIf="imgDialog.length > 0"
+    [nftURL]="imgDialog"
+  ></app-nft-displayer>
+</p-dialog>

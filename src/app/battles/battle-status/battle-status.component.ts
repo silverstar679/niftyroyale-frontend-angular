@@ -67,6 +67,8 @@ export class BattleStatusComponent implements OnInit {
   eliminatedPlayers = [] as string[];
   totalPlayers = 0;
   countdownTimer = '';
+  displayDialog = false;
+  imgDialog = '';
   isLoading = true;
 
   constructor(
@@ -124,6 +126,11 @@ export class BattleStatusComponent implements OnInit {
 
   setFilterOption(filter: FilterOptions): void {
     this.selectedFilter$.next(filter);
+  }
+
+  showImageDialog(url: string): void {
+    this.imgDialog = url;
+    this.displayDialog = true;
   }
 
   private getDisplayedAssets(totalAssets: number): NiftyAssetModel[] {

@@ -1,8 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   Inject,
   Input,
+  Output,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import {
@@ -20,6 +22,7 @@ export class NftCardComponent {
   @Input() asset!: NiftyAssetModel;
   @Input() contractAddress!: string;
   @Input() totalPlayers!: number;
+  @Output() imgClick = new EventEmitter<void>();
   showFooter = true;
 
   constructor(
