@@ -19,7 +19,7 @@ export class OpenSeaService {
     @Inject(NETWORK) private network: EthereumNetwork,
     private http: HttpClient
   ) {
-    this.openseaBaseAPI = `https://api.niftyroyale.com/opensea/${network}`;
+    this.openseaBaseAPI = 'https://api.niftyroyale.com/opensea';
   }
 
   getAssets(
@@ -30,7 +30,7 @@ export class OpenSeaService {
     return range(1, numberOfPages).pipe(
       mergeMap((pageNumber) => {
         const offset = (pageNumber - 1) * itemsPerPage;
-        const url = `${this.openseaBaseAPI}/assets/${address}?offset=${offset}&limit=${itemsPerPage}`;
+        const url = `${this.openseaBaseAPI}/${this.network}/assets/${address}?offset=${offset}&limit=${itemsPerPage}`;
         return this.http
           .get<{ assets: OpenSeaAsset[] }>(url)
           .pipe(map(({ assets }) => assets));
@@ -47,33 +47,23 @@ export class OpenSeaService {
     if (!total || this.network === EthereumNetwork.KOVAN) {
       return of([]);
     }
-    const prefix = this.network === EthereumNetwork.RINKEBY ? 'rinkeby-' : '';
-    const ordersBaseAPI = `https://${prefix}api.opensea.io/wyvern/v1/orders`;
-    let url = `${ordersBaseAPI}?asset_contract_address=${address}`;
-    for (let i = 1; i <= total; i++) {
-      url += `&token_ids=${i}`;
-    }
-    // TODO - find a way to hide this API key, probably by using AWS lambda function
-    return this.http
-      .get<OrderbookResponse>(url, {
-        headers: { 'X-API-KEY': '0e1bf05b31b84741beb801f347e6e30a' },
-      })
-      .pipe(
-        map(({ orders }) =>
-          orders.map((order) => {
-            const tokenId = order.asset.token_id;
-            if (!this.orders[tokenId]) {
-              this.orders[tokenId] = {};
-            }
-            if (0 === order.side) {
-              this.orders[tokenId].buy = order;
-            } else if (1 === order.side) {
-              this.orders[tokenId].sell = order;
-            }
-            return tokenId;
-          })
-        )
-      );
+    const url = `${this.openseaBaseAPI}/orders?address=${address}&network=${this.network}&total=${total}`;
+    return this.http.get<OrderbookResponse>(url).pipe(
+      map(({ orders }) =>
+        orders.map((order) => {
+          const tokenId = order.asset.token_id;
+          if (!this.orders[tokenId]) {
+            this.orders[tokenId] = {};
+          }
+          if (0 === order.side) {
+            this.orders[tokenId].buy = order;
+          } else if (1 === order.side) {
+            this.orders[tokenId].sell = order;
+          }
+          return tokenId;
+        })
+      )
+    );
   }
 
   getAssetMetadata(uri: string): Observable<IpfsMetadataModel> {
