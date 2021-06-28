@@ -17,8 +17,8 @@
       <p class="text-lg text-white">NFTs displayed:</p>
       <p-dropdown
         [options]="filterOptions"
-        [styleClass]="'dark-panel'"
-        [panelStyleClass]="'dark-panel'"
+        [styleClass]="'nr-panel'"
+        [panelStyleClass]="'nr-panel'"
         (onChange)="setFilterOption($event.value)"
         optionLabel="label"
         optionValue="value"
@@ -57,7 +57,11 @@
   </div>
 </ng-template>
 
-<p-dialog [(visible)]="displayDialog" (onHide)="imgDialog = ''">
+<p-dialog
+  [(visible)]="displayDialog"
+  [styleClass]="'nr-panel'"
+  (onHide)="imgDialog = ''"
+>
   <app-nft-displayer
     *ngIf="imgDialog.length > 0"
     [nftURL]="imgDialog"

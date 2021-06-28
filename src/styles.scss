@@ -40,7 +40,7 @@ body {
   }
 }
 
-.dark-panel {
+.nr-panel {
   &.p-dropdown {
     background: black;
     &:not(.p-disabled):hover {
@@ -64,5 +64,9 @@ body {
         color: #f2ca53;
       }
     }
+  }
+  .p-dialog-header,
+  .p-dialog-content {
+    background-color: #f2ca53;
   }
 }
