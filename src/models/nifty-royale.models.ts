@@ -12,8 +12,13 @@ export enum BattleState {
   ENDED = 'ENDED',
 }
 
+export interface Attribute {
+  trait_type: string;
+  value: string;
+}
+
 export interface IpfsMetadataModel {
-  attributes: string[];
+  attributes: Attribute[];
   description: string;
   external_url: string;
   image: string;

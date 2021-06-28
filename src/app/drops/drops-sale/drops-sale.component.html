@@ -65,6 +65,10 @@
     <p>NFT Description</p>
     <p>{{ nftDescription }}</p>
   </div>
+  <div class="flex flex-col gap-2">
+    <p>Artist Description</p>
+    <p>{{ artistDescription }}</p>
+  </div>
   <div class="flex flex-col gap-2 text-xs">
     <p>Disclaimer:</p>
     <p>
@@ -95,6 +99,7 @@
         [(ngModel)]="quantity"
         [min]="1"
         [max]="maxUnits"
+        (keypress)="$event.preventDefault()"
       />
     </div>
   </div>
@@ -104,7 +109,16 @@
       border-dashed border-2 border-gray-500 border-r-0 border-l-0 border-t-0
     "
   >
-    <p>Price</p>
+    <p class="font-bold">Unit Price</p>
+    <div class="flex flex-row-reverse flex-grow">{{ ethPrice }} Ξ</div>
+  </div>
+  <div
+    class="
+      flex
+      border-solid border-2 border-gray-500 border-r-0 border-l-0 border-t-0
+    "
+  >
+    <p>Subtotal</p>
     <div class="flex flex-row-reverse flex-grow">
       <p>{{ totalPrice.toFixed(4) }} Ξ</p>
     </div>

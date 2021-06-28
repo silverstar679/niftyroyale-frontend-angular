@@ -23,6 +23,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
   defaultNftImage = '';
   winnerNftImage = '';
   nftDescription = '';
+  artistDescription = '';
   battleState = BattleState.STANDBY;
   hasBattleStarted = false;
   isAccountConnected = false;
@@ -181,6 +182,10 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
 
     this.nftDescription = defaultIpfsMetadata.description;
     this.defaultNftImage = defaultIpfsMetadata.image;
+    this.artistDescription =
+      defaultIpfsMetadata.attributes.find(
+        (a) => a.trait_type === 'Artist Description:'
+      )?.value || '';
     this.winnerNftImage = winnerIpfsMetadata.image;
 
     this.battleState = battleState;
