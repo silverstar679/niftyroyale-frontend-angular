@@ -1,12 +1,16 @@
 import { MessageService } from 'primeng/api';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { NETWORK } from '../../services/network.token';
 import { ContractService } from '../../services/contract.service';
 import { MetamaskService } from '../../services/metamask.service';
 import { OpenSeaService } from '../../services/open-sea.service';
-import { BattleState } from '../../../models/nifty-royale.models';
+import {
+  BattleState,
+  EthereumNetwork,
+} from '../../../models/nifty-royale.models';
 import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
 
 @Component({
@@ -34,6 +38,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
 
   constructor(
+    @Inject(NETWORK) private network: EthereumNetwork,
     private contractService: ContractService,
     private metamaskService: MetamaskService,
     private openSeaService: OpenSeaService,
@@ -96,6 +101,16 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     return this.contractService.transactionHash;
   }
 
+  get etherscanURL(): string {
+    const network =
+      this.network !== EthereumNetwork.MAINNET ? `${this.network}.` : '';
+    return `https://${network}etherscan.io`;
+  }
+
+  get transactionURL(): string {
+    return `${this.etherscanURL}/tx/${this.transactionHash}`;
+  }
+
   async ngOnInit(): Promise<void> {
     try {
       const { contractAddress } = this.route.snapshot.params;
@@ -144,7 +159,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
       this.messageService.add({
         severity: SEVERITY.ERROR,
         summary: SUMMARY.ERROR_OCCURRED,
-        detail: error.message,
+        detail: 'Only 1 purchase per account.',
         sticky: true,
       });
     }
