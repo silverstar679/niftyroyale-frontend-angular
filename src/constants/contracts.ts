@@ -8,7 +8,12 @@ export interface Contracts {
 }
 
 export const CONTRACTS: Contracts = {
-  mainnet: [],
+  mainnet: [
+    {
+      address: '0xCFa9BaabFF2AC2da41385E051386188f4F5BC94d',
+      name: `Nifty Royale X Lushsux - Sergey "Big Mac" Nazarov`,
+    },
+  ],
   kovan: [
     {
       address: '0x6bafc7AfD6bD2E32Cf754c56D219E733278DD29e',
