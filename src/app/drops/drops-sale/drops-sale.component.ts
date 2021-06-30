@@ -159,11 +159,15 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
       });
     } catch (error) {
       this.messageService.clear();
+      const detail =
+        error.message.indexOf('transactionHash') !== -1
+          ? `TxID: ${this.transactionURL}`
+          : error.message;
       this.messageService.add({
         sticky: true,
         severity: SEVERITY.ERROR,
         summary: SUMMARY.ERROR_OCCURRED,
-        detail: `TxID: ${this.transactionHash}`,
+        detail,
       });
     }
     this.isPurchaseProcessing = false;
