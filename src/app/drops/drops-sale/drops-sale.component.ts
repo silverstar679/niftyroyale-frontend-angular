@@ -199,7 +199,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     this.defaultNftImage = defaultIpfsMetadata.image;
     this.artistDescription =
       defaultIpfsMetadata.attributes.find(
-        (a) => a.trait_type === 'Artist Description'
+        (a) => -1 !== a.trait_type.indexOf('Artist Description')
       )?.value || '';
     this.winnerNftImage = winnerIpfsMetadata.image;
 
