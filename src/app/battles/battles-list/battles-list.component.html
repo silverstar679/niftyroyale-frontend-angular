@@ -24,31 +24,33 @@
           alt="battle-logo"
         />
       </div>
-      <div class="flex-1 text-base md:text-lg">{{ battle.name }}</div>
-      <button
-        type="button"
-        class="
-          inline-flex
-          items-center
-          justify-center
-          px-4
-          py-2
-          border border-transparent
-          text-base
-          leading-6
-          font-medium
-          rounded-md
-          text-white
-          nifty-bg-gold
-          hover:bg-yellow-500
-          transition
-          ease-in-out
-          duration-150
-        "
-        (click)="goTo(battle.address)"
-      >
-        Proceed to battle
-      </button>
+      <div class="flex flex-col gap-3 md:flex-row md:gap-0 md:flex-1">
+        <div class="text-base md:text-lg md:flex-1">{{ battle.name }}</div>
+        <button
+          type="button"
+          class="
+            inline-flex
+            items-center
+            justify-center
+            px-4
+            py-2
+            border border-transparent
+            text-base
+            leading-6
+            font-medium
+            rounded-md
+            text-white
+            nifty-bg-gold
+            hover:bg-yellow-500
+            transition
+            ease-in-out
+            duration-150
+          "
+          (click)="goTo(battle.address)"
+        >
+          Proceed to battle
+        </button>
+      </div>
     </div>
   </ng-template>
 </div>

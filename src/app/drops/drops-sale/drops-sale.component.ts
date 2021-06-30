@@ -216,7 +216,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     this.hasBattleStarted = this.battleState !== BattleState.STANDBY;
     this.maxMinted = maxMinted;
     this.totalMinted = totalMinted;
-    this.quantity = this.leftForSale > maxUnits ? maxUnits : this.leftForSale;
+    this.quantity = 1;
     this.maxUnits = this.leftForSale > maxUnits ? maxUnits : this.leftForSale;
   }
 
