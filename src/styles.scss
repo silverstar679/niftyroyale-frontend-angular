@@ -55,6 +55,9 @@ body {
 }
 
 .nifty-panel {
+  &.p-toast {
+    width: auto;
+  }
   &.p-dropdown {
     background: black;
     &:not(.p-disabled):hover {

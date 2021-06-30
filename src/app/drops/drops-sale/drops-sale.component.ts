@@ -85,9 +85,12 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     return this.contractService.gasPrice;
   }
 
-  get leftForSale(): string {
-    const leftForSale = this.maxMinted - this.totalMinted;
-    return `${leftForSale}/${this.maxMinted} left for sale`;
+  get leftForSale(): number {
+    return this.maxMinted - this.totalMinted;
+  }
+
+  get leftForSaleText(): string {
+    return `${this.leftForSale}/${this.maxMinted} left for sale`;
   }
 
   get nftImageText(): string {
@@ -157,10 +160,10 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     } catch (error) {
       this.messageService.clear();
       this.messageService.add({
+        sticky: true,
         severity: SEVERITY.ERROR,
         summary: SUMMARY.ERROR_OCCURRED,
-        detail: error.message,
-        sticky: true,
+        detail: `TxID: ${this.transactionHash}`,
       });
     }
     this.isPurchaseProcessing = false;
@@ -206,11 +209,11 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     this.battleState = battleState;
     this.dropName = name;
     this.ethPrice = Number(ethPrice) / 10 ** 18;
-    this.quantity = maxUnits;
-    this.maxUnits = maxUnits;
     this.hasBattleStarted = this.battleState !== BattleState.STANDBY;
     this.maxMinted = maxMinted;
     this.totalMinted = totalMinted;
+    this.quantity = this.leftForSale > maxUnits ? maxUnits : this.leftForSale;
+    this.maxUnits = this.leftForSale > maxUnits ? maxUnits : this.leftForSale;
   }
 
   ngOnDestroy(): void {

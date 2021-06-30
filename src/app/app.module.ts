@@ -22,7 +22,7 @@ const ROUTES: Routes = [{ path: '', pathMatch: 'full', redirectTo: 'drops' }];
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    RouterModule.forRoot(ROUTES),
+    RouterModule.forRoot(ROUTES, { scrollPositionRestoration: 'enabled' }),
     ToastModule,
     DropsModule,
     BattlesModule,
