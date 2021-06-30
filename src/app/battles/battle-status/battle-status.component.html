@@ -17,8 +17,8 @@
       <p class="text-lg text-white">NFTs displayed:</p>
       <p-dropdown
         [options]="filterOptions"
-        [styleClass]="'nr-panel'"
-        [panelStyleClass]="'nr-panel'"
+        [styleClass]="'nifty-panel'"
+        [panelStyleClass]="'nifty-panel'"
         (onChange)="setFilterOption($event.value)"
         optionLabel="label"
         optionValue="value"
@@ -59,7 +59,7 @@
 
 <p-dialog
   [(visible)]="displayDialog"
-  [styleClass]="'nr-panel'"
+  [styleClass]="'nifty-panel'"
   (onHide)="imgDialog = ''"
 >
   <app-nft-displayer

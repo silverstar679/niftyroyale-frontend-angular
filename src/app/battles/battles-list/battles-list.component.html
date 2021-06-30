@@ -5,7 +5,6 @@
   <ng-template #battlesResult>
     <div
       *ngFor="let battle of battles"
-      (click)="goTo(battle.address)"
       class="
         flex flex-row
         items-center
@@ -16,7 +15,6 @@
         border-4
         rounded-lg
         nifty-border-gold
-        cursor-pointer
       "
     >
       <div class="flex-shrink">
@@ -27,6 +25,30 @@
         />
       </div>
       <div class="flex-1 text-base md:text-lg">{{ battle.name }}</div>
+      <button
+        type="button"
+        class="
+          inline-flex
+          items-center
+          justify-center
+          px-4
+          py-2
+          border border-transparent
+          text-base
+          leading-6
+          font-medium
+          rounded-md
+          text-white
+          nifty-bg-gold
+          hover:bg-yellow-500
+          transition
+          ease-in-out
+          duration-150
+        "
+        (click)="goTo(battle.address)"
+      >
+        Proceed to battle
+      </button>
     </div>
   </ng-template>
 </div>
