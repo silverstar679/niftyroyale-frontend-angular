@@ -96,10 +96,10 @@
       <input
         class="w-16 text-right text-black font-sans"
         type="number"
+        pattern="\d*"
         [(ngModel)]="quantity"
         [min]="1"
         [max]="maxUnits"
-        (keypress)="$event.preventDefault()"
       />
     </div>
   </div>
@@ -166,15 +166,14 @@
       font-medium
       rounded-md
       text-white
-      bg-green-500
-      hover:bg-green-400
       transition
       ease-in-out
       duration-150
     "
     (click)="buy()"
     [ngClass]="{
-      'cursor-not-allowed hover:bg-green-500': isCheckoutDisabled
+      'bg-green-500 hover:bg-green-400': !isCheckoutDisabled,
+      'bg-green-300 cursor-not-allowed': isCheckoutDisabled
     }"
     [disabled]="isCheckoutDisabled"
   >
