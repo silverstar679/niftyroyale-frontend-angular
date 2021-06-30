@@ -159,7 +159,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
       this.messageService.add({
         severity: SEVERITY.ERROR,
         summary: SUMMARY.ERROR_OCCURRED,
-        detail: 'Only 1 purchase per account.',
+        detail: error.message,
         sticky: true,
       });
     }
@@ -199,7 +199,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     this.defaultNftImage = defaultIpfsMetadata.image;
     this.artistDescription =
       defaultIpfsMetadata.attributes.find(
-        (a) => a.trait_type === 'Artist Description:'
+        (a) => a.trait_type === 'Artist Description'
       )?.value || '';
     this.winnerNftImage = winnerIpfsMetadata.image;
 
