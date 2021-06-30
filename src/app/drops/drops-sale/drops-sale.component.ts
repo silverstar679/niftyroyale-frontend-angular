@@ -161,7 +161,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
       this.messageService.clear();
       const detail =
         error.message.indexOf('transactionHash') !== -1
-          ? `TxID: ${this.transactionURL}`
+          ? `Please visit: ${this.transactionURL} for more details.`
           : error.message;
       this.messageService.add({
         sticky: true,
