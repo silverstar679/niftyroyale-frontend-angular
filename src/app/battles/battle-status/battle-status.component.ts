@@ -66,7 +66,7 @@ export class BattleStatusComponent implements OnInit {
   inPlayPlayers = [] as string[];
   eliminatedPlayers = [] as string[];
   totalPlayers = 0;
-  countdownTimer = '';
+  nextEliminationTimestamp = 0;
   displayDialog = false;
   imgDialog = '';
   isLoading = true;
@@ -216,6 +216,7 @@ export class BattleStatusComponent implements OnInit {
     this.eliminatedPlayers = eliminatedPlayers;
     this.inPlayPlayers = inPlayPlayers;
     this.totalPlayers = inPlayPlayers.length + eliminatedPlayers.length;
+    this.nextEliminationTimestamp = nextEliminationTimestamp;
 
     if (this.isBattleEnded) {
       const winnerTokenId = this.inPlayPlayers[0];
@@ -226,72 +227,5 @@ export class BattleStatusComponent implements OnInit {
       this.winnerNftName = winnerIpfsMetadata.name;
       this.winnerPicture = winnerIpfsMetadata.image;
     }
-
-    this.initCountdown(nextEliminationTimestamp);
-  }
-
-  private initCountdown(nextEliminationTimestamp: number): void {
-    if (BattleState.RUNNING !== this.currBattleState) {
-      return;
-    }
-    const x = setInterval(() => {
-      // Get today's date and time
-      const now = new Date().getTime();
-
-      // Find the distance between now and the count down date
-      const distance = nextEliminationTimestamp - now;
-
-      // Time calculations for days, hours, minutes and seconds
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor(
-        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-      );
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      this.countdownTimer = '';
-
-      if (days > 0) {
-        if (`${days}`.length === 1) {
-          this.countdownTimer = this.countdownTimer + '0';
-        }
-        this.countdownTimer = this.countdownTimer + days + ':';
-        if (hours === 0) {
-          this.countdownTimer = this.countdownTimer + '00';
-        }
-      }
-
-      if (hours > 0) {
-        if (`${hours}`.length === 1) {
-          this.countdownTimer = this.countdownTimer + '0';
-        }
-        this.countdownTimer = this.countdownTimer + hours + ':';
-        if (minutes === 0) {
-          this.countdownTimer = this.countdownTimer + '00';
-        }
-      }
-
-      if (minutes > 0) {
-        if (`${minutes}`.length === 1) {
-          this.countdownTimer = this.countdownTimer + '0';
-        }
-        this.countdownTimer = this.countdownTimer + minutes + ':';
-        if (seconds === 0) {
-          this.countdownTimer = this.countdownTimer + '00';
-        }
-      }
-
-      if (seconds > 0) {
-        if (`${seconds}`.length === 1) {
-          this.countdownTimer = this.countdownTimer + '0';
-        }
-        this.countdownTimer = this.countdownTimer + seconds;
-      }
-
-      if (days <= 0 && hours <= 0 && minutes <= 0 && seconds <= 0) {
-        clearInterval(x);
-        this.countdownTimer = 'Now!';
-      }
-    }, 1000);
   }
 }

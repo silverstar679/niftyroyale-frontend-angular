@@ -7,11 +7,11 @@
     class="
       flex flex-col
       items-center
-      gap-20
-      lg:flex-row lg:justify-around lg:gap-0
+      gap-14
+      lg:flex-row lg:justify-around
     "
   >
-    <div class="flex flex-col flex-grow w-full lg:w-1/2 gap-2">
+    <div class="flex flex-col flex-grow gap-2 w-full lg:w-1/2">
       <div
         class="relative cursor-pointer"
         (click)="showWinnerNftImage = !showWinnerNftImage"
@@ -32,18 +32,23 @@
     <div
       class="
         flex flex-col flex-shrink
+        gap-2
         w-full
         lg:w-1/2
-        gap-2
         text-lg text-center
       "
     >
-      <p
+      <div
         *ngIf="!hasBattleStarted && !isPurchaseSuccessful"
-        class="nifty-text-red"
+        class="flex flex-col items-center nifty-text-red"
       >
-        {{ leftForSaleText }}
-      </p>
+        <app-countdown
+          [title]="'Sale ends in'"
+          [fromDate]="'2021-07-01T17:00:00'"
+          [timezone]="'UTC-7'"
+        ></app-countdown>
+        <p>{{ leftForSaleText }}</p>
+      </div>
       <div
         class="
           flex flex-col

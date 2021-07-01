@@ -5,13 +5,17 @@
       <p *ngIf="currBattleState !== battleStates.STANDBY">
         {{ inPlayPlayers.length }}/{{ totalPlayers }} NFTs remain
       </p>
-      <p class="nifty-text-red">
-        {{
-          currBattleState === battleStates.RUNNING
-            ? battleStatusText + " " + countdownTimer
-            : battleStatusText
-        }}
+      <p
+        *ngIf="currBattleState !== battleStates.RUNNING"
+        class="nifty-text-red"
+      >
+        {{ battleStatusText }}
       </p>
+      <app-countdown
+        *ngIf="currBattleState === battleStates.RUNNING"
+        [title]="'Next elimination in'"
+        [fromTimestamp]="nextEliminationTimestamp"
+      ></app-countdown>
     </div>
     <div class="flex flex-col sm:flex-row items-center gap-3">
       <p class="text-lg text-white">NFTs displayed:</p>
