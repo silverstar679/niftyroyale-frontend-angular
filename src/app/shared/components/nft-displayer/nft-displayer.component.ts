@@ -15,6 +15,7 @@ import { VIDEO_EXTENSION } from '../../../../constants/extensions/video-extensio
 })
 export class NftDisplayerComponent implements OnInit {
   @Input() nftURL!: string;
+  @Input() height = 'auto';
   safeNftURL!: SafeResourceUrl;
   isImage = false;
   isVideo = false;

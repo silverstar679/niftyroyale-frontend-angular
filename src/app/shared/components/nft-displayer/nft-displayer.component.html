@@ -1,12 +1,14 @@
 <img
   *ngIf="isImage"
-  class="block rounded-sm h-auto w-full"
+  class="object-contain w-full rounded-sm"
+  [ngStyle]="{ height: height }"
   [src]="safeNftURL"
   alt="nft-image"
 />
 <video
   *ngIf="isVideo"
-  style="width: auto; height: auto"
+  class="object-contain w-full rounded-sm"
+  [ngStyle]="{ height: height }"
   loop
   muted
   autoplay
