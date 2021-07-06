@@ -190,8 +190,7 @@ export class BattleStatusComponent implements OnInit {
           default:
             return this.allAssets.filter((a) => Boolean(a));
         }
-      }),
-      tap(console.log)
+      })
     );
   }
 

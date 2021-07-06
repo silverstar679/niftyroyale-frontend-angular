@@ -9,17 +9,21 @@
   src: url(assets/fonts/Nifty-Regular.otf) format("opentype");
 }
 
-a {
-  -ms-text-underline-position: below;
-  text-underline-position: under;
-}
-
 body {
   background-repeat: repeat;
   background-position: center;
   background-color: black;
   background-image: url("assets/images/background.webp");
   font-family: "nifty", "arial", sans-serif;
+}
+
+a {
+  -ms-text-underline-position: below;
+  text-underline-position: under;
+}
+
+.h-fit-content {
+  height: fit-content;
 }
 
 .nifty-text {
