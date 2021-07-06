@@ -7,6 +7,7 @@
 <div
   class="
     flex flex-col
+    h-full
     p-2
     bg-black
     border-4
@@ -19,7 +20,7 @@
     'nifty-border-red': asset.isOwner
   }"
 >
-  <div class="flex-grow flex-shrink-0 relative mb-3 cursor-pointer" (click)="imgClick.emit()">
+  <div class="flex flex-grow flex-shrink-0 items-center relative mb-3 cursor-pointer" (click)="imgClick.emit()">
     <img
       *ngIf="asset.isEliminated"
       class="absolute h-full w-full z-10"
