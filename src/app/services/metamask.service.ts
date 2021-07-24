@@ -5,6 +5,8 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { SEVERITY, SUMMARY } from '../../models/toast.enum';
 import { ETHEREUM } from './ethereum.token';
 
+const ADMIN_WALLET = '0x453e23826f0CfF7655b6A7e866123013923Ae818';
+
 enum ETH_METHODS {
   ACCOUNTS_CHANGED = 'accountsChanged',
   CHAIN_CHANGED = 'chainChanged',
@@ -40,6 +42,10 @@ export class MetamaskService {
 
   get isMetamaskInstalled(): boolean {
     return Boolean(this.ethereum?.isMetaMask);
+  }
+
+  get isAdminWallet(): boolean {
+    return ADMIN_WALLET.toLowerCase() === this.currentAccount;
   }
 
   isOwnerAddress(address: string): boolean {

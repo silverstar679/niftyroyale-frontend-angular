@@ -7,9 +7,9 @@ export enum EthereumNetwork {
 }
 
 export enum BattleState {
-  STANDBY = 'STANDBY',
-  RUNNING = 'RUNNING',
-  ENDED = 'ENDED',
+  STANDBY,
+  RUNNING,
+  ENDED,
 }
 
 export interface Attribute {

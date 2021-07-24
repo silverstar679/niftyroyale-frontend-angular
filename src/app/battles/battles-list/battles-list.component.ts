@@ -10,13 +10,15 @@ import { EthereumNetwork } from '../../../models/nifty-royale.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BattlesListComponent {
-  battles: Contract[];
+  activeBattles: Contract[];
+  pastBattles: Contract[];
 
   constructor(
     @Inject(NETWORK) private network: EthereumNetwork,
     private router: Router
   ) {
-    this.battles = CONTRACTS[network];
+    this.activeBattles = CONTRACTS[network].active;
+    this.pastBattles = CONTRACTS[network].past;
   }
 
   goTo(address: string): Promise<boolean> {

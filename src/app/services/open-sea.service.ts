@@ -1,22 +1,24 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, range } from 'rxjs';
+import { Observable, range } from 'rxjs';
 import { map, mergeMap, scan, takeLast } from 'rxjs/operators';
 import { OpenSeaAsset, OrderJSON } from '../../models/opensea.types';
 import {
   EthereumNetwork,
   IpfsMetadataModel,
+  NiftyAssetModel,
   NiftyOrderModel,
 } from '../../models/nifty-royale.models';
+import { PlayersService } from './players.service';
 import { NETWORK } from './network.token';
 
 @Injectable()
 export class OpenSeaService {
-  public orders: { [tokenId: string]: NiftyOrderModel } = {};
   private readonly openseaBaseAPI: string;
 
   constructor(
     @Inject(NETWORK) private network: EthereumNetwork,
+    private playersService: PlayersService,
     private http: HttpClient
   ) {
     this.openseaBaseAPI = 'https://api.niftyroyale.com/opensea';
@@ -43,30 +45,35 @@ export class OpenSeaService {
     );
   }
 
-  getOrders(address: string, total: number): Observable<string[]> {
+  async getOrders(address: string, total: number): Promise<void> {
     if (!total || this.network === EthereumNetwork.KOVAN) {
-      return of([]);
+      return;
     }
     const url = `${this.openseaBaseAPI}/orders?address=${address}&network=${this.network}&total=${total}`;
-    return this.http.get<OrderJSON[]>(url).pipe(
-      map((orders) =>
-        orders.map((order) => {
-          const tokenId = order.asset.token_id;
-          if (!this.orders[tokenId]) {
-            this.orders[tokenId] = {};
-          }
-          if (0 === order.side) {
-            this.orders[tokenId].buy = order;
-          } else if (1 === order.side) {
-            this.orders[tokenId].sell = order;
-          }
-          return tokenId;
-        })
-      )
-    );
+    const orderBook = await this.http.get<OrderJSON[]>(url).toPromise();
+    const orders = {} as { [tokenId: string]: NiftyOrderModel };
+    for (let i = 1; i <= total; i++) {
+      orders[i] = {
+        buy: undefined,
+        sell: undefined,
+      };
+    }
+    for (const o of orderBook) {
+      const tokenId = o.asset.token_id;
+      if (0 === o.side) {
+        orders[tokenId].buy = o;
+      } else if (1 === o.side) {
+        orders[tokenId].sell = o;
+      }
+    }
+    for (let i = 1; i <= total; i++) {
+      const tokenId = `${i}`;
+      const order = orders[i];
+      this.playersService.merge(tokenId, { order } as NiftyAssetModel);
+    }
   }
 
-  getAssetMetadata(uri: string): Observable<IpfsMetadataModel> {
-    return this.http.get<IpfsMetadataModel>(uri);
+  getAssetMetadata(uri: string): Promise<IpfsMetadataModel> {
+    return this.http.get<IpfsMetadataModel>(uri).toPromise();
   }
 }

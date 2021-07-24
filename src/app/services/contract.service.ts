@@ -1,12 +1,17 @@
 import Web3 from 'web3';
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { defer, Observable, range } from 'rxjs';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import {
+  BattleState,
+  EthereumNetwork,
+  NiftyAssetModel,
+} from '../../models/nifty-royale.models';
+import { environment } from '../../environments/environment';
+import { MetamaskService } from './metamask.service';
+import { PlayersService } from './players.service';
 import { ETHEREUM } from './ethereum.token';
 import { NETWORK } from './network.token';
-import { EthereumNetwork } from '../../models/nifty-royale.models';
-import { environment } from '../../environments/environment';
 
 const { ALCHEMY_KEY, INFURA_KEY } = environment;
 
@@ -18,7 +23,6 @@ export class ContractService {
   public gasLimit = 500000;
   public gasPrice = 0;
   public transactionHash = '';
-  public ownerAddresses: { [tokenId: string]: string } = {};
   private readonly etherscanBaseAPI: string;
   private readonly infuraProvider: string;
   private readonly alchemyProvider: string;
@@ -26,6 +30,8 @@ export class ContractService {
   constructor(
     @Inject(NETWORK) private network: EthereumNetwork,
     @Inject(ETHEREUM) private ethereum: any,
+    private metamaskService: MetamaskService,
+    private playersService: PlayersService,
     private http: HttpClient
   ) {
     this.etherscanBaseAPI = `https://api.niftyroyale.com/etherscan/${network}`;
@@ -35,7 +41,6 @@ export class ContractService {
 
   async init(address: string): Promise<any> {
     try {
-      this.ownerAddresses = {};
       const [gasPrice] = await Promise.all([
         this._getAverageGasPrice(),
         this._initWeb3(),
@@ -47,42 +52,6 @@ export class ContractService {
     } catch (error) {
       return Promise.reject(error);
     }
-  }
-
-  async getBattleData(): Promise<any> {
-    const [
-      baseTokenURI,
-      defaultTokenURI,
-      name,
-      battleState,
-      inPlayPlayers,
-      eliminatedPlayers,
-      intervalEliminationTime,
-      timestamp,
-    ] = await Promise.all([
-      this.contract.methods.baseURI().call(),
-      this.contract.methods.defaultTokenURI().call(),
-      this.contract.methods.name().call(),
-      this.contract.methods.getBattleState().call(),
-      this.contract.methods.getInPlay().call(),
-      this.contract.methods.getOutOfPlay().call(),
-      this.contract.methods.intervalTime().call(),
-      this.contract.methods.timestamp().call(),
-    ]);
-
-    const lastEliminationTimestamp = Number(timestamp) || new Date().getTime();
-    const nextElimination =
-      lastEliminationTimestamp + Number(intervalEliminationTime) * 60;
-    const nextEliminationTimestamp = nextElimination * 1000;
-
-    return {
-      defaultURI: `${baseTokenURI}${defaultTokenURI}`,
-      name,
-      battleState,
-      inPlayPlayers,
-      eliminatedPlayers,
-      nextEliminationTimestamp,
-    };
   }
 
   async getDropData(): Promise<any> {
@@ -105,39 +74,124 @@ export class ContractService {
       this.contract.methods.unitsPerTransaction().call(),
       this.contract.methods.maxSupply().call(),
       this.contract.methods.totalSupply().call(),
-      this.contract.methods.getBattleState().call(),
+      this.contract.methods.getBattleStateInt().call(),
     ]);
 
     return {
       defaultURI: `${baseTokenURI}${defaultTokenURI}`,
       winnerURI: `${baseTokenURI}${winnerTokenURI}`,
       name,
-      ethPrice,
-      maxUnits,
-      maxMinted,
-      totalMinted,
-      battleState,
+      ethPrice: Number(ethPrice),
+      maxUnits: Number(maxUnits),
+      maxMinted: Number(maxMinted),
+      totalMinted: Number(totalMinted),
+      battleState: Number(battleState),
     };
   }
 
-  getOwnerAddress(tokenId: string): Promise<string> {
-    return this.contract.methods.ownerOf(tokenId).call();
+  async getBattleName(): Promise<string> {
+    const { name } = this.contract.methods;
+    return name().call();
   }
 
-  getOwnerAddresses(totalPlayers: number): Observable<string> {
-    return range(1, totalPlayers).pipe(
-      mergeMap((tokenId) => {
-        return defer(() => this.getOwnerAddress(`${tokenId}`)).pipe(
-          tap((address) => {
-            this.ownerAddresses[tokenId] = address.toLowerCase();
+  async getBattleState(): Promise<BattleState> {
+    const { getBattleStateInt } = this.contract.methods;
+    return getBattleStateInt().call();
+  }
+
+  async getNextEliminationTimestamp(): Promise<number> {
+    const { intervalTime, timestamp } = this.contract.methods;
+    const [intervalTimeVal, timestampVal] = (await Promise.all([
+      intervalTime().call(),
+      timestamp().call(),
+    ])) as [number, number];
+    const lastElimination = Number(timestampVal) || new Date().getTime();
+    const nextElimination = lastElimination + Number(intervalTimeVal) * 60;
+    return nextElimination * 1000;
+  }
+
+  async getTotalPlayers(): Promise<number> {
+    const { totalSupply } = this.contract.methods;
+    return totalSupply().call();
+  }
+
+  async getTokenURIs(): Promise<any> {
+    const { baseURI, defaultTokenURI, prizeTokenURI } = this.contract.methods;
+    const [baseTokenURIVal, defaultTokenURIVal, prizeTokenURIVal] =
+      (await Promise.all([
+        baseURI().call(),
+        defaultTokenURI().call(),
+        prizeTokenURI().call(),
+      ])) as string[];
+
+    const defaultURI = `${baseTokenURIVal}${defaultTokenURIVal}`;
+    const winnerURI = `${baseTokenURIVal}${prizeTokenURIVal}`;
+
+    return { defaultURI, winnerURI };
+  }
+
+  async getInPlayPlayers(): Promise<string[]> {
+    const { getInPlay } = this.contract.methods;
+    const tokenIds = (await getInPlay().call()) as string[];
+
+    if (tokenIds.length === 1) {
+      const tokenId = tokenIds[0];
+      this.playersService.merge(tokenId, {
+        tokenId,
+        isEliminated: false,
+        placement: 1,
+      } as NiftyAssetModel);
+      return tokenIds;
+    }
+
+    for (const tokenId of tokenIds) {
+      this.playersService.merge(tokenId, {
+        tokenId,
+        isEliminated: false,
+        placement: 0,
+      } as NiftyAssetModel);
+    }
+
+    return tokenIds;
+  }
+
+  async getEliminatedPlayers(totalPlayers: number): Promise<string[]> {
+    const { getOutOfPlay } = this.contract.methods;
+    const tokenIds = (await getOutOfPlay().call()) as string[];
+
+    for (let i = 0; i < tokenIds.length; i++) {
+      const tokenId = tokenIds[i];
+      this.playersService.merge(tokenId, {
+        tokenId,
+        isEliminated: true,
+        placement: totalPlayers - i,
+      } as NiftyAssetModel);
+    }
+
+    return tokenIds;
+  }
+
+  getOwnerAddresses(totalPlayers: number): Promise<string[]> {
+    const { ownerOf } = this.contract.methods;
+    const promises = [];
+
+    for (let tokenId = 1; tokenId <= totalPlayers; tokenId++) {
+      promises.push(
+        ownerOf(tokenId)
+          .call()
+          .then((address: string) => {
+            const ownerAddress = address.toLowerCase();
+            const isOwner = this.metamaskService.isOwnerAddress(ownerAddress);
+            this.playersService.merge(`${tokenId}`, {
+              ownerAddress,
+              isOwner,
+            } as NiftyAssetModel);
+            return ownerAddress;
           })
-        );
-      })
-    );
-  }
+      );
+    }
 
-  getTokenURI(tokenId: string): Promise<string> {
-    return this.contract.methods.tokenURI(tokenId).call();
+    return Promise.all(promises);
   }
 
   purchaseNFT(

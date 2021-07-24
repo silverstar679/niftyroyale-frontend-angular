@@ -1,36 +1,46 @@
-<ng-container *ngIf="!isLoading; else loading">
-  <div class="flex flex-col gap-10 text-2xl md:text-3xl">
-    <div class="flex flex-col gap-5 text-center nifty-text-gold">
-      <p>{{ dropName }}</p>
-      <p *ngIf="currBattleState !== battleStates.STANDBY">
-        {{ inPlayPlayers.length }}/{{ totalPlayers }} NFTs remain
-      </p>
-      <p
-        *ngIf="currBattleState !== battleStates.RUNNING"
-        class="nifty-text-red"
-      >
-        {{ battleStatusText }}
-      </p>
+<div class="flex flex-col gap-10 text-2xl md:text-3xl">
+  <div class="flex flex-col gap-5 text-center nifty-text-gold">
+    <p>{{ dropNameTXT }}</p>
+    <p *ngIf="currBattleState !== battleStates.STANDBY">
+      {{ remainingPlayersTXT }}
+    </p>
+    <p *ngIf="currBattleState !== battleStates.RUNNING" class="nifty-text-red">
+      {{ battleStatusTXT }}
+    </p>
+    <ng-container *ngIf="currBattleState === battleStates.RUNNING">
       <app-countdown
-        *ngIf="currBattleState === battleStates.RUNNING"
+        *ngIf="!displayNextEliminationLoader"
         [title]="'Next elimination in'"
         [fromTimestamp]="nextEliminationTimestamp"
+        (onNextElimination)="showNextEliminationLoader()"
       ></app-countdown>
-    </div>
-    <div class="flex flex-col sm:flex-row items-center gap-3">
-      <p class="text-lg text-white">NFTs displayed:</p>
-      <p-dropdown
-        [options]="filterOptions"
-        (onChange)="setFilterOption($event.value)"
-        styleClass="nifty-panel"
-        panelStyleClass="nifty-panel"
-        optionLabel="label"
-        optionValue="value"
-      ></p-dropdown>
-    </div>
-    <ng-container *ngIf="filteredAssets$ | async as assets">
       <div
-        *ngIf="assets.length > 0; else noResults"
+        *ngIf="displayNextEliminationLoader"
+        class="flex flex-col gap-3 justify-center items-center nifty-text-red"
+      >
+        <p>
+          Elimination triggered please wait a few minutes for elimination to be
+          confirmed on chain.
+        </p>
+        <p-progressSpinner></p-progressSpinner>
+      </div>
+    </ng-container>
+  </div>
+  <div class="flex flex-col sm:flex-row items-center gap-3">
+    <p class="text-lg text-white">NFTs displayed:</p>
+    <p-dropdown
+      [options]="filterOptions"
+      (onChange)="setFilterOption($event.value)"
+      styleClass="nifty-panel"
+      panelStyleClass="nifty-panel"
+      optionLabel="label"
+      optionValue="value"
+    ></p-dropdown>
+  </div>
+  <ng-container *ngIf="!isLoading; else loading">
+    <ng-container *ngIf="filteredPlayers$ | async as players; else loading">
+      <div
+        *ngIf="players.length > 0; else noResults"
         class="
           grid grid-cols-1
           gap-12
@@ -39,17 +49,85 @@
           lg:grid-cols-4
         "
       >
-        <app-nft-card
-          *ngFor="let asset of assets"
-          [asset]="asset"
-          [contractAddress]="contractAddress"
-          [totalPlayers]="totalPlayers"
-          (imgClick)="showImageDialog(asset.nftURL)"
-        ></app-nft-card>
+        <div *ngFor="let player of players">
+          <img
+            *ngIf="player.placement === 1"
+            class="mx-auto h-16 w-24"
+            src="assets/images/crown.webp"
+            alt="winner_crown"
+          />
+          <app-nft-card
+            [player]="player"
+            [totalPlayers]="totalPlayers"
+            [picture]="player.placement === 1 ? winnerPicture : defaultPicture"
+            [name]="player.placement === 1 ? winnerNftName : defaultNftName"
+            [showFooter]="!isKovanNetwork"
+            (onBtnClick)="openOpenseaTab(contractAddress, player.tokenId)"
+            (onImgClick)="
+              showImageDialog(
+                player.placement === 1 ? winnerPicture : defaultPicture
+              )
+            "
+          ></app-nft-card>
+          <div
+            *ngIf="player.isOwner"
+            class="text-center text-lg nifty-text-gold mt-1"
+          >
+            Owned
+          </div>
+        </div>
       </div>
     </ng-container>
+  </ng-container>
+</div>
+
+<div
+  *ngIf="displayEliminationScreen"
+  [@fadeInOnEnter]
+  [@fadeOutOnLeave]
+  class="
+    fixed
+    w-full
+    h-full
+    top-0
+    left-0
+    bg-black
+    opacity-95
+    z-50
+    text-3xl
+    lg:text-5xl
+    nifty-text-red
+  "
+>
+  <div class="h-full">
+    <div class="flex flex-row-reverse pt-6 px-6">
+      <i
+        class="pi pi-times text-white cursor-pointer"
+        style="font-size: 2rem"
+        (click)="closeNextEliminationScreen()"
+      ></i>
+    </div>
+    <div class="flex flex-row gap-10 items-center justify-center">
+      <div
+        *ngIf="playerData$(lastTokenIdEliminated) | async as player"
+        [ngStyle]="{ width: '300px' }"
+        [@flipOnEnter]
+      >
+        <app-nft-card
+          [player]="player"
+          [totalPlayers]="totalPlayers"
+          [picture]="defaultPicture"
+          [name]="defaultNftName"
+          [showFooter]="false"
+        ></app-nft-card>
+      </div>
+      <div class="flex flex-col items-center gap-10" [@slideInRightOnEnter]>
+        <p>NFT eliminated</p>
+        <p>Token ID: {{ lastTokenIdEliminated }}</p>
+      </div>
+    </div>
   </div>
-</ng-container>
+</div>
 
 <ng-template #noResults>
   <p class="text-base text-white">No results!</p>

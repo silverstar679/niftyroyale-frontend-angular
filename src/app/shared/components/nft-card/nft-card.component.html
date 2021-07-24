@@ -1,89 +1,62 @@
-<div class="flex flex-col h-full">
-  <img
-    *ngIf="asset.placement === 1"
-    class="mx-auto h-16 w-24"
-    src="assets/images/crown.webp"
-    alt="winner_crown"
-  />
+<div
+  class="
+    flex flex-col
+    gap-3
+    flex-1
+    p-2
+    bg-black
+    border-4
+    rounded-lg
+    nifty-border-gold
+    text-white text-sm
+  "
+  [ngClass]="{
+    'mt-16': player.placement !== 1,
+    'nifty-border-red': player.isOwner
+  }"
+>
   <div
-    class="
-      flex flex-col
-      gap-3
-      flex-1
-      p-2
-      bg-black
-      border-4
-      rounded-lg
-      nifty-border-gold
-      text-sm text-white
-    "
-    [ngClass]="{
-      'mt-16': asset.placement !== 1,
-      'nifty-border-red': asset.isOwner
-    }"
+    class="flex items-center relative cursor-pointer"
+    (click)="onImgClick.emit()"
   >
-    <div
-      class="flex flex-grow flex-shrink-0 items-center relative cursor-pointer"
-      (click)="imgClick.emit()"
-    >
-      <img
-        *ngIf="asset.isEliminated"
-        class="absolute h-full w-full z-10"
-        src="assets/images/cross.webp"
-        alt="cross"
-      />
-      <app-nft-displayer [nftURL]="asset.nftURL"></app-nft-displayer>
-    </div>
-    <div class="flex-grow-0 flex-shrink">
-      <div class="flex flex-col gap-1">
-        <p>Token ID: {{ asset.tokenId }}</p>
-        <p>Owner: {{ formatAddress(asset.ownerAddress) }}</p>
-        <p>Placement: {{ placement }}</p>
-        <p
-          class="whitespace-nowrap overflow-hidden overflow-ellipsis"
-          [title]="asset.name"
-        >
-          Name: {{ asset.name }}
-        </p>
-      </div>
-      <div
-        *ngIf="showFooter"
-        class="flex flex-col gap-1 items-center justify-center p-2"
-      >
-        <ng-container *ngIf="asset.tokenId; else delayMessage">
-          <button
-            type="button"
-            class="
-              bg-red-500
-              hover:bg-red-400
-              focus:outline-none
-              rounded
-              px-4
-              py-2
-            "
-            (click)="openOpenseaTab(contractAddress, asset.tokenId)"
-          >
-            {{ btnText }}
-          </button>
-          <div
-            class="flex flex-col gap-1 items-center justify-center text-xs h-8"
-          >
-            <p *ngIf="asset.order.sell">
-              For sale: {{ formatPrice(asset.order.sell.base_price) }} Ξ
-            </p>
-            <p *ngIf="asset.order.buy">Offer available</p>
-          </div>
-        </ng-container>
-        <ng-template #delayMessage>
-          <p class="text-xs nifty-text-red">
-            Waiting on NFT to be updated on OpenSea before secondary sales are
-            available
-          </p>
-        </ng-template>
-      </div>
-    </div>
+    <img
+      *ngIf="player.isEliminated"
+      class="absolute h-full w-full z-10"
+      src="assets/images/cross.webp"
+      alt="cross"
+    />
+    <app-nft-displayer *ngIf="picture" [nftURL]="picture"></app-nft-displayer>
   </div>
-  <div *ngIf="asset.isOwner" class="text-center text-lg nifty-text-gold mt-1">
-    Owned
+  <div class="flex flex-col gap-1">
+    <p>Token ID: {{ player.tokenId }}</p>
+    <p>Owner: {{ ownerAddress }}</p>
+    <p>Placement: {{ placement }}</p>
+    <p
+      class="whitespace-nowrap overflow-hidden overflow-ellipsis"
+      [title]="name"
+    >
+      Name: {{ name }}
+    </p>
+  </div>
+  <div
+    *ngIf="showFooter"
+    class="flex flex-col gap-1 items-center justify-center p-2"
+  >
+    <button
+      type="button"
+      class="bg-red-500 hover:bg-red-400 focus:outline-none rounded px-4 py-2"
+      (click)="onBtnClick.emit(player.tokenId)"
+    >
+      {{ btnTXT }}
+    </button>
+    <div
+      *ngIf="player.order"
+      class="flex flex-col gap-1 items-center justify-center h-8 text-xs"
+    >
+      <p *ngIf="player.order.sell">
+        For sale: {{ formatPrice(player.order.sell.base_price) }} Ξ
+      </p>
+      <p *ngIf="player.order.buy">Offer available</p>
+    </div>
   </div>
 </div>

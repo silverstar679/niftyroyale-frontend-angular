@@ -9,6 +9,7 @@ import { MessageService } from 'primeng/api';
 import { MetamaskService } from './services/metamask.service';
 import { OpenSeaService } from './services/open-sea.service';
 import { ContractService } from './services/contract.service';
+import { PlayersService } from './services/players.service';
 import { DropsModule } from './drops/drops.module';
 import { BattlesModule } from './battles/battles.module';
 import { StoreModule } from './store/store.module';
@@ -28,7 +29,13 @@ const ROUTES: Routes = [{ path: '', pathMatch: 'full', redirectTo: 'drops' }];
     BattlesModule,
     StoreModule,
   ],
-  providers: [MetamaskService, OpenSeaService, ContractService, MessageService],
+  providers: [
+    MetamaskService,
+    OpenSeaService,
+    ContractService,
+    PlayersService,
+    MessageService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

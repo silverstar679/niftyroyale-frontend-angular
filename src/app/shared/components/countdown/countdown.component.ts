@@ -1,5 +1,12 @@
 import { DateTime } from 'luxon';
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 
 @Component({
   selector: 'app-countdown',
@@ -7,10 +14,13 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class CountdownComponent implements OnInit {
   @Input() title = '';
-  @Input() fromDate?: string;
   @Input() fromTimestamp?: number;
+  @Input() fromDate?: string;
   @Input() timezone?: string;
+  @Output() onNextElimination = new EventEmitter<void>();
   public countdownTimer = '';
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     if (this.fromDate && this.timezone) {
@@ -77,9 +87,12 @@ export class CountdownComponent implements OnInit {
         this.countdownTimer = this.countdownTimer + seconds;
       }
 
+      this.cdr.detectChanges();
+
       if (days <= 0 && hours <= 0 && minutes <= 0 && seconds <= 0) {
-        clearInterval(x);
         this.countdownTimer = '';
+        this.onNextElimination.emit();
+        clearInterval(x);
       }
     }, 1000);
   }

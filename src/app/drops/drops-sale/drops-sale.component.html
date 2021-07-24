@@ -32,10 +32,14 @@
       "
     >
       <div
-        *ngIf="!hasBattleStarted && !isPurchaseSuccessful"
+        *ngIf="
+          isAdminWallet ||
+          (!hasBattleStarted && leftForSale > 0 && !isPurchaseSuccessful)
+        "
         class="flex flex-col items-center nifty-text-red"
       >
         <app-countdown
+          *ngIf="false"
           [title]="'Sale ends in'"
           [fromDate]="'2021-07-01T17:00:00'"
           [timezone]="'UTC-7'"
@@ -54,7 +58,12 @@
           nifty-border-gold
         "
       >
-        <ng-container *ngIf="!hasBattleStarted; else purchaseEnded">
+        <ng-container
+          *ngIf="
+            isAdminWallet || (!hasBattleStarted && leftForSale > 0);
+            else purchaseEnded
+          "
+        >
           <ng-container
             *ngIf="
               isPurchaseSuccessful;

@@ -30,6 +30,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
   artistDescription = '';
   battleState = BattleState.STANDBY;
   hasBattleStarted = false;
+  isAdminWallet = false;
   isAccountConnected = false;
   isPurchaseProcessing = false;
   isPurchaseSuccessful = false;
@@ -46,6 +47,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router
   ) {
+    this.isAdminWallet = this.metamaskService.isAdminWallet;
     this.subscriptions = this.metamaskService.account$
       .pipe(tap((account) => (this.isAccountConnected = Boolean(account))))
       .subscribe();
@@ -59,6 +61,10 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
   }
 
   get isCheckoutDisabled(): boolean {
+    if (this.isAdminWallet) {
+      return false;
+    }
+
     return (
       !this.quantity ||
       this.quantity > this.maxUnits ||
@@ -189,8 +195,8 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     } = await this.contractService.getDropData();
 
     const [defaultIpfsMetadata, winnerIpfsMetadata] = await Promise.all([
-      this.openSeaService.getAssetMetadata(defaultURI).toPromise(),
-      this.openSeaService.getAssetMetadata(winnerURI).toPromise(),
+      this.openSeaService.getAssetMetadata(defaultURI),
+      this.openSeaService.getAssetMetadata(winnerURI),
     ]);
 
     this.nftDescription = defaultIpfsMetadata.description;
@@ -203,7 +209,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
 
     this.battleState = battleState;
     this.dropName = name;
-    this.ethPrice = Number(ethPrice) / 10 ** 18;
+    this.ethPrice = ethPrice / 10 ** 18;
     this.hasBattleStarted = this.battleState !== BattleState.STANDBY;
     this.maxMinted = maxMinted;
     this.totalMinted = totalMinted;

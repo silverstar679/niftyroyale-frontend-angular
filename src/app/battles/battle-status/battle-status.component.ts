@@ -1,15 +1,34 @@
 import { MessageService } from 'primeng/api';
-import { Component, OnInit } from '@angular/core';
+import {
+  fadeInOnEnterAnimation,
+  fadeOutOnLeaveAnimation,
+  flipOnEnterAnimation,
+  slideInRightOnEnterAnimation,
+} from 'angular-animations';
+import {
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { NETWORK } from '../../services/network.token';
+import { MetamaskService } from '../../services/metamask.service';
 import { ContractService } from '../../services/contract.service';
 import { OpenSeaService } from '../../services/open-sea.service';
-import { MetamaskService } from '../../services/metamask.service';
+import { PlayersService } from '../../services/players.service';
 import {
   BattleState,
+  EthereumNetwork,
   NiftyAssetModel,
 } from '../../../models/nifty-royale.models';
+
+enum Events {
+  ELIMINATED = 'Eliminated',
+}
 
 enum FilterOptions {
   ALL = 'all',
@@ -23,11 +42,18 @@ enum FilterOptions {
 @Component({
   selector: 'app-battle-status',
   templateUrl: './battle-status.component.html',
+  animations: [
+    fadeInOnEnterAnimation(),
+    fadeOutOnLeaveAnimation(),
+    flipOnEnterAnimation(),
+    slideInRightOnEnterAnimation(),
+  ],
 })
-export class BattleStatusComponent implements OnInit {
-  selectedFilter$ = new BehaviorSubject<FilterOptions>(FilterOptions.ALL);
-  filteredAssets$: Observable<NiftyAssetModel[]>;
-  allAssets: NiftyAssetModel[] = [];
+export class BattleStatusComponent implements OnInit, OnDestroy {
+  private readonly selectedFilterSubject = new BehaviorSubject<FilterOptions>(
+    FilterOptions.ALL
+  );
+  filteredPlayers$: Observable<NiftyAssetModel[]>;
   filterOptions = [
     {
       label: 'All NFTs',
@@ -61,26 +87,42 @@ export class BattleStatusComponent implements OnInit {
   defaultPicture = '';
   winnerNftName = '';
   winnerPicture = '';
-  currBattleState = '';
-  inPlayPlayers = [] as string[];
-  eliminatedPlayers = [] as string[];
+  currBattleState = -1;
   totalPlayers = 0;
+  totalInPlay = 0;
+  totalEliminated = 0;
   nextEliminationTimestamp = 0;
+  lastTokenIdEliminated = '';
   displayDialog = false;
+  displayNextEliminationLoader = false;
+  displayEliminationScreen = false;
   imgDialog = '';
   isLoading = true;
+  eliminationScreenTimeout: any;
 
   constructor(
+    @Inject(NETWORK) private network: EthereumNetwork,
     private contractService: ContractService,
     private metamaskService: MetamaskService,
+    private playersService: PlayersService,
     private openSeaService: OpenSeaService,
     private messageService: MessageService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
-    this.filteredAssets$ = this.getFilteredAssets();
+    this.filteredPlayers$ = this.getFilteredPlayers();
   }
 
-  get battleStatusText(): string {
+  async ngOnInit(): Promise<void> {
+    this.contractAddress = this.route.snapshot.params.contractAddress;
+    await this.contractService.init(this.contractAddress);
+    this.totalPlayers = Number(await this.contractService.getTotalPlayers());
+    this.isLoading = false;
+    await this.loadBattleData();
+    this.listenEliminatedEvents();
+  }
+
+  get battleStatusTXT(): string {
     if (this.currBattleState === BattleState.STANDBY) {
       return 'Battle will start soon!';
     }
@@ -90,32 +132,52 @@ export class BattleStatusComponent implements OnInit {
     if (this.currBattleState === BattleState.ENDED) {
       return 'Battle has ended!';
     }
-    return '';
+    return 'Loading...';
   }
 
-  get isBattleEnded(): boolean {
-    return (
-      this.currBattleState === BattleState.ENDED &&
-      1 === this.inPlayPlayers.length
-    );
+  get dropNameTXT(): string {
+    return this.dropName ? this.dropName : 'Loading...';
   }
 
-  async ngOnInit(): Promise<void> {
-    this.contractAddress = this.route.snapshot.params.contractAddress;
-    await this.contractService.init(this.contractAddress);
-    await this.initBattleData();
-    await Promise.all([
-      this.contractService.getOwnerAddresses(this.totalPlayers).toPromise(),
-      this.openSeaService
-        .getOrders(this.contractAddress, this.totalPlayers)
-        .toPromise(),
-    ]);
-    this.allAssets = this.getDisplayedAssets(this.totalPlayers);
-    this.isLoading = false;
+  get remainingPlayersTXT(): string {
+    return this.totalPlayers && this.totalPlayers
+      ? `${this.totalInPlay}/${this.totalPlayers} NFTs remain`
+      : 'Loading...';
+  }
+
+  get isKovanNetwork(): boolean {
+    return this.network === EthereumNetwork.KOVAN;
+  }
+
+  async closeNextEliminationScreen(): Promise<void> {
+    clearTimeout(this.eliminationScreenTimeout);
+    this.totalInPlay = this.totalInPlay - 1;
+    this.totalEliminated = this.totalEliminated + 1;
+    this.displayNextEliminationLoader = false;
+    this.displayEliminationScreen = false;
+    this.lastTokenIdEliminated = '';
+    if (this.totalInPlay === 1) {
+      this.currBattleState = BattleState.ENDED;
+      await this.contractService.getInPlayPlayers();
+    } else {
+      await this.getTimestamp();
+    }
+    return this.cdr.detectChanges();
+  }
+
+  playerData$(tokenId: string): Observable<NiftyAssetModel> {
+    return this.playersService.select(tokenId);
+  }
+
+  openOpenseaTab(address: string, tokenId: string): void {
+    const openSeaNetwork =
+      EthereumNetwork.MAINNET !== this.network ? 'testnets.' : '';
+    const openSeaURL = `https://${openSeaNetwork}opensea.io/assets/${address}/${tokenId}`;
+    window.open(openSeaURL);
   }
 
   setFilterOption(filter: FilterOptions): void {
-    this.selectedFilter$.next(filter);
+    this.selectedFilterSubject.next(filter);
   }
 
   showImageDialog(url: string): void {
@@ -123,98 +185,129 @@ export class BattleStatusComponent implements OnInit {
     this.displayDialog = true;
   }
 
-  private getDisplayedAssets(totalAssets: number): NiftyAssetModel[] {
-    const displayedAssets = [] as NiftyAssetModel[];
+  showNextEliminationLoader(): void {
+    this.displayNextEliminationLoader = true;
+    this.cdr.detectChanges();
+  }
 
-    for (let i = 1; i <= totalAssets; i++) {
-      const tokenId = `${i}`;
-      const order = this.openSeaService.orders[tokenId] || {
-        buy: null,
-        sell: null,
-      };
-      const ownerAddress = this.contractService.ownerAddresses[tokenId];
-      const outOfPlayIndex = this.eliminatedPlayers.indexOf(tokenId);
-      const isEliminated = outOfPlayIndex !== -1;
-      const isWinner = this.isBattleEnded && tokenId === this.inPlayPlayers[0];
-      let placement = 0;
-      if (isWinner) {
-        placement = 1;
-      } else if (isEliminated) {
-        placement = totalAssets - outOfPlayIndex;
+  private async loadBattleData(): Promise<any> {
+    const inPlayPlayers = this.contractService
+      .getInPlayPlayers()
+      .then((players) => (this.totalInPlay = players.length));
+
+    const eliminatedPlayers = this.contractService
+      .getEliminatedPlayers(this.totalPlayers)
+      .then((players) => (this.totalEliminated = players.length));
+
+    const ownerAddresses = this.contractService.getOwnerAddresses(
+      this.totalPlayers
+    );
+
+    const orders = this.openSeaService.getOrders(
+      this.contractAddress,
+      this.totalPlayers
+    );
+
+    const battleName = this.contractService
+      .getBattleName()
+      .then((dropName) => (this.dropName = dropName));
+
+    const battleState = this.contractService
+      .getBattleState()
+      .then((state) => (this.currBattleState = Number(state)));
+
+    const timestamp = this.getTimestamp();
+
+    const ipfsMetadata = this.contractService
+      .getTokenURIs()
+      .then(({ defaultURI, winnerURI }) => {
+        return Promise.all([
+          this.openSeaService.getAssetMetadata(defaultURI),
+          this.openSeaService.getAssetMetadata(winnerURI),
+        ]);
+      })
+      .then(([defaultIpfsMetadata, winnerIpfsMetadata]) => {
+        this.defaultNftName = defaultIpfsMetadata.name;
+        this.defaultPicture = defaultIpfsMetadata.image;
+        this.winnerNftName = winnerIpfsMetadata.name;
+        this.winnerPicture = winnerIpfsMetadata.image;
+      });
+
+    return Promise.all([
+      ipfsMetadata,
+      inPlayPlayers,
+      eliminatedPlayers,
+      ownerAddresses,
+      orders,
+      battleName,
+      battleState,
+      timestamp,
+    ]);
+  }
+
+  private getTimestamp(): Promise<number> {
+    return this.contractService.getNextEliminationTimestamp().then((t) => {
+      const now = new Date().getTime();
+      this.displayNextEliminationLoader = t - now <= 0;
+      this.nextEliminationTimestamp = t;
+    }) as Promise<number>;
+  }
+
+  private listenEliminatedEvents(): void {
+    this.contractService.contract.events.allEvents((error: any, res: any) => {
+      if (res.event === Events.ELIMINATED) {
+        const { _tokenID } = res.returnValues;
+        this.displayEliminationScreen = true;
+        this.lastTokenIdEliminated = _tokenID;
+        this.playersService.merge(_tokenID, {
+          isEliminated: true,
+          placement: this.totalInPlay,
+        } as NiftyAssetModel);
+        this.eliminationScreenTimeout = setTimeout(
+          () => this.closeNextEliminationScreen(),
+          30 * 1000
+        );
+        return this.cdr.detectChanges();
       }
-      displayedAssets.push({
-        order,
-        tokenId,
-        isEliminated,
-        ownerAddress,
-        placement,
-        isOwner: this.metamaskService.isOwnerAddress(ownerAddress),
-        name: placement === 1 ? this.winnerNftName : this.defaultNftName,
-        nftURL: placement === 1 ? this.winnerPicture : this.defaultPicture,
-      } as NiftyAssetModel);
-    }
-
-    return displayedAssets.sort((a, b) => {
-      return (
-        Number(b.isOwner) - Number(a.isOwner) ||
-        Number(a.isEliminated) - Number(b.isEliminated) ||
-        Number(a.placement) - Number(b.placement)
-      );
     });
   }
 
-  private getFilteredAssets(): Observable<NiftyAssetModel[]> {
-    return this.selectedFilter$.pipe(
-      map((filter: FilterOptions) => {
+  private getFilteredPlayers(): Observable<NiftyAssetModel[]> {
+    const playerDataArr$ = this.playersService.players$.pipe(
+      map((players) => Object.keys(players).map((tokenId) => players[tokenId]))
+    );
+
+    return combineLatest([playerDataArr$, this.selectedFilterSubject]).pipe(
+      map(([players, filter]) => {
         switch (filter) {
           case FilterOptions.OWNER:
-            return this.allAssets.filter((a) => a.isOwner);
+            return players.filter((p) => p.isOwner);
           case FilterOptions.STILL_IN_PLAY:
-            return this.allAssets.filter((a) => !a.isEliminated);
+            return players.filter((p) => !p.isEliminated);
           case FilterOptions.ELIMINATED:
-            return this.allAssets.filter((a) => a.isEliminated);
+            return players.filter((p) => p.isEliminated);
           case FilterOptions.FOR_SALE:
-            return this.allAssets.filter((a) => Boolean(a.order.sell));
+            return players.filter((p) => Boolean(p.order.sell));
           case FilterOptions.WITH_OFFERS:
-            return this.allAssets.filter((a) => Boolean(a.order.buy));
+            return players.filter((p) => Boolean(p.order.buy));
           default:
-            return this.allAssets.filter((a) => Boolean(a));
+            return players;
         }
+      }),
+      map((players) => {
+        return players.sort((a, b) => {
+          return (
+            Number(b.isOwner) - Number(a.isOwner) ||
+            Number(a.isEliminated) - Number(b.isEliminated) ||
+            Number(a.placement) - Number(b.placement) ||
+            Number(a.tokenId) - Number(b.tokenId)
+          );
+        });
       })
     );
   }
 
-  private async initBattleData(): Promise<void> {
-    const {
-      defaultURI,
-      name,
-      battleState,
-      inPlayPlayers,
-      eliminatedPlayers,
-      nextEliminationTimestamp,
-    } = await this.contractService.getBattleData();
-
-    const defaultIpfsMetadata = await this.openSeaService
-      .getAssetMetadata(defaultURI)
-      .toPromise();
-
-    this.dropName = name;
-    this.defaultNftName = defaultIpfsMetadata.name;
-    this.defaultPicture = defaultIpfsMetadata.image;
-    this.currBattleState = battleState;
-    this.eliminatedPlayers = eliminatedPlayers;
-    this.inPlayPlayers = inPlayPlayers;
-    this.totalPlayers = inPlayPlayers.length + eliminatedPlayers.length;
-    this.nextEliminationTimestamp = nextEliminationTimestamp;
-
-    if (this.isBattleEnded) {
-      const winnerTokenId = this.inPlayPlayers[0];
-      const winnerURI = await this.contractService.getTokenURI(winnerTokenId);
-      const winnerIpfsMetadata = await this.openSeaService
-        .getAssetMetadata(winnerURI)
-        .toPromise();
-      this.winnerNftName = winnerIpfsMetadata.name;
-      this.winnerPicture = winnerIpfsMetadata.image;
-    }
+  ngOnDestroy(): void {
+    this.playersService.reset();
   }
 }
