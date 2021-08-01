@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, range } from 'rxjs';
 import { map, mergeMap, scan, takeLast } from 'rxjs/operators';
-import { OpenSeaAsset, OrderbookResponse } from '../../models/opensea.types';
+import { OpenSeaAsset, OrderJSON } from '../../models/opensea.types';
 import {
   EthereumNetwork,
   IpfsMetadataModel,
@@ -48,8 +48,8 @@ export class OpenSeaService {
       return of([]);
     }
     const url = `${this.openseaBaseAPI}/orders?address=${address}&network=${this.network}&total=${total}`;
-    return this.http.get<OrderbookResponse>(url).pipe(
-      map(({ orders }) =>
+    return this.http.get<OrderJSON[]>(url).pipe(
+      map((orders) =>
         orders.map((order) => {
           const tokenId = order.asset.token_id;
           if (!this.orders[tokenId]) {
