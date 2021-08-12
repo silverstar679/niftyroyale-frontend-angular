@@ -115,19 +115,10 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    try {
-      const { contractAddress } = this.route.snapshot.params;
-      await this.contractService.init(contractAddress);
-      await this.initDropData();
-      this.isLoading = false;
-    } catch (error) {
-      this.messageService.add({
-        severity: SEVERITY.ERROR,
-        summary: SUMMARY.ERROR_OCCURRED,
-        detail: error.message,
-        sticky: true,
-      });
-    }
+    const { contractAddress } = this.route.snapshot.params;
+    await this.contractService.init(contractAddress);
+    await this.initDropData();
+    this.isLoading = false;
   }
 
   async buy(): Promise<void> {

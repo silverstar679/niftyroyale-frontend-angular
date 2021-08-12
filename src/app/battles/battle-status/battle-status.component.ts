@@ -102,26 +102,17 @@ export class BattleStatusComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    try {
-      this.contractAddress = this.route.snapshot.params.contractAddress;
-      await this.contractService.init(this.contractAddress);
-      await this.initBattleData();
-      await Promise.all([
-        this.contractService.getOwnerAddresses(this.totalPlayers).toPromise(),
-        this.openSeaService
-          .getOrders(this.contractAddress, this.totalPlayers)
-          .toPromise(),
-      ]);
-      this.allAssets = this.getDisplayedAssets(this.totalPlayers);
-      this.isLoading = false;
-    } catch (error) {
-      this.messageService.add({
-        severity: SEVERITY.ERROR,
-        summary: SUMMARY.ERROR_OCCURRED,
-        detail: error.message,
-        sticky: true,
-      });
-    }
+    this.contractAddress = this.route.snapshot.params.contractAddress;
+    await this.contractService.init(this.contractAddress);
+    await this.initBattleData();
+    await Promise.all([
+      this.contractService.getOwnerAddresses(this.totalPlayers).toPromise(),
+      this.openSeaService
+        .getOrders(this.contractAddress, this.totalPlayers)
+        .toPromise(),
+    ]);
+    this.allAssets = this.getDisplayedAssets(this.totalPlayers);
+    this.isLoading = false;
   }
 
   setFilterOption(filter: FilterOptions): void {
