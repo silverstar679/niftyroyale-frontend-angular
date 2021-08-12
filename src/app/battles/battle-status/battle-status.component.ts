@@ -2,7 +2,7 @@ import { MessageService } from 'primeng/api';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ContractService } from '../../services/contract.service';
 import { OpenSeaService } from '../../services/open-sea.service';
 import { MetamaskService } from '../../services/metamask.service';
@@ -10,7 +10,6 @@ import {
   BattleState,
   NiftyAssetModel,
 } from '../../../models/nifty-royale.models';
-import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
 
 enum FilterOptions {
   ALL = 'all',
