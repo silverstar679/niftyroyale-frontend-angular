@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { BattleStatusResolver } from './resolvers/battle-status.resolver';
 import { BattlesComponent } from './battles.component';
 
 const ROUTES: Routes = [
@@ -22,6 +23,9 @@ const ROUTES: Routes = [
       },
       {
         path: 'status/:contractAddress',
+        resolve: {
+          data: BattleStatusResolver,
+        },
         loadChildren: () =>
           import('./battle-status/battle-status.module').then(
             (m) => m.BattleStatusModule

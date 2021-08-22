@@ -5,8 +5,8 @@ import {
   OnInit,
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { IMAGE_EXTENSION } from '../../../../constants/extensions/image-extension';
-import { VIDEO_EXTENSION } from '../../../../constants/extensions/video-extension';
+import { IMAGE_EXTENSION } from '../../../constants/extensions/image-extension';
+import { VIDEO_EXTENSION } from '../../../constants/extensions/video-extension';
 
 @Component({
   selector: 'app-nft-displayer',

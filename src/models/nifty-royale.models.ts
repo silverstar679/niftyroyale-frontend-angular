@@ -12,6 +12,17 @@ export enum BattleState {
   ENDED,
 }
 
+export enum ListType {
+  DROP = 'drop',
+  BATTLE = 'battle',
+}
+
+export interface ListItem {
+  address: string;
+  title: string;
+  image: string;
+}
+
 export interface Attribute {
   trait_type: string;
   value: string;

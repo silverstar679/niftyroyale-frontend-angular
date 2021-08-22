@@ -1,0 +1,44 @@
+<div
+  class="
+    flex flex-row
+    items-center
+    gap-5
+    p-5
+    w-full
+    bg-black
+    border-4
+    rounded-lg
+    nifty-border-gold
+  "
+>
+  <img class="w-16" [src]="image" alt="nft-image" />
+  <div
+    class="flex flex-col gap-3 md:flex-row md:items-center md:gap-0 md:flex-1"
+  >
+    <div class="text-base md:text-lg md:flex-1">{{ title }}</div>
+    <button
+      type="button"
+      class="
+        inline-flex
+        items-center
+        justify-center
+        px-4
+        py-2
+        border border-transparent
+        text-base
+        leading-6
+        font-medium
+        rounded-md
+        text-white
+        nifty-bg-gold
+        hover:bg-yellow-500
+        transition
+        ease-in-out
+        duration-150
+      "
+      (click)="onClick.emit()"
+    >
+      Proceed to {{ type }}
+    </button>
+  </div>
+</div>

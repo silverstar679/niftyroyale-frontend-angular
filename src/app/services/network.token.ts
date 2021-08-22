@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { inject, InjectionToken } from '@angular/core';
 import { EthereumNetwork } from '../../models/nifty-royale.models';
 
-enum chainIdToNetwork {
+enum CHAIN_ID_NETWORK {
   '0x1' = EthereumNetwork.MAINNET,
   '0x4' = EthereumNetwork.RINKEBY,
   '0x2a' = EthereumNetwork.KOVAN,
@@ -21,6 +21,8 @@ export const NETWORK = new InjectionToken<EthereumNetwork>('ETHEREUM NETWORK', {
     const network = subdomain.split('-').reverse()[0];
 
     if ('localhost' === network) {
+      // const ethereum = inject(ETHEREUM);
+      // return CHAIN_ID_NETWORK[ethereum.chainId] as EthereumNetwork;
       return EthereumNetwork.RINKEBY;
     }
 

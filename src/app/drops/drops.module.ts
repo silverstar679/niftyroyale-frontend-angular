@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { DropsComponent } from './drops.component';
+import { DropsSaleResolver } from './resolvers/drops-sale.resolver';
 
 const ROUTES: Routes = [
   {
@@ -22,6 +23,9 @@ const ROUTES: Routes = [
       },
       {
         path: 'sale/:contractAddress',
+        resolve: {
+          data: DropsSaleResolver,
+        },
         loadChildren: () =>
           import('./drops-sale/drops-sale.module').then(
             (m) => m.DropsSaleModule

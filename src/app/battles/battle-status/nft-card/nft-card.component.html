@@ -22,10 +22,13 @@
     <img
       *ngIf="player.isEliminated"
       class="absolute h-full w-full z-10"
-      src="assets/images/cross.webp"
+      src="../../../../assets/images/cross.webp"
       alt="cross"
     />
-    <app-nft-displayer *ngIf="picture" [nftURL]="picture"></app-nft-displayer>
+    <app-nft-displayer
+      *ngIf="picture.length > 0"
+      [nftURL]="picture"
+    ></app-nft-displayer>
   </div>
   <div class="flex flex-col gap-1">
     <p>Token ID: {{ player.tokenId }}</p>
@@ -47,7 +50,7 @@
       class="bg-red-500 hover:bg-red-400 focus:outline-none rounded px-4 py-2"
       (click)="onBtnClick.emit(player.tokenId)"
     >
-      {{ btnTXT }}
+      {{ btnText }}
     </button>
     <div
       *ngIf="player.order"

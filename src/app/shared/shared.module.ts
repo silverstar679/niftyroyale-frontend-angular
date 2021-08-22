@@ -1,24 +1,27 @@
 import { CountdownModule } from 'ngx-countdown';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NftCardComponent } from './components/nft-card/nft-card.component';
-import { NftDisplayerComponent } from './components/nft-displayer/nft-displayer.component';
-import { SpinnerComponent } from './components/spinner/spinner.component';
-import { CountdownComponent } from './components/countdown/countdown.component';
+import { NftDisplayerComponent } from './nft-displayer/nft-displayer.component';
+import { SpinnerComponent } from './spinner/spinner.component';
+import { CountdownComponent } from './countdown/countdown.component';
+import { ListComponent } from './list/list.component';
+import { ListItemComponent } from './list/list-item/list-item.component';
 
 @NgModule({
   declarations: [
-    NftCardComponent,
     NftDisplayerComponent,
     SpinnerComponent,
     CountdownComponent,
+    ListComponent,
+    ListItemComponent,
   ],
   imports: [CommonModule, CountdownModule],
   exports: [
-    NftCardComponent,
     NftDisplayerComponent,
     SpinnerComponent,
     CountdownComponent,
+    ListComponent,
+    ListItemComponent,
   ],
 })
 export class SharedModule {}

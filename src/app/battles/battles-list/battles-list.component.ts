@@ -1,8 +1,12 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { NETWORK } from '../../services/network.token';
-import { Contract, CONTRACTS } from '../../../constants/contracts';
-import { EthereumNetwork } from '../../../models/nifty-royale.models';
+import {
+  EthereumNetwork,
+  ListItem,
+  ListType,
+} from '../../../models/nifty-royale.models';
+import { CONTRACTS } from '../../../constants/contracts';
 
 @Component({
   selector: 'app-battles-list',
@@ -10,15 +14,16 @@ import { EthereumNetwork } from '../../../models/nifty-royale.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BattlesListComponent {
-  activeBattles: Contract[];
-  pastBattles: Contract[];
+  listType = ListType.BATTLE;
+  activeList: ListItem[];
+  pastList: ListItem[];
 
   constructor(
     @Inject(NETWORK) private network: EthereumNetwork,
     private router: Router
   ) {
-    this.activeBattles = CONTRACTS[network].active;
-    this.pastBattles = CONTRACTS[network].past;
+    this.activeList = CONTRACTS[network].active;
+    this.pastList = CONTRACTS[network].past;
   }
 
   goTo(address: string): Promise<boolean> {

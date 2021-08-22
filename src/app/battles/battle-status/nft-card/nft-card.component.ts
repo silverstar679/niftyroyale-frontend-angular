@@ -6,6 +6,7 @@ import {
   Output,
 } from '@angular/core';
 import { NiftyAssetModel } from '../../../../models/nifty-royale.models';
+import { MetamaskService } from '../../../services/metamask.service';
 
 @Component({
   selector: 'app-nft-card',
@@ -14,14 +15,16 @@ import { NiftyAssetModel } from '../../../../models/nifty-royale.models';
 })
 export class NftCardComponent {
   @Input() player!: NiftyAssetModel;
-  @Input() totalPlayers!: number;
-  @Input() picture!: string;
   @Input() name!: string;
+  @Input() picture!: string;
+  @Input() totalPlayers!: number;
   @Input() showFooter = true;
   @Output() onImgClick = new EventEmitter<void>();
   @Output() onBtnClick = new EventEmitter<string>();
 
-  get btnTXT(): string {
+  constructor(private metamaskService: MetamaskService) {}
+
+  get btnText(): string {
     const ownerSellText = this.player.order?.sell ? 'Cancel Sale' : 'Sell';
     const ownerBuyText = this.player.order?.buy ? ' | Check Offers' : '';
     const notOwnerBuyText = this.player.order?.sell
@@ -34,7 +37,7 @@ export class NftCardComponent {
 
   get ownerAddress(): string {
     return this.player.ownerAddress
-      ? this.formatAddress(this.player.ownerAddress)
+      ? this.metamaskService.formatAddress(this.player.ownerAddress)
       : 'Loading...';
   }
 
@@ -46,12 +49,5 @@ export class NftCardComponent {
 
   formatPrice(price: string): number {
     return Number(price) / 10 ** 18;
-  }
-
-  private formatAddress(address: string): string {
-    const length = address.length;
-    const firstChar = address.slice(0, 6);
-    const lastChar = address.slice(length - 4, length);
-    return `${firstChar}...${lastChar}`;
   }
 }

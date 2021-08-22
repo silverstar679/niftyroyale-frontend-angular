@@ -1,0 +1,46 @@
+<div
+  [@fadeInOnEnter]
+  [@fadeOutOnLeave]
+  class="
+    fixed
+    w-full
+    h-full
+    top-0
+    left-0
+    bg-black
+    opacity-95
+    z-50
+    text-3xl
+    lg:text-5xl
+    nifty-text-red
+  "
+>
+  <div class="h-full">
+    <div class="flex flex-row-reverse pt-6 px-6">
+      <i
+        class="pi pi-times text-white cursor-pointer"
+        style="font-size: 2rem"
+        (click)="onClose.emit()"
+      ></i>
+    </div>
+    <div class="flex flex-row gap-10 items-center justify-center">
+      <div
+        *ngIf="playerData$(tokenIdEliminated) | async as player"
+        [ngStyle]="{ width: '300px' }"
+        [@flipOnEnter]
+      >
+        <app-nft-card
+          [player]="player"
+          [totalPlayers]="totalPlayers"
+          [picture]="picture"
+          [name]="name"
+          [showFooter]="false"
+        ></app-nft-card>
+      </div>
+      <div class="flex flex-col items-center gap-10" [@slideInRightOnEnter]>
+        <p>NFT eliminated</p>
+        <p>Token ID: {{ tokenIdEliminated }}</p>
+      </div>
+    </div>
+  </div>
+</div>
