@@ -15,33 +15,10 @@ export const CONTRACTS = {
   },
   kovan: {
     active: [],
-    past: [
-      {
-        address: '0x6bafc7AfD6bD2E32Cf754c56D219E733278DD29e',
-        name: 'Nifty Royale Testnet Drop 1',
-      },
-    ],
+    past: [],
   },
   rinkeby: {
-    active: [
-      {
-        address: '0x8B90c1D5237489c8719052825D703239eaCD7726',
-        name: 'Nifty Royale Test Events',
-      },
-      {
-        address: '0x044024c7d9080b9121125c01daA25742a806b42b',
-        name: 'Nifty Royale Testnet Drop',
-      },
-    ],
-    past: [
-      {
-        address: '0xB46747f1633E9BEf69913A0d2ceA2d4815409ee1',
-        name: 'Nifty Royale Testnet Drop 1',
-      },
-      {
-        address: '0xAa79A77BaBbDa34d20a013925Cdb8DE0791E1c94',
-        name: 'Nifty Royale Testnet Drop 2',
-      },
-    ],
+    active: [],
+    past: [],
   },
 };

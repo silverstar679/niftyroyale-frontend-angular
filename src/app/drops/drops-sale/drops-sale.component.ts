@@ -20,7 +20,7 @@ import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
 export class DropsSaleComponent implements OnInit, OnDestroy {
   dropName = '';
   ethPrice = 0;
-  quantity = 0;
+  quantity = 1;
   maxUnits = 0;
   maxMinted = 0;
   totalMinted = 0;
@@ -124,7 +124,6 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     const { contractAddress } = this.route.snapshot.params;
     await this.contractService.init(contractAddress);
     await this.initDropData();
-    this.isLoading = false;
   }
 
   async buy(): Promise<void> {
@@ -194,6 +193,16 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
       battleState,
     } = await this.contractService.getDropData();
 
+    this.dropName = name;
+    this.ethPrice = ethPrice / 10 ** 18;
+    this.battleState = battleState;
+    this.hasBattleStarted = this.battleState !== BattleState.STANDBY;
+    this.maxMinted = maxMinted;
+    this.totalMinted = totalMinted;
+    this.maxUnits = this.leftForSale > maxUnits ? maxUnits : this.leftForSale;
+
+    this.isLoading = false;
+
     const [defaultIpfsMetadata, winnerIpfsMetadata] = await Promise.all([
       this.openSeaService.getAssetMetadata(defaultURI),
       this.openSeaService.getAssetMetadata(winnerURI),
@@ -206,15 +215,6 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
         (a) => -1 !== a.trait_type.indexOf('Artist Description')
       )?.value || '';
     this.winnerNftImage = winnerIpfsMetadata.image;
-
-    this.battleState = battleState;
-    this.dropName = name;
-    this.ethPrice = ethPrice / 10 ** 18;
-    this.hasBattleStarted = this.battleState !== BattleState.STANDBY;
-    this.maxMinted = maxMinted;
-    this.totalMinted = totalMinted;
-    this.quantity = 1;
-    this.maxUnits = this.leftForSale > maxUnits ? maxUnits : this.leftForSale;
   }
 
   ngOnDestroy(): void {

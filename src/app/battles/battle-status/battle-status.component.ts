@@ -116,10 +116,10 @@ export class BattleStatusComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.contractAddress = this.route.snapshot.params.contractAddress;
     await this.contractService.init(this.contractAddress);
+    this.listenEliminatedEvents();
     this.totalPlayers = Number(await this.contractService.getTotalPlayers());
     this.isLoading = false;
     await this.loadBattleData();
-    this.listenEliminatedEvents();
   }
 
   get battleStatusTXT(): string {
