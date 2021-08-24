@@ -12,7 +12,6 @@ import { ContractService } from './services/contract.service';
 import { PlayersService } from './services/players.service';
 import { DropsModule } from './drops/drops.module';
 import { BattlesModule } from './battles/battles.module';
-import { StoreModule } from './store/store.module';
 import { AppComponent } from './app.component';
 
 const ROUTES: Routes = [{ path: '', pathMatch: 'full', redirectTo: 'drops' }];
@@ -27,7 +26,6 @@ const ROUTES: Routes = [{ path: '', pathMatch: 'full', redirectTo: 'drops' }];
     ToastModule,
     DropsModule,
     BattlesModule,
-    StoreModule,
   ],
   providers: [
     MetamaskService,

@@ -18,6 +18,7 @@ import { SEVERITY, SUMMARY } from '../../../models/toast.enum';
   templateUrl: './drops-sale.component.html',
 })
 export class DropsSaleComponent implements OnInit, OnDestroy {
+  private subscriptions = new Subscription();
   dropName = '';
   ethPrice = 0;
   quantity = 1;
@@ -36,7 +37,6 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
   isPurchaseSuccessful = false;
   isLoading = true;
   showWinnerNftImage = false;
-  private subscriptions = new Subscription();
 
   constructor(
     @Inject(NETWORK) private network: EthereumNetwork,

@@ -1,3 +1,4 @@
+import { CountdownModule } from 'ngx-countdown';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NftCardComponent } from './components/nft-card/nft-card.component';
@@ -12,7 +13,7 @@ import { CountdownComponent } from './components/countdown/countdown.component';
     SpinnerComponent,
     CountdownComponent,
   ],
-  imports: [CommonModule],
+  imports: [CommonModule, CountdownModule],
   exports: [
     NftCardComponent,
     NftDisplayerComponent,
