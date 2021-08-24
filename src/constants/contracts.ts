@@ -6,7 +6,14 @@ export interface Contract {
 
 export const CONTRACTS = {
   mainnet: {
-    active: [],
+    active: [
+      {
+        address: '0x5a0f9393e7407226A94b0569Fe10aBBBBaF84f00',
+        name: 'Nifty Royale X Lushsux - ONE DOES NOT SIMPLY SELL AN NFT',
+        picture:
+          'https://ipfs.io/ipfs/bafybeiaxk54qzcrni5pzile6rrexwkw5lic5w6u2mzjvoooekplfklo5ue/paintameme.jpeg',
+      },
+    ],
     past: [
       {
         address: '0xCFa9BaabFF2AC2da41385E051386188f4F5BC94d',
