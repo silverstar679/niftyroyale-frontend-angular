@@ -144,8 +144,5 @@
   (onHide)="imgDialog = ''"
   styleClass="nifty-panel"
 >
-  <app-nft-displayer
-    *ngIf="imgDialog.length > 0"
-    [nftURL]="imgDialog"
-  ></app-nft-displayer>
+  <app-nft-displayer *ngIf="imgDialog" [nftURL]="imgDialog"></app-nft-displayer>
 </p-dialog>

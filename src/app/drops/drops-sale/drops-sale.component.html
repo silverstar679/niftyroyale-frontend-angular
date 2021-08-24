@@ -10,11 +10,13 @@
         (click)="showWinnerNftImage = !showWinnerNftImage"
       >
         <app-nft-displayer
+          *ngIf="defaultNftImage"
           [ngClass]="[!showWinnerNftImage ? 'block' : 'hidden']"
           [nftURL]="defaultNftImage"
           [height]="'36rem'"
         ></app-nft-displayer>
         <app-nft-displayer
+          *ngIf="winnerNftImage"
           [ngClass]="[showWinnerNftImage ? 'block' : 'hidden']"
           [nftURL]="winnerNftImage"
           [height]="'36rem'"
