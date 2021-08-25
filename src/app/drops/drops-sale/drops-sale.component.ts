@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { defer, Subscription } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { OpenSeaService } from '../../services/open-sea.service';
+import { ApiService } from '../../services/api.service';
 import { BattleState } from '../../../models/nifty-royale.models';
 
 @Component({
@@ -12,7 +12,7 @@ import { BattleState } from '../../../models/nifty-royale.models';
 export class DropsSaleComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
   dropName = '';
-  ethPrice = 0;
+  ethPrice = '';
   maxUnits = 0;
   maxMinted = 0;
   totalMinted = 0;
@@ -22,10 +22,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
   artistDescription = '';
   isBattleStarted = false;
 
-  constructor(
-    private openSeaService: OpenSeaService,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private apiService: ApiService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.subscription = this.route.data
@@ -45,7 +42,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
           this.dropName = name;
           this.maxMinted = maxMinted;
           this.totalMinted = totalMinted;
-          this.ethPrice = ethPrice / 10 ** 18;
+          this.ethPrice = ethPrice;
           this.isBattleStarted = battleState !== BattleState.STANDBY;
           this.maxUnits = maxUnits;
 
@@ -60,8 +57,8 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
     winnerURI: string
   ): Promise<void> {
     const [defaultIpfsMetadata, winnerIpfsMetadata] = await Promise.all([
-      this.openSeaService.getAssetMetadata(defaultURI),
-      this.openSeaService.getAssetMetadata(winnerURI),
+      this.apiService.getAssetMetadata(defaultURI),
+      this.apiService.getAssetMetadata(winnerURI),
     ]);
 
     this.artistDescription =

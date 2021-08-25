@@ -1,9 +1,15 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  defer,
+  Observable,
+  Subscription,
+} from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import { ContractService } from '../../services/contract.service';
-import { OpenSeaService } from '../../services/open-sea.service';
+import { ApiService } from '../../services/api.service';
 import { PlayersService } from '../../services/players.service';
 import {
   BattleState,
@@ -20,47 +26,49 @@ enum Events {
   templateUrl: './battle-status.component.html',
 })
 export class BattleStatusComponent implements OnInit, OnDestroy {
-  private subscription: Subscription;
+  private subscription = new Subscription();
   private eliminationScreenTimeout: any;
   private readonly selectedFilterSubject = new BehaviorSubject<FilterOptions>(
     FilterOptions.ALL
   );
+  currBattleState!: number;
   filteredPlayers$: Observable<NiftyAssetModel[]>;
   battleStates = BattleState;
-  contractAddress = '';
   dropName = '';
   defaultNftName = '';
   defaultPicture = '';
   winnerNftName = '';
   winnerPicture = '';
-  currBattleState = -1;
   totalPlayers = 0;
   totalInPlay = 0;
   totalEliminated = 0;
   nextEliminationTimestamp = 0;
   imgDialog = '';
-  displayDialog = false;
   tokenIdEliminated = '';
-  isEliminationTriggered = false;
+  displayDialog = false;
   displayEliminationScreen = false;
+  isEliminationTriggered = false;
 
   constructor(
+    private apiService: ApiService,
     private contractService: ContractService,
     private playersService: PlayersService,
-    private openSeaService: OpenSeaService,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {
-    this.subscription = this.route.data.subscribe(
-      ({ data }) => (this.totalPlayers = data.totalPlayers)
-    );
     this.filteredPlayers$ = this.getFilteredPlayers();
   }
 
   async ngOnInit(): Promise<void> {
-    this.contractAddress = this.route.snapshot.params.contractAddress;
     this.listenEliminatedEvents();
-    await this.loadBattleData();
+    this.subscription = this.route.data
+      .pipe(
+        mergeMap(({ data }) => {
+          this.totalPlayers = data.totalPlayers;
+          return defer(() => this.loadBattleData());
+        })
+      )
+      .subscribe();
   }
 
   async closeNextEliminationScreen(): Promise<void> {
@@ -109,8 +117,8 @@ export class BattleStatusComponent implements OnInit, OnDestroy {
       this.totalPlayers
     );
 
-    const orders = this.openSeaService.getOrders(
-      this.contractAddress,
+    const orders = this.apiService.getOrders(
+      this.route.snapshot.params.contractAddress,
       this.totalPlayers
     );
 
@@ -128,8 +136,8 @@ export class BattleStatusComponent implements OnInit, OnDestroy {
       .getTokenURIs()
       .then(({ defaultURI, winnerURI }) => {
         return Promise.all([
-          this.openSeaService.getAssetMetadata(defaultURI),
-          this.openSeaService.getAssetMetadata(winnerURI),
+          this.apiService.getAssetMetadata(defaultURI),
+          this.apiService.getAssetMetadata(winnerURI),
         ]);
       })
       .then(([defaultIpfsMetadata, winnerIpfsMetadata]) => {

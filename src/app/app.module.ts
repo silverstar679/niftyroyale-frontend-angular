@@ -7,7 +7,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { MetamaskService } from './services/metamask.service';
-import { OpenSeaService } from './services/open-sea.service';
+import { ApiService } from './services/api.service';
 import { ContractService } from './services/contract.service';
 import { PlayersService } from './services/players.service';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -32,7 +32,7 @@ const ROUTES: Routes = [{ path: '', pathMatch: 'full', redirectTo: 'drops' }];
   ],
   providers: [
     MetamaskService,
-    OpenSeaService,
+    ApiService,
     ContractService,
     PlayersService,
     MessageService,

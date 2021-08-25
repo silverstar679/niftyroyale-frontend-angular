@@ -21,9 +21,7 @@ export const NETWORK = new InjectionToken<EthereumNetwork>('ETHEREUM NETWORK', {
     const network = subdomain.split('-').reverse()[0];
 
     if ('localhost' === network) {
-      // const ethereum = inject(ETHEREUM);
-      // return CHAIN_ID_NETWORK[ethereum.chainId] as EthereumNetwork;
-      return EthereumNetwork.RINKEBY;
+      return EthereumNetwork.MAINNET;
     }
 
     if ('app' === network) {

@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { DropsComponent } from './drops.component';
+import { DropsListResolver } from '../services/resolvers/drops-list-resolver.service';
 import { DropsSaleResolver } from './resolvers/drops-sale.resolver';
+import { DropsComponent } from './drops.component';
 
 const ROUTES: Routes = [
   {
@@ -16,6 +17,9 @@ const ROUTES: Routes = [
       },
       {
         path: 'list',
+        resolve: {
+          data: DropsListResolver,
+        },
         loadChildren: () =>
           import('./drops-list/drops-list.module').then(
             (m) => m.DropsListModule

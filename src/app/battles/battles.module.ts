@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { DropsListResolver } from '../services/resolvers/drops-list-resolver.service';
 import { BattleStatusResolver } from './resolvers/battle-status.resolver';
 import { BattlesComponent } from './battles.component';
 
@@ -16,6 +17,9 @@ const ROUTES: Routes = [
       },
       {
         path: 'list',
+        resolve: {
+          data: DropsListResolver,
+        },
         loadChildren: () =>
           import('./battles-list/battles-list.module').then(
             (m) => m.BattlesListModule

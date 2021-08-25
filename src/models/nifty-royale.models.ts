@@ -20,7 +20,7 @@ export enum ListType {
 export interface ListItem {
   address: string;
   title: string;
-  image: string;
+  asset_url: string;
 }
 
 export interface Attribute {

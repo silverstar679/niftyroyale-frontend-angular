@@ -1,7 +1,6 @@
 import Web3 from 'web3';
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
 import {
   BattleState,
   EthereumNetwork,
@@ -17,12 +16,12 @@ const { ALCHEMY_KEY, INFURA_KEY } = environment;
 
 @Injectable()
 export class ContractService {
-  public abi: any;
-  public contract: any;
-  public web3: any;
-  public gasLimit = 500000;
-  public gasPrice = 0;
-  public transactionHash = '';
+  public abi!: any;
+  public contract!: any;
+  public web3!: any;
+  public gasLimit = 300000;
+  public gasPrice!: string;
+  public transactionHash!: string;
   private readonly etherscanBaseAPI: string;
   private readonly infuraProvider: string;
   private readonly alchemyProvider: string;
@@ -41,11 +40,7 @@ export class ContractService {
 
   async init(address: string): Promise<any> {
     try {
-      const [gasPrice] = await Promise.all([
-        this._getAverageGasPrice(),
-        this._initWeb3(),
-      ]);
-      this.gasPrice = gasPrice;
+      await this._initWeb3();
       await this._getContract(address);
 
       return Promise.resolve(this.contract);
@@ -65,6 +60,7 @@ export class ContractService {
       maxMinted,
       totalMinted,
       battleState,
+      gasPrice,
     ] = await Promise.all([
       this.contract.methods.baseURI().call(),
       this.contract.methods.defaultTokenURI().call(),
@@ -75,13 +71,16 @@ export class ContractService {
       this.contract.methods.maxSupply().call(),
       this.contract.methods.totalSupply().call(),
       this.contract.methods.getBattleStateInt().call(),
+      this.web3.eth.getGasPrice(),
     ]);
+
+    this.gasPrice = gasPrice;
 
     return {
       defaultURI: `${baseTokenURI}${defaultTokenURI}`,
       winnerURI: `${baseTokenURI}${winnerTokenURI}`,
       name,
-      ethPrice: Number(ethPrice),
+      ethPrice,
       maxUnits: Number(maxUnits),
       maxMinted: Number(maxMinted),
       totalMinted: Number(totalMinted),
@@ -194,27 +193,34 @@ export class ContractService {
     return Promise.all(promises);
   }
 
-  purchaseNFT(
-    from: string,
-    value: number,
-    quantity: number,
-    gasLimit: number
-  ): Promise<void> {
-    const gasPrice = `${this.gasPrice * 10 ** 9}`;
+  async purchaseNFT(quantity: number, value: string): Promise<void> {
+    const from = this.metamaskService.currentAccount;
+    const gasLimit = quantity * this.gasLimit;
+    const gasPrice = await this.web3.eth.getGasPrice();
+
     return this.contract.methods
       .purchase(quantity)
-      .send({ from, value, gasLimit, gasPrice })
+      .send({ from, value, gasPrice, gasLimit })
       .on('transactionHash', (hash: string) => {
         this.transactionHash = hash;
       });
   }
 
-  private _getAverageGasPrice(): Promise<number> {
-    const url = `${this.etherscanBaseAPI}/gas-tracker`;
-    return this.http
-      .get<any>(url)
-      .pipe(map(({ result }) => result.FastGasPrice))
-      .toPromise();
+  private _getContract(address: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      if (!this.contract || this.contract._address !== address) {
+        try {
+          const abi = await this._loadABI(address);
+
+          this.contract = new this.web3.eth.Contract(abi, address);
+
+          return resolve(this.contract);
+        } catch (error) {
+          return reject(error);
+        }
+      }
+      return resolve(this.contract);
+    });
   }
 
   private _initWeb3(): Promise<Web3> {
@@ -245,22 +251,5 @@ export class ContractService {
       return this.http.get<any>(url).toPromise();
     }
     return Promise.resolve(this.abi);
-  }
-
-  private _getContract(address: string): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.contract || this.contract._address !== address) {
-        try {
-          const abi = await this._loadABI(address);
-
-          this.contract = new this.web3.eth.Contract(abi, address);
-
-          return resolve(this.contract);
-        } catch (error) {
-          return reject(error);
-        }
-      }
-      return resolve(this.contract);
-    });
   }
 }

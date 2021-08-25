@@ -24,7 +24,7 @@ export class CheckoutPanelComponent {
   @Input() maxUnits!: number;
   @Input() maxMinted!: number;
   @Input() totalMinted!: number;
-  @Input() ethPrice!: number;
+  @Input() ethPrice!: string;
   @Input() isBattleStarted!: boolean;
   isConnected$: Observable<boolean>;
   isAdminAddress = false;
@@ -55,6 +55,10 @@ export class CheckoutPanelComponent {
     return 'Checkout';
   }
 
+  get leftForSaleText(): string {
+    return `${this.leftForSale}/${this.maxMinted} left for sale`;
+  }
+
   get isCheckoutDisabled(): boolean {
     if (this.isAdminAddress) {
       return false;
@@ -71,27 +75,38 @@ export class CheckoutPanelComponent {
     return this.leftForSale > this.maxUnits ? this.maxUnits : this.leftForSale;
   }
 
-  get ethFees(): number {
+  get ethPriceEther(): string {
+    return this.contractService.web3.utils.fromWei(this.ethPrice, 'ether');
+  }
+
+  get totalPriceEther(): string {
+    const total = `${this.quantity * Number(this.ethPrice)}`;
+    return this.contractService.web3.utils.fromWei(total, 'ether');
+  }
+
+  get gasPriceGwei(): number {
+    return this.contractService.web3.utils.fromWei(
+      this.contractService.gasPrice,
+      'gwei'
+    );
+  }
+
+  get totalFeesEther(): number {
     if (!this.quantity) {
       return 0;
     }
-    return (this.gasPrice * this.gasLimit) / 10 ** 9;
+    const gasPrice = Number(this.contractService.gasPrice);
+    const gasLimit = this.contractService.gasLimit;
+    const fees = `${this.quantity * gasPrice * gasLimit}`;
+    return this.contractService.web3.utils.fromWei(fees, 'ether');
   }
 
-  get gasLimit(): number {
-    return this.quantity * this.contractService.gasLimit;
-  }
-
-  get gasPrice(): number {
-    return this.contractService.gasPrice;
+  get totalPurchaseEther(): number {
+    return Number(this.totalPriceEther) + Number(this.totalFeesEther);
   }
 
   get leftForSale(): number {
     return this.maxMinted - this.totalMinted;
-  }
-
-  get totalPrice(): number {
-    return this.quantity * this.ethPrice;
   }
 
   get transactionURL(): string {
@@ -108,31 +123,19 @@ export class CheckoutPanelComponent {
     return this.metamaskService.formatAddress(this.transactionHash);
   }
 
-  get leftForSaleText(): string {
-    return `${this.leftForSale}/${this.maxMinted} left for sale`;
-  }
-
   async buy(): Promise<void> {
     try {
       if (this.isCheckoutDisabled) {
         return;
       }
       this.isPurchaseProcessing = true;
-      const from = this.metamaskService.currentAccount;
-      const quantity = Number(this.quantity);
-      const ethPrice = Number(this.ethPrice);
-      const value = quantity * ethPrice * 10 ** 18;
       this.messageService.add({
         severity: SEVERITY.INFO,
         summary: SUMMARY.TRANSACTION_PROCESS,
         sticky: true,
       });
-      await this.contractService.purchaseNFT(
-        from,
-        value,
-        quantity,
-        this.gasLimit
-      );
+      const value = `${this.quantity * Number(this.ethPrice)}`;
+      await this.contractService.purchaseNFT(this.quantity, value);
       this.isPurchaseSuccessful = true;
       this.messageService.clear();
       this.messageService.add({

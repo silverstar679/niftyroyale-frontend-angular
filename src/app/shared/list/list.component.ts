@@ -8,7 +8,7 @@ import {
 import { ListItem } from '../../../models/nifty-royale.models';
 
 @Component({
-  selector: 'list',
+  selector: 'app-list',
   templateUrl: 'list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

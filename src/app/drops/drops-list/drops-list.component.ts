@@ -1,29 +1,33 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { NETWORK } from '../../services/network.token';
 import {
   EthereumNetwork,
   ListItem,
   ListType,
 } from '../../../models/nifty-royale.models';
-import { CONTRACTS } from '../../../constants/contracts';
 
 @Component({
-  selector: 'app-list',
+  selector: 'app-drops-list',
   templateUrl: './drops-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DropsListComponent {
+  private subscription: Subscription;
   listType = ListType.DROP;
-  activeList: ListItem[];
-  pastList: ListItem[];
+  activeList!: ListItem[];
+  pastList!: ListItem[];
 
   constructor(
     @Inject(NETWORK) private network: EthereumNetwork,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
-    this.activeList = CONTRACTS[network].active;
-    this.pastList = CONTRACTS[network].past;
+    this.subscription = this.route.data.subscribe(({ data }) => {
+      this.activeList = data.activeDrops;
+      this.pastList = data.pastDrops;
+    });
   }
 
   goTo(address: string): Promise<boolean> {

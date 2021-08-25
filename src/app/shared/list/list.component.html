@@ -9,7 +9,7 @@
         *ngFor="let item of activeList"
         [type]="type"
         [title]="item.title"
-        [image]="item.image"
+        [image]="item.asset_url"
         (onClick)="redirect.emit(item.address)"
       ></list-item>
     </div>
@@ -19,7 +19,7 @@
         *ngFor="let item of pastList"
         [type]="type"
         [title]="item.title"
-        [image]="item.image"
+        [image]="item.asset_url"
         (onClick)="redirect.emit(item.address)"
       ></list-item>
     </div>

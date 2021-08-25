@@ -6,6 +6,7 @@ import {
   Output,
 } from '@angular/core';
 import { NiftyAssetModel } from '../../../../models/nifty-royale.models';
+import { ContractService } from '../../../services/contract.service';
 import { MetamaskService } from '../../../services/metamask.service';
 
 @Component({
@@ -22,7 +23,10 @@ export class NftCardComponent {
   @Output() onImgClick = new EventEmitter<void>();
   @Output() onBtnClick = new EventEmitter<string>();
 
-  constructor(private metamaskService: MetamaskService) {}
+  constructor(
+    private contractService: ContractService,
+    private metamaskService: MetamaskService
+  ) {}
 
   get btnText(): string {
     const ownerSellText = this.player.order?.sell ? 'Cancel Sale' : 'Sell';
@@ -48,6 +52,6 @@ export class NftCardComponent {
   }
 
   formatPrice(price: string): number {
-    return Number(price) / 10 ** 18;
+    return this.contractService.web3.utils.fromWei(price, 'ether');
   }
 }
