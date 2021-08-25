@@ -21,15 +21,7 @@ export const NETWORK = new InjectionToken<EthereumNetwork>('ETHEREUM NETWORK', {
     const network = subdomain.split('-').reverse()[0];
 
     if ('localhost' === network) {
-      const { defaultView } = inject(DOCUMENT);
-
-      if (!defaultView) {
-        throw new Error('Window is not available');
-      }
-
-      const chainId = (defaultView as any).ethereum.chainId;
-
-      return chainIdToNetwork[chainId] as EthereumNetwork;
+      return EthereumNetwork.RINKEBY;
     }
 
     if ('app' === network) {

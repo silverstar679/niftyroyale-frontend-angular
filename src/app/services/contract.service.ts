@@ -46,7 +46,7 @@ export class ContractService {
         this._initWeb3(),
       ]);
       this.gasPrice = gasPrice;
-      await this._getContract(address, this.gasPrice);
+      await this._getContract(address);
 
       return Promise.resolve(this.contract);
     } catch (error) {
@@ -247,16 +247,13 @@ export class ContractService {
     return Promise.resolve(this.abi);
   }
 
-  private _getContract(address: string, gasPrice: number): Promise<any> {
+  private _getContract(address: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       if (!this.contract || this.contract._address !== address) {
         try {
           const abi = await this._loadABI(address);
 
-          this.contract = new this.web3.eth.Contract(abi, address, {
-            gasLimit: `${this.gasLimit}`,
-            gasPrice: `${gasPrice * 10 ** 9}`,
-          });
+          this.contract = new this.web3.eth.Contract(abi, address);
 
           return resolve(this.contract);
         } catch (error) {
