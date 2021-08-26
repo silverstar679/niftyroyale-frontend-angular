@@ -5,6 +5,12 @@ import { mergeMap } from 'rxjs/operators';
 import { ApiService } from '../../services/api.service';
 import { BattleState } from '../../../models/nifty-royale.models';
 
+enum METADATA_TITLE {
+  NFT_DESCRIPTION = 'NFT Description',
+  ARTIST_DESCRIPTION = 'Artist Description',
+  ADDITIONAL_DESCRIPTION = 'Additional Prize Description',
+}
+
 @Component({
   selector: 'app-drops-sale',
   templateUrl: './drops-sale.component.html',
@@ -18,8 +24,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
   totalMinted = 0;
   defaultNftImage = '';
   winnerNftImage = '';
-  nftDescription = '';
-  artistDescription = '';
+  metadata: Array<{ title: string; value: string }> = [];
   isBattleStarted = false;
 
   constructor(private apiService: ApiService, private route: ActivatedRoute) {}
@@ -61,11 +66,25 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
       this.apiService.getAssetMetadata(winnerURI),
     ]);
 
-    this.artistDescription =
+    const artistDescription =
       defaultIpfsMetadata.attributes.find(
-        (a) => -1 !== a.trait_type.indexOf('Artist Description')
+        (a) => -1 !== a.trait_type.indexOf(METADATA_TITLE.ARTIST_DESCRIPTION)
       )?.value || '';
-    this.nftDescription = defaultIpfsMetadata.description;
+    const additionalDescription =
+      defaultIpfsMetadata.attributes.find(
+        (a) =>
+          -1 !== a.trait_type.indexOf(METADATA_TITLE.ADDITIONAL_DESCRIPTION)
+      )?.value || '';
+    const nftDescription = defaultIpfsMetadata.description;
+
+    this.metadata = [
+      { title: METADATA_TITLE.NFT_DESCRIPTION, value: nftDescription },
+      { title: METADATA_TITLE.ARTIST_DESCRIPTION, value: artistDescription },
+      {
+        title: METADATA_TITLE.ADDITIONAL_DESCRIPTION,
+        value: additionalDescription,
+      },
+    ];
     this.defaultNftImage = defaultIpfsMetadata.image;
     this.winnerNftImage = winnerIpfsMetadata.image;
   }

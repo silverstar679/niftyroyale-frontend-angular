@@ -20,6 +20,7 @@ export class ContractService {
   public contract!: any;
   public web3!: any;
   public gasLimit = 300000;
+  public gasBuffer = 50000;
   public gasPrice!: string;
   public transactionHash!: string;
   private readonly etherscanBaseAPI: string;
@@ -195,7 +196,7 @@ export class ContractService {
 
   async purchaseNFT(quantity: number, value: string): Promise<void> {
     const from = this.metamaskService.currentAccount;
-    const gasLimit = quantity * this.gasLimit;
+    const gasLimit = this.gasLimit + quantity * this.gasBuffer;
     const gasPrice = await this.web3.eth.getGasPrice();
 
     return this.contract.methods

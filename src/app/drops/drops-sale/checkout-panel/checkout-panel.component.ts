@@ -1,6 +1,7 @@
 import { MessageService } from 'primeng/api';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Inject,
   Input,
@@ -38,7 +39,8 @@ export class CheckoutPanelComponent {
     private metamaskService: MetamaskService,
     private messageService: MessageService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.isConnected$ = this.metamaskService.account$.pipe(
       map((account) => {
@@ -76,33 +78,40 @@ export class CheckoutPanelComponent {
   }
 
   get ethPriceEther(): string {
-    return this.contractService.web3.utils.fromWei(this.ethPrice, 'ether');
+    const res = this.contractService.web3.utils.fromWei(this.ethPrice, 'ether');
+    return Number(res).toFixed(4);
   }
 
   get totalPriceEther(): string {
     const total = `${this.quantity * Number(this.ethPrice)}`;
-    return this.contractService.web3.utils.fromWei(total, 'ether');
+    const res = this.contractService.web3.utils.fromWei(total, 'ether');
+    return Number(res).toFixed(4);
   }
 
-  get gasPriceGwei(): number {
-    return this.contractService.web3.utils.fromWei(
+  get gasPriceGwei(): string {
+    const res = this.contractService.web3.utils.fromWei(
       this.contractService.gasPrice,
       'gwei'
     );
+    return Number(res).toFixed(4);
   }
 
-  get totalFeesEther(): number {
+  get totalFeesEther(): string {
     if (!this.quantity) {
-      return 0;
+      return '0';
     }
     const gasPrice = Number(this.contractService.gasPrice);
-    const gasLimit = this.contractService.gasLimit;
-    const fees = `${this.quantity * gasPrice * gasLimit}`;
-    return this.contractService.web3.utils.fromWei(fees, 'ether');
+    const gasLimit =
+      this.contractService.gasLimit +
+      this.quantity * this.contractService.gasBuffer;
+    const fees = `${gasPrice * gasLimit}`;
+    const res = this.contractService.web3.utils.fromWei(fees, 'ether');
+    return Number(res).toFixed(4);
   }
 
-  get totalPurchaseEther(): number {
-    return Number(this.totalPriceEther) + Number(this.totalFeesEther);
+  get totalPurchaseEther(): string {
+    const res = Number(this.totalPriceEther) + Number(this.totalFeesEther);
+    return res.toFixed(4);
   }
 
   get leftForSale(): number {
@@ -156,6 +165,7 @@ export class CheckoutPanelComponent {
       });
     }
     this.isPurchaseProcessing = false;
+    this.cdr.detectChanges();
   }
 
   goToBattle(): Promise<boolean> {

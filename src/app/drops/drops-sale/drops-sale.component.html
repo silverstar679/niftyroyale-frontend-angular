@@ -16,14 +16,13 @@
       [isBattleStarted]="isBattleStarted"
     ></checkout-panel>
   </div>
-  <div class="flex flex-col gap-5">
-    <p class="underline nifty-underline">NFT Description</p>
-    <p>{{ nftDescription }}</p>
-  </div>
-  <div class="flex flex-col gap-5">
-    <p class="underline nifty-underline">Artist Description</p>
-    <p>{{ artistDescription }}</p>
-  </div>
+  <ng-container *ngFor="let section of metadata">
+    <div *ngIf="section.value" class="flex flex-col gap-5">
+      <p class="underline nifty-underline">{{ section.title }}</p>
+      <p>{{ section.value }}</p>
+    </div>
+  </ng-container>
+
   <div class="flex flex-col gap-2 text-xs">
     <p class="underline nifty-underline">Disclaimer</p>
     <p>
