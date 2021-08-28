@@ -19,7 +19,7 @@ export class ContractService {
   public abi!: any;
   public contract!: any;
   public web3!: any;
-  public gasLimit = 500000;
+  public gasLimit = 400000;
   public gasBuffer = 100000;
   public gasPrice!: string;
   public transactionHash!: string;
