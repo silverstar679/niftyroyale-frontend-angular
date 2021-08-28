@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-3 justify-center lg:flex-row nifty-text-red">
-  <p>{{ title }}</p>
+  <p *ngIf="title">{{ title }}</p>
   <countdown
     [config]="{ leftTime: leftTime, notify: 1 }"
     (event)="handleEvent($event)"

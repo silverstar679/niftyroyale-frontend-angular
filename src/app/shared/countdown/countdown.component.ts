@@ -15,7 +15,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CountdownComponent implements OnInit {
-  @Input() title!: string;
+  @Input() title?: string;
   @Input() fromTimestamp?: number;
   @Input() fromDate?: string;
   @Input() timezone?: string;
