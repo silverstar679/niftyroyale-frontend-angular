@@ -19,8 +19,8 @@ export class ContractService {
   public abi!: any;
   public contract!: any;
   public web3!: any;
-  public gasLimit = 300000;
-  public gasBuffer = 50000;
+  public gasLimit = 500000;
+  public gasBuffer = 100000;
   public gasPrice!: string;
   public transactionHash!: string;
   private readonly etherscanBaseAPI: string;

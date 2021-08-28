@@ -59,6 +59,10 @@ export class BattleStatusComponent implements OnInit, OnDestroy {
     this.filteredPlayers$ = this.getFilteredPlayers();
   }
 
+  get isBattleStarted(): boolean {
+    return this.currBattleState !== BattleState.STANDBY;
+  }
+
   async ngOnInit(): Promise<void> {
     this.listenEliminatedEvents();
     this.subscription = this.route.data
@@ -88,11 +92,15 @@ export class BattleStatusComponent implements OnInit, OnDestroy {
   }
 
   getNFTName(placement: number): string {
-    return placement === 1 ? this.winnerNftName : this.defaultNftName;
+    return placement === 1 && this.isBattleStarted
+      ? this.winnerNftName
+      : this.defaultNftName;
   }
 
   getNFTPicture(placement: number): string {
-    return placement === 1 ? this.winnerPicture : this.defaultPicture;
+    return placement === 1 && this.isBattleStarted
+      ? this.winnerPicture
+      : this.defaultPicture;
   }
 
   displayImageDialog(url: string): void {

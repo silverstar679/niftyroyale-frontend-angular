@@ -23,6 +23,7 @@ export class PlayerCardComponent {
   @Input() totalPlayers!: number;
   @Input() picture!: string;
   @Input() name!: string;
+  @Input() isBattleStarted!: boolean;
   @Output() onImageClick = new EventEmitter<string>();
 
   constructor(
