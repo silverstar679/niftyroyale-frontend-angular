@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 import { OrderJSON } from '../../models/opensea.types';
 import {
   EthereumNetwork,
@@ -9,6 +10,18 @@ import {
 } from '../../models/nifty-royale.models';
 import { NETWORK } from './network.token';
 import { PlayersService } from './players.service';
+
+export interface Drop {
+  id: string;
+  address: string;
+  asset_url: string;
+  has_ended: boolean;
+  meta_data: string;
+  network: string;
+  start_date: string;
+  symbol: string;
+  title: string;
+}
 
 @Injectable()
 export class ApiService {
@@ -50,9 +63,11 @@ export class ApiService {
     return this.http.get<IpfsMetadataModel>(uri).toPromise();
   }
 
-  getDropsList(): Promise<any> {
-    const url =
-      'https://kuq79fsed0.execute-api.us-east-1.amazonaws.com/dev/v1/nft';
-    return this.http.get<any[]>(url).toPromise();
+  getDropsList(): Promise<Drop[]> {
+    const url = `https://kuq79fsed0.execute-api.us-east-1.amazonaws.com/dev/v1/nft?network=${this.network}`;
+    return this.http
+      .get<any>(url)
+      .pipe(map(({ data }) => data))
+      .toPromise();
   }
 }

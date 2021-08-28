@@ -19,10 +19,7 @@ export class DropsListResolver implements Resolve<any> {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Promise<any> {
-    const { data } = await this.apiService.getDropsList();
-    const drops = data.filter(
-      (d: any) => d.network.toLowerCase() === this.network
-    );
+    const drops = await this.apiService.getDropsList();
     const activeDrops = [];
     const pastDrops = [];
     for (const drop of drops) {
