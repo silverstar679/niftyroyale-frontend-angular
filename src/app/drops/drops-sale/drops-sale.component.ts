@@ -9,6 +9,13 @@ enum METADATA_TITLE {
   NFT_DESCRIPTION = 'NFT Description',
   ARTIST_DESCRIPTION = 'Artist Description',
   ADDITIONAL_DESCRIPTION = 'Additional Prize Description',
+  BASE_NFT_IMAGE = 'Base NFT',
+  UPGRADED_NFT_IMAGE = 'Upgraded 1:1 NFT',
+}
+
+interface MetadataItem {
+  title: string;
+  value: string;
 }
 
 @Component({
@@ -17,19 +24,24 @@ enum METADATA_TITLE {
 })
 export class DropsSaleComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
-  dropName = '';
-  ethPrice = '';
-  maxUnits = 0;
-  maxMinted = 0;
-  totalMinted = 0;
-  defaultNftImage = '';
-  winnerNftImage = '';
-  metadata: Array<{ title: string; value: string }> = [];
-  isBattleStarted = false;
+  contractAddress!: string;
+  dropName!: string;
+  ethPrice!: string;
+  maxUnits!: number;
+  maxMinted!: number;
+  totalMinted!: number;
+  isBattleStarted!: boolean;
+  metadata!: Array<MetadataItem>;
+  imagesData!: Array<MetadataItem>;
 
   constructor(private apiService: ApiService, private route: ActivatedRoute) {}
 
+  get etherScanContractLink(): string {
+    return `https://etherscan.io/address/${this.contractAddress}`;
+  }
+
   ngOnInit(): void {
+    this.contractAddress = this.route.snapshot.params.contractAddress;
     this.subscription = this.route.data
       .pipe(
         mergeMap(({ data }) => {
@@ -66,6 +78,7 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
       this.apiService.getAssetMetadata(winnerURI),
     ]);
 
+    const nftDescription = defaultIpfsMetadata.description;
     const artistDescription =
       defaultIpfsMetadata.attributes.find(
         (a) => -1 !== a.trait_type.indexOf(METADATA_TITLE.ARTIST_DESCRIPTION)
@@ -75,7 +88,6 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
         (a) =>
           -1 !== a.trait_type.indexOf(METADATA_TITLE.ADDITIONAL_DESCRIPTION)
       )?.value || '';
-    const nftDescription = defaultIpfsMetadata.description;
 
     this.metadata = [
       { title: METADATA_TITLE.NFT_DESCRIPTION, value: nftDescription },
@@ -85,8 +97,17 @@ export class DropsSaleComponent implements OnInit, OnDestroy {
         value: additionalDescription,
       },
     ];
-    this.defaultNftImage = defaultIpfsMetadata.image;
-    this.winnerNftImage = winnerIpfsMetadata.image;
+
+    this.imagesData = [
+      {
+        title: METADATA_TITLE.BASE_NFT_IMAGE,
+        value: defaultIpfsMetadata.image,
+      },
+      {
+        title: METADATA_TITLE.UPGRADED_NFT_IMAGE,
+        value: winnerIpfsMetadata.image,
+      },
+    ];
   }
 
   ngOnDestroy(): void {

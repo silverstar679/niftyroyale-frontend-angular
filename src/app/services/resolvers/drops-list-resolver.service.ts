@@ -11,8 +11,8 @@ import { EthereumNetwork } from '../../../models/nifty-royale.models';
 @Injectable({ providedIn: 'root' })
 export class DropsListResolver implements Resolve<any> {
   constructor(
-    private apiService: ApiService,
-    @Inject(NETWORK) private network: EthereumNetwork
+    @Inject(NETWORK) private network: EthereumNetwork,
+    private apiService: ApiService
   ) {}
 
   async resolve(
