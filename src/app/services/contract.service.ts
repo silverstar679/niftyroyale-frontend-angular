@@ -21,6 +21,7 @@ export class ContractService {
   public web3!: any;
   public gasLimit = 400000;
   public gasBuffer = 100000;
+  public blockNumber!: number;
   public gasPrice!: string;
   public transactionHash!: string;
   private readonly etherscanBaseAPI: string;
@@ -236,6 +237,7 @@ export class ContractService {
             ? metamaskProvider
             : defaultProvider;
           this.web3 = new Web3(provider);
+          this.blockNumber = await this.web3.eth.getBlockNumber();
 
           return resolve(this.web3);
         } catch (error) {

@@ -176,22 +176,25 @@ export class BattleStatusComponent implements OnInit, OnDestroy {
   }
 
   private listenEliminatedEvents(): void {
-    this.contractService.contract.events.allEvents((error: any, res: any) => {
-      if (res.event === Events.ELIMINATED) {
-        const { _tokenID } = res.returnValues;
-        this.displayEliminationScreen = true;
-        this.tokenIdEliminated = _tokenID;
-        this.playersService.merge(_tokenID, {
-          isEliminated: true,
-          placement: this.totalInPlay,
-        } as NiftyAssetModel);
-        this.eliminationScreenTimeout = setTimeout(
-          () => this.closeNextEliminationScreen(),
-          30 * 1000
-        );
-        return this.cdr.detectChanges();
+    this.contractService.contract.events.allEvents(
+      { fromBlock: this.contractService.blockNumber },
+      (error: any, res: any) => {
+        if (res.event === Events.ELIMINATED) {
+          const { _tokenID } = res.returnValues;
+          this.displayEliminationScreen = true;
+          this.tokenIdEliminated = _tokenID;
+          this.playersService.merge(_tokenID, {
+            isEliminated: true,
+            placement: this.totalInPlay,
+          } as NiftyAssetModel);
+          this.eliminationScreenTimeout = setTimeout(
+            () => this.closeNextEliminationScreen(),
+            30 * 1000
+          );
+          return this.cdr.detectChanges();
+        }
       }
-    });
+    );
   }
 
   private getFilteredPlayers(): Observable<NiftyAssetModel[]> {
