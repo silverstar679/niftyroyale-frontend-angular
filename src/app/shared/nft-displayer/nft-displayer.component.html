@@ -9,8 +9,9 @@
   *ngIf="isVideo"
   class="object-contain w-full rounded-sm"
   [ngStyle]="{ height: height }"
+  [controls]="showControls"
+  [muted]="isMuted"
   loop
-  muted
   autoplay
   playsinline
   oncanplay="this.play()"

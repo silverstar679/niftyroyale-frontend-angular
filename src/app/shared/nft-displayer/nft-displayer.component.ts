@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
+  OnDestroy,
   OnInit,
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -13,9 +14,11 @@ import { VIDEO_EXTENSION } from '../../../constants/extensions/video-extension';
   templateUrl: './nft-displayer.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NftDisplayerComponent implements OnInit {
+export class NftDisplayerComponent implements OnInit, OnDestroy {
   @Input() nftURL!: string;
+  @Input() showControls = false;
   @Input() height = 'auto';
+  isMuted = true;
   safeNftURL!: SafeResourceUrl;
   isImage = false;
   isVideo = false;
@@ -29,5 +32,9 @@ export class NftDisplayerComponent implements OnInit {
     this.safeNftURL = this.sanitizer.bypassSecurityTrustResourceUrl(
       this.nftURL
     );
+  }
+
+  ngOnDestroy(): void {
+    this.isMuted = true;
   }
 }

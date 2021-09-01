@@ -12,6 +12,7 @@
         <app-nft-displayer
           *ngIf="data.value"
           [nftURL]="data.value"
+          [showControls]="true"
           [height]="'36rem'"
         ></app-nft-displayer>
         <p class="text-center text-lg nifty-font mt-3">{{ data.title }}</p>
