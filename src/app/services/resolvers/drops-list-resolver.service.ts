@@ -1,19 +1,14 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   ActivatedRouteSnapshot,
   Resolve,
   RouterStateSnapshot,
 } from '@angular/router';
-import { NETWORK } from '../network.token';
 import { ApiService } from '../api.service';
-import { EthereumNetwork } from '../../../models/nifty-royale.models';
 
 @Injectable({ providedIn: 'root' })
 export class DropsListResolver implements Resolve<any> {
-  constructor(
-    @Inject(NETWORK) private network: EthereumNetwork,
-    private apiService: ApiService
-  ) {}
+  constructor(private apiService: ApiService) {}
 
   async resolve(
     route: ActivatedRouteSnapshot,

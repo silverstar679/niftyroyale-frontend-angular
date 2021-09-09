@@ -34,12 +34,7 @@
     <p>Token ID: {{ player.tokenId }}</p>
     <p>Owner: {{ ownerAddress }}</p>
     <p>Placement: {{ placement }}</p>
-    <p
-      class="whitespace-nowrap overflow-hidden overflow-ellipsis"
-      [title]="name"
-    >
-      Name: {{ name }}
-    </p>
+    <p class="truncate" [title]="name">Name: {{ name }}</p>
   </div>
   <div
     *ngIf="showFooter"
