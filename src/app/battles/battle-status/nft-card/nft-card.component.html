@@ -22,13 +22,14 @@
     <img
       *ngIf="player.isEliminated"
       class="absolute h-full w-full z-10"
-      src="../../../../assets/images/cross.webp"
+      src="assets/images/cross.webp"
       alt="cross"
     />
     <app-nft-displayer
       *ngIf="picture.length > 0"
       [nftURL]="picture"
-      [showControls]="true"
+      [showControls]="!player.isEliminated"
+      [isAutoPlay]="false"
     ></app-nft-displayer>
   </div>
   <div class="flex flex-col gap-1">

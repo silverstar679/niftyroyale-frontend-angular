@@ -16,7 +16,8 @@ import { VIDEO_EXTENSION } from '../../../constants/extensions/video-extension';
 })
 export class NftDisplayerComponent implements OnInit, OnDestroy {
   @Input() nftURL!: string;
-  @Input() showControls = false;
+  @Input() isAutoPlay = true;
+  @Input() showControls = true;
   @Input() height = 'auto';
   isMuted = true;
   safeNftURL!: SafeResourceUrl;

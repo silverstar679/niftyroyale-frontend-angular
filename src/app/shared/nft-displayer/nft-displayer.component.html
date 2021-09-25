@@ -11,8 +11,10 @@
   [ngStyle]="{ height: height }"
   [controls]="showControls"
   [muted]="isMuted"
-  playsinline
+  [autoplay]="isAutoPlay"
   loop
+  playsinline
+  onloadedmetadata="this.muted = true"
 >
   <source [src]="safeNftURL" type="video/mp4" />
   Your browser does not support playing this Video
