@@ -1,8 +1,8 @@
-<div class="flex flex-col gap-16 text-xl md:text-2xl lg:text-3xl text-white">
+<div class="flex flex-col mb-16 text-lg md:text-xl lg:text-2xl text-white">
   <p class="self-center nifty-text-gold">{{ dropName }}</p>
   <div class="flex flex-col items-center gap-14 lg:flex-row lg:justify-around">
     <p-carousel
-      class="w-full lg:w-1/2"
+      class="w-full lg:w-2/5"
       [value]="imagesData"
       [numVisible]="1"
       [numScroll]="1"
@@ -27,6 +27,9 @@
       [isBattleStarted]="isBattleStarted"
     ></checkout-panel>
   </div>
+</div>
+
+<div class="flex flex-col gap-16 text-lg md:text-xl lg:text-2xl text-white">
   <ng-container *ngFor="let section of metadata">
     <div *ngIf="section.value" class="flex flex-col gap-5">
       <p class="underline nifty-underline">{{ section.title }}</p>
